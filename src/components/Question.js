@@ -40,7 +40,7 @@ const Question = () => {
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-
+    
         navigate('/fact');
     };
 
