@@ -1,0 +1,9 @@
+.fact-container {
+    width: 360px;
+    margin: 24px;
+    align-items: center;
+}
+
+.next {
+    width: 0;
+}

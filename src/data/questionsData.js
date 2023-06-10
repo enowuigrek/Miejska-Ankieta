@@ -40,4 +40,13 @@ export const QUESTIONS_DATA = {
             { id: 'option2', label: 'mieszkanie' },
         ],
     },
+
+    literatura: {
+        questionText: 'Książka',
+        options: [
+            { id: 'option1', label: 'papier' },
+            { id: 'option2', label: 'e-book' },
+            { id: 'option3', label: 'audiobook' },
+        ],
+    },
 };

@@ -9,57 +9,16 @@
     background-color: #f3f2f2;
 }
 
-.question-container,
-.fact-container {
-    width: 360px;
-    margin: 24px;
-    align-items: center;
-}
-
 form {
     border-top: 2px solid rgb(69, 69, 69);
     padding: 24px 0;
-}
-
-.radio-container {
-    display: flex;
-    align-items: center;
-    margin: 0 0 16px 12px;
-}
-
-.radio-container input[type='radio'] {
-    display: none;
-}
-
-.custom-radio {
-    position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
-}
-
-.custom-radio::before {
-    content: '✔';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-    line-height: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.radio-container input[type='radio']:checked + .custom-radio::before {
-    opacity: 1;
 }
 
 h1.question-title {
     margin-bottom: 4px;
 }
 
-button[type='submit'] {
+button {
     background-color: #56cde4;
     color: #f3f2f2;
     font-family: 'Urbanist', sans-serif;
@@ -72,6 +31,6 @@ button[type='submit'] {
     transition: background-color 0.3s;
 }
 
-button[type='submit']:hover {
+button:hover {
     background-color: #95dceb;
 }

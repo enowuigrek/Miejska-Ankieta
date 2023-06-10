@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { QUESTIONS_DATA } from '../data/questionsData';
+import './Question.css';
 
 const Question = () => {
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const { questionId } = useParams();
+    const questionData = QUESTIONS_DATA[questionId];
 
-    const questionData = QUESTIONS_DATA[questionId] || {
-        questionText: '',
-        options: [],
-    };
+    useEffect(() => {
+        if (!questionData) {
+            setTimeout(() => {
+                navigate('/404', { replace: true });
+            }, 0);
+        }
+    }, [navigate, questionData]);
+
+    if (!questionData) {
+        return null;
+    }
 
     const handleOptionChange = (optionId) => {
         setSelectedOption(optionId);
