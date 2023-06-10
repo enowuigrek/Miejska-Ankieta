@@ -1,9 +1,18 @@
 .fact-container {
     width: 360px;
-    margin: 24px;
+    margin: 36px;
     align-items: center;
 }
 
 .next {
-    width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    width: 38px;
+}
+
+.icon-next {
+    font-size: 24px;
+    margin: 0;
 }

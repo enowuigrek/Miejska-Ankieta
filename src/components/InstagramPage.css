@@ -1,11 +1,16 @@
 .instagram-page-container {
     width: 360px;
-    margin: 24px;
+    margin: 36px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-span {
-    font-size: 12px;
+.icon-insta {
+    font-size: 128px;
+    transition: 0.3s;
+    color: rgb(69, 69, 69);
+}
+.icon-insta:hover {
+    color: #56cde4;
 }

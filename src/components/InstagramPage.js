@@ -1,15 +1,21 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import './InstagramPage.css';
 
 const InstagramPage = () => {
+    const instagramLink = 'https://www.instagram.com/TwojProfilNaInstagramie';
+
     return (
         <div className='instagram-page-container'>
-            <img
-                src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/132px-Instagram_logo_2016.svg.png'
-                alt='Instagram Logo'
-                style={{ width: '100px', height: '100px' }}
-            />
-            <span>Obserwuj, aby śledzić wyniki</span>
+            <p>Życzę Ci dobrego dnia!!</p>
+            <a href={instagramLink} target='_blank' rel='noopener noreferrer'>
+                <FontAwesomeIcon
+                    icon={faInstagram}
+                    className='fa-icon icon-insta'
+                />
+            </a>
+            <p>Obserwuj, aby śledzić wyniki.</p>
         </div>
     );
 };

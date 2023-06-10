@@ -1,0 +1,17 @@
+.home-container {
+    width: 360px;
+    margin: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-icon-insta {
+    font-size: 128px;
+    transition: 0.3s;
+    margin-bottom: 64px;
+    color: rgb(69, 69, 69);
+}
+.home-icon-insta:hover {
+    color: #56cde4;
+}
