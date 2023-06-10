@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { QUESTIONS_DATA } from '../data/questionsData';
 import './Question.css';
+import { db } from '../firebase';
+import { collection, addDoc } from "firebase/firestore";
 
 const Question = () => {
     const navigate = useNavigate();
@@ -25,11 +27,20 @@ const Question = () => {
         setSelectedOption(optionId);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Wybrana opcja:', selectedOption);
+        
+        try {
+            const docRef = await addDoc(collection(db, "answers"), {
+                questionId: questionId,
+                answer: selectedOption
+            });
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
 
-        // Przekierowanie do strony "fact"
         navigate('/fact');
     };
 
