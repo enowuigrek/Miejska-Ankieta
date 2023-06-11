@@ -34,7 +34,6 @@
     "export": "node export.js",
     "stats": "node stats.js"
   },
-
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -52,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
