@@ -41,7 +41,7 @@ export const QUESTIONS_DATA = {
         ],
     },
 
-    literatura: {
+    ksiazka: {
         questionText: 'Książka',
         options: [
             { id: 'option1', label: 'papier' },

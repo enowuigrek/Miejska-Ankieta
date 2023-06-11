@@ -29,8 +29,14 @@ const Question = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        // Jeżeli żadna odpowiedź nie została wybrana, zakończ funkcję
+        if (selectedOption === null) {
+            return;
+        }
+    
         console.log('Wybrana opcja:', selectedOption);
-        
+    
         try {
             const docRef = await addDoc(collection(db, "answers"), {
                 questionId: questionId,
@@ -43,7 +49,7 @@ const Question = () => {
     
         navigate('/fact');
     };
-
+    
     return (
         <div className='question-container'>
             <h1 className='question-title'>{questionData.questionText}</h1>

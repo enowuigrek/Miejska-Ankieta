@@ -19,6 +19,7 @@ const Fact = () => {
 
     return (
         <div className='fact-container'>
+            <h1>Czy wiesz, że...</h1>
             <p className='fact-text'>{fact}</p>
             <Link to='/instagram'>
                 <button className='next'>

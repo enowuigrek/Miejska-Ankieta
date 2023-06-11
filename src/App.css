@@ -7,22 +7,18 @@
     align-items: center;
     height: 100vh;
     background-color: #f3f2f2;
+    transition: color 0.3s, background-color 0.3s;
 }
 
-form {
-    border-top: 2px solid rgb(69, 69, 69);
-    padding: 24px 0;
-}
-
-h1.question-title {
-    font-size: 28px;
-    margin-bottom: 4px;
+.App.night {
+    color: #f3f2f2;
+    background-color: rgb(69, 69, 69);
 }
 
 button {
+    font-family: 'Urbanist', sans-serif;
     background-color: #56cde4;
     color: #f3f2f2;
-    font-family: 'Urbanist', sans-serif;
     font-size: 18px;
     margin-top: 18px;
     padding: 12px;
@@ -36,3 +32,22 @@ button {
 button:hover {
     background-color: #95dceb;
 }
+
+.home-icon-insta.day,
+.icon-insta.day {
+    color: rgb(69, 69, 69);
+}
+
+.home-icon-insta.night,
+.icon-insta.night {
+    color: #f3f2f2;
+}
+
+@media not all and (min-resolution:.001dpcm) {
+    @supports (-webkit-appearance:none) {
+        .fact-checkmark.night::before {
+            color: #f3f2f2;
+        }
+    }
+}
+
