@@ -9,9 +9,12 @@ const Fact = () => {
     const [fact, setFact] = useState('');
 
     useEffect(() => {
-        const randomFact =
-            FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
-        setFact(randomFact);
+        let storedFact = sessionStorage.getItem('fact');
+        if (!storedFact) {
+            storedFact = FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
+            sessionStorage.setItem('fact', storedFact);
+        }
+        setFact(storedFact);
     }, []);
 
     return (
