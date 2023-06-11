@@ -5,7 +5,7 @@ const PageNotFound = () => {
     return (
         <div className='not-found-container'>
             <h1>404</h1>
-            <p>Nie kombinuj</p>
+            <p>Sorki, coś poszłonie tak. Chyba, że to Ty kombinujesz.</p>
         </div>
     );
 };

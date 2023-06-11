@@ -11,8 +11,11 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "babel-runtime": "^6.26.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "firebase": "^9.22.2",
     "firebase-admin": "^11.9.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.12.1",
@@ -27,8 +30,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "export": "node export.js",
+    "stats": "node stats.js",
+    "generate-stats": "node stats.js"
   },
+
   "eslintConfig": {
     "extends": [
       "react-app",

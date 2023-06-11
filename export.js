@@ -19,7 +19,7 @@ async function exportData() {
             answers.push(doc.data());
         });
 
-        fs.writeFileSync('answers.json', JSON.stringify(answers, null, 2));
+        fs.writeFileSync('src/data/answers.json', JSON.stringify(answers, null, 2));
         console.log('Data successfully exported!');
     } catch (error) {
         console.error('Error exporting data: ', error);

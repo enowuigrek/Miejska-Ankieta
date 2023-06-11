@@ -43,11 +43,6 @@ button:hover {
     color: #f3f2f2;
 }
 
-@media not all and (min-resolution:.001dpcm) {
-    @supports (-webkit-appearance:none) {
-        .fact-checkmark.night::before {
-            color: #f3f2f2;
-        }
-    }
+p {
+    text-align: justify;
 }
-

@@ -2,25 +2,25 @@ export const QUESTIONS_DATA = {
     zwierzeta: {
         questionText: 'Koty czy psy?',
         options: [
-            { id: 'option1', label: 'koty' },
-            { id: 'option2', label: 'psy' },
+            { id: 'koty', label: 'koty' },
+            { id: 'psy', label: 'psy' },
         ],
     },
     pomidorowa: {
         questionText: 'Pomidorowa',
         options: [
-            { id: 'option1', label: 'z ryżem' },
-            { id: 'option2', label: 'z makaronem' },
+            { id: 'z ryżem', label: 'z ryżem' },
+            { id: 'z makaronem', label: 'z makaronem' },
         ],
     },
 
     platforma_gamingowa: {
         questionText: 'Gram na',
         options: [
-            { id: 'option1', label: 'PC' },
-            { id: 'option2', label: 'PlayStation' },
-            { id: 'option3', label: 'Xbox' },
-            { id: 'option4', label: 'telefonie' },
+            { id: 'PC', label: 'PC' },
+            { id: 'PlayStation', label: 'PlayStation' },
+            { id: 'Xbox', label: 'Xbox' },
+            { id: 'telefonie', label: 'telefonie' },
 
         ],
     },
@@ -28,25 +28,25 @@ export const QUESTIONS_DATA = {
     pizza_ananas: {
         questionText: 'Pizza z ananasem',
         options: [
-            { id: 'option1', label: 'tak, bardzo lubię' },
-            { id: 'option2', label: 'NIE %@*&#?!!!' },
+            { id: 'tak, bardzo lubię', label: 'tak, bardzo lubię' },
+            { id: 'NIE %@*&#?!!!', label: 'NIE %@*&#?!!!' },
         ],
     },
 
     dom_mieszkanie: {
         questionText: 'Dom czy mieszkanie?',
         options: [
-            { id: 'option1', label: 'dom' },
-            { id: 'option2', label: 'mieszkanie' },
+            { id: 'dom', label: 'dom' },
+            { id: 'mieszkanie', label: 'mieszkanie' },
         ],
     },
 
     ksiazka: {
         questionText: 'Książka',
         options: [
-            { id: 'option1', label: 'papier' },
-            { id: 'option2', label: 'e-book' },
-            { id: 'option3', label: 'audiobook' },
+            { id: 'papier', label: 'papier' },
+            { id: 'e-book', label: 'e-book' },
+            { id: 'audiobooktion3', label: 'audiobook' },
         ],
     },
 };

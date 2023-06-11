@@ -30,17 +30,18 @@ const Question = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Jeżeli żadna odpowiedź nie została wybrana, zakończ funkcję
         if (selectedOption === null) {
             return;
         }
     
-        console.log('Wybrana opcja:', selectedOption);
+        const currentDateTime = new Date(); // Pobranie bieżącej daty i godziny
+        const formattedDateTime = currentDateTime.toLocaleString(); // Formatowanie daty i godziny w lokalnej strefie czasowej
     
         try {
             const docRef = await addDoc(collection(db, "answers"), {
                 questionId: questionId,
-                answer: selectedOption
+                answer: selectedOption,
+                timestamp: formattedDateTime // Zapis sformatowanej daty i godziny
             });
             console.log("Document written with ID: ", docRef.id);
         } catch (e) {
