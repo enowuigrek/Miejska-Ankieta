@@ -32,8 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "export": "node export.js",
-    "stats": "node stats.js",
-    "generate-stats": "node stats.js"
+    "stats": "node stats.js"
   },
 
   "eslintConfig": {
