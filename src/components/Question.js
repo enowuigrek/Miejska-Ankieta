@@ -4,6 +4,8 @@ import { QUESTIONS_DATA } from '../data/questionsData';
 import './Question.css';
 import { db } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const Question = () => {
     const navigate = useNavigate();
@@ -34,14 +36,14 @@ const Question = () => {
             return;
         }
     
-        const currentDateTime = new Date(); // Pobranie bieżącej daty i godziny
-        const formattedDateTime = currentDateTime.toLocaleString(); // Formatowanie daty i godziny w lokalnej strefie czasowej
+        const currentDateTime = new Date(); 
+        const formattedDateTime = currentDateTime.toLocaleString(); 
     
         try {
             const docRef = await addDoc(collection(db, "answers"), {
                 questionId: questionId,
                 answer: selectedOption,
-                timestamp: formattedDateTime // Zapis sformatowanej daty i godziny
+                timestamp: formattedDateTime 
             });
             console.log("Document written with ID: ", docRef.id);
         } catch (e) {
@@ -64,8 +66,8 @@ const Question = () => {
                             checked={selectedOption === option.id}
                             onChange={() => handleOptionChange(option.id)}
                         />
-                        <span className='custom-radio' />
-                        {option.label}
+                        <FontAwesomeIcon icon={faCheck} className={selectedOption === option.id ? 'check-icon' : 'check-icon hidden'} />
+                        <span>{option.label}</span>
                     </label>
                 ))}
                 <button type='submit'>Odpowiedz</button>
