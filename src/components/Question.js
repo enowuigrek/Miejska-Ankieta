@@ -7,7 +7,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
-const Question = () => {
+const Question = ({ isNight }) => {
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const { questionId } = useParams();
@@ -55,7 +55,7 @@ const Question = () => {
     
     return (
         <div className='question-container'>
-            <h1 className='question-title'>{questionData.questionText}</h1>
+            <h1 className={`question-title ${isNight ? 'night' : 'day'}`}>{questionData.questionText}</h1>
             <form onSubmit={handleSubmit}>
                 {questionData.options.map((option) => (
                     <label className='radio-container' key={option.id}>
