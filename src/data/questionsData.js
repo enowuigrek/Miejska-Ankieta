@@ -14,14 +14,13 @@ export const QUESTIONS_DATA = {
         ],
     },
 
-    platforma_gamingowa: {
+    gaming: {
         questionText: 'Gram na',
         options: [
             { id: 'PC', label: 'PC' },
             { id: 'PlayStation', label: 'PlayStation' },
             { id: 'Xbox', label: 'Xbox' },
             { id: 'telefonie', label: 'telefonie' },
-
         ],
     },
 
@@ -47,6 +46,72 @@ export const QUESTIONS_DATA = {
             { id: 'papier', label: 'papier' },
             { id: 'e-book', label: 'e-book' },
             { id: 'audiobook', label: 'audiobook' },
+        ],
+    },
+
+    kordeckiego: {
+        questionText: 'Zgadujemy',
+        options: [
+            { id: 'parking', label: 'parking' },
+            {
+                id: 'żabka, biedronka czy inny lidl',
+                label: 'żabka, biedronka czy inny lidl',
+            },
+            { id: 'hotel', label: 'hotel' },
+            { id: 'kebab', label: 'kebab' },
+        ],
+    },
+
+    kawa: {
+        questionText: 'Jak czarna, to?',
+        options: [
+            { id: 'owocowa, z kwasowością', label: 'owocowa, z kwasowością' },
+            { id: 'czekoladowa, z goryczką', label: 'czekoladowa, z goryczką' },
+        ],
+    },
+
+    mleko: {
+        questionText: 'mleko',
+        options: [
+            { id: 'krowie', label: 'krowie' },
+            { id: 'roślinne', label: 'roślinne' },
+        ],
+    },
+
+    majonez: {
+        questionText: 'Majonez',
+        options: [
+            { id: 'Kielecki', label: 'Kielecki' },
+            { id: 'Winiary', label: 'Winiary' },
+            { id: 'Helmans', label: 'Helmans - czemu on nigdy nie walczy?' },
+        ],
+    },
+
+    ipa: {
+        questionText: 'IPA',
+        options: [
+            { id: 'za gożkie', label: 'za gożkie' },
+            { id: 'uwielbiam!!', label: 'uwielbiam!!' },
+            {
+                id: 'drogie te krafty, wole Harnasia',
+                label: 'drogie te krafty, wole Harnasia',
+            },
+        ],
+    },
+
+    piwo: {
+        questionText: 'Piwo',
+        options: [
+            { id: 'jasne', label: 'jasne' },
+            { id: 'ciemne', label: 'ciemne' },
+        ],
+    },
+
+    papier: {
+        questionText: 'Papier toaletowy ma wisieć',
+        options: [
+            { id: 'do ściany', label: 'DO ściany' },
+            { id: 'od ściany', label: 'OD ściany' },
         ],
     },
 };

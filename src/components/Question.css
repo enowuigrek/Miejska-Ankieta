@@ -22,3 +22,11 @@
 .hidden {
     visibility: hidden;
 }
+
+h1::after {
+    content: '';
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: rgb(69, 69, 69);
+}

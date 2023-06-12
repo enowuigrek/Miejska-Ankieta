@@ -16,20 +16,20 @@ Here are a few example questions, for the rest, you need to take a walk around C
 
 ## Technologies Used
 
-- React
-- Sass (CSS preprocessor)
-- Firebase (backend-as-a-service)
+* React
+* Sass (CSS preprocessor)
+* Firebase (backend-as-a-service)
 
 ## How to Use
 
 To use the "Miejska Ankieta", follow these steps:
 
-1. Look for "Miejska Ankieta" questions on stickers or leaflets around the city.
-2. Scan the QR code found on the sticker or leaflet.
-3. You will be redirected to a question in the "Miejska Ankieta" application.
-4. Choose your answer from the available options.
-5. Click the "Answer" button to submit your response. Your answer will be stored anonymously in the database.
-6. Follow the Instagram profile to keep track of the results.
+* Look for "Miejska Ankieta" questions on stickers or leaflets around the city.
+* Scan the QR code found on the sticker or leaflet.
+* You will be redirected to a question in the "Miejska Ankieta" application.
+* Choose your answer from the available options.
+* Click the "Answer" button to submit your response. Your answer will be stored anonymously in the database.
+* Follow the Instagram profile to keep track of the results.
 
 ## Project Status
 

@@ -4,7 +4,7 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import './InstagramPage.css';
 
 const InstagramPage = ({ isNight }) => {
-    const instagramLink = 'https://www.instagram.com/TwojProfilNaInstagramie';
+    const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
 
     const greetings = [
         'Dzięki za głos! Udanej niedzieli.',

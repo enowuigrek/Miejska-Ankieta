@@ -4,7 +4,7 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import './Home.css';
 
 const Home = ({ isNight }) => {
-    const instagramLink = 'https://www.instagram.com/TwojProfilNaInstagramie';
+    const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
     const dayNight = isNight ? 'night' : 'day';
     
     return (
