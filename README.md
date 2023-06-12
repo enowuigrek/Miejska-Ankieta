@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# Miejska Ankieta (Urban Survey)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Miejska Ankieta Website](http://miejska-ankieta.czest.pl)
 
-## Available Scripts
+## Project Description
 
-In the project directory, you can run:
+"Miejska Ankieta" is a web application based on React, which allows the residents of the city of Częstochowa to answer loose questions that often become a topic of discussion, and sometimes even big disputes ;). The questions can be found in the form of stickers and leaflets in various locations in the city, and residents can answer them by scanning a QR code, and after answering the question, they will be shown a random fun fact about the city and various other topics. Responses to questions are anonymous and are stored in the Firebase database.
 
-### `npm start`
+The results are shared on Instagram.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Here are a few example questions, for the rest, you need to take a walk around Częstochowa :)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [Book Question](http://miejska-ankieta.czest.pl/ksiazka)
+- [Tomato Soup Question](http://miejska-ankieta.czest.pl/pomidorowa)
+- [Pizza Pineapple Question](http://miejska-ankieta.czest.pl/pizza_ananas)
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- React
+- Sass (CSS preprocessor)
+- Firebase (backend-as-a-service)
 
-### `npm run build`
+## How to Use
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To use the "Miejska Ankieta", follow these steps:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Look for "Miejska Ankieta" questions on stickers or leaflets around the city.
+2. Scan the QR code found on the sticker or leaflet.
+3. You will be redirected to a question in the "Miejska Ankieta" application.
+4. Choose your answer from the available options.
+5. Click the "Answer" button to submit your response. Your answer will be stored anonymously in the database.
+6. Follow the Instagram profile to keep track of the results.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Status
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+In progress

@@ -1,5 +1,20 @@
 [
   {
+    "questionId": "ksiazka",
+    "answer": "e-book",
+    "timestamp": "12.06.2023, 00:22:44"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "e-book",
+    "timestamp": "12.06.2023, 06:56:06"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "papier",
+    "timestamp": "12.06.2023, 06:51:53"
+  },
+  {
     "questionId": "pomidorowa",
     "answer": "z ryżem",
     "timestamp": "11.06.2023, 18:32:09"
@@ -8,6 +23,46 @@
     "questionId": "pizza_ananas",
     "answer": "tak, bardzo lubię",
     "timestamp": "11.06.2023, 17:38:51"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "papier",
+    "timestamp": "12.06.2023, 00:23:02"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "audiobooktion3",
+    "timestamp": "12.06.2023, 06:59:12"
+  },
+  {
+    "questionId": "pomidorowa",
+    "answer": "z ryżem",
+    "timestamp": "11.06.2023, 22:43:13"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "papier",
+    "timestamp": "12.06.2023, 06:55:01"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "papier",
+    "timestamp": "12.06.2023, 00:26:38"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "e-book",
+    "timestamp": "12.06.2023, 00:14:52"
+  },
+  {
+    "questionId": "pomidorowa",
+    "answer": "z ryżem",
+    "timestamp": "11.06.2023, 22:41:11"
+  },
+  {
+    "questionId": "pizza_ananas",
+    "answer": "NIE %@*&#?!!!",
+    "timestamp": "12.06.2023, 06:17:17"
   },
   {
     "questionId": "ksiazka",
@@ -21,7 +76,22 @@
   },
   {
     "questionId": "ksiazka",
+    "answer": "audiobooktion3",
+    "timestamp": "12.06.2023, 00:11:06"
+  },
+  {
+    "questionId": "ksiazka",
+    "answer": "audiobooktion3",
+    "timestamp": "12.06.2023, 00:23:08"
+  },
+  {
+    "questionId": "ksiazka",
     "answer": "papier",
     "timestamp": "11.06.2023, 18:54:02"
+  },
+  {
+    "questionId": "pomidorowa",
+    "answer": "z makaronem",
+    "timestamp": "12.06.2023, 06:30:09"
   }
 ]

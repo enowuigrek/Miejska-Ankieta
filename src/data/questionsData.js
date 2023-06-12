@@ -46,7 +46,7 @@ export const QUESTIONS_DATA = {
         options: [
             { id: 'papier', label: 'papier' },
             { id: 'e-book', label: 'e-book' },
-            { id: 'audiobooktion3', label: 'audiobook' },
+            { id: 'audiobook', label: 'audiobook' },
         ],
     },
 };

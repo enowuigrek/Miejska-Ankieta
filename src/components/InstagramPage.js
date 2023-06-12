@@ -8,12 +8,12 @@ const InstagramPage = ({ isNight }) => {
 
     const greetings = [
         'Dzięki za głos! Udanej niedzieli.',
-        'Dzięki za głos! Dobrego tygonia Ci życzę!',
+        'Dzięki za głos! Dobrego tygonia!',
         'Dzięki za głos! Udanego wtorku!',
         'Dzięki za głos! Miłej środy!',
         'Dzięki za głos! Dobrego czwartku!',
-        'Dzięki za głos! Miłego weekendu!!!',
-        'Dzięki za głos! Miłej soboty, baw się dobrze!',
+        'Dzięki za głos! Miłego weekendu, baw się dobrze!!!',
+        'Dzięki za głos! Miłej soboty!',
     ];
 
     const date = new Date();
