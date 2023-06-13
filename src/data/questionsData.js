@@ -114,4 +114,14 @@ export const QUESTIONS_DATA = {
             { id: 'od ściany', label: 'OD ściany' },
         ],
     },
+
+    droga_do_pracy: {
+        questionText: 'Dzisiaj do pracy',
+        options: [
+            { id: 'rower', label: 'rower' },
+            { id: 'wesoły samochód', label: 'wesoły samochód' },
+            { id: 'idziemy z buta', label: 'idziemy z buta' },
+            { id: 'wagary', label: 'wagary' },
+        ],
+    },
 };
