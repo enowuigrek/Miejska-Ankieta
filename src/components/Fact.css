@@ -16,3 +16,7 @@
     font-size: 24px;
     margin: 0;
 }
+
+.fact-container p {
+    text-align: justify;
+}

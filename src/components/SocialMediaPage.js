@@ -5,17 +5,32 @@ import {
     faFacebook,
     faTwitter,
 } from '@fortawesome/free-brands-svg-icons';
-import './Home.css';
+import './SocialMediaPage.css';
 
-const Home = ({ isNight }) => {
+const SocialMediaPage = ({ isNight }) => {
     const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
     const facebookLink = 'https://www.facebook.com/miejska.ankieta';
     const twitterLink = 'https://twitter.com/miejska_ankieta';
-    const dayNight = isNight ? 'night' : 'day';
+
+    const greetings = [
+        'Dzięki za głos! Udanej niedzieli.',
+        'Dzięki za głos! Dobrego tygonia!',
+        'Dzięki za głos! Udanego wtorku!',
+        'Dzięki za głos! Miłej środy!',
+        'Dzięki za głos! Dobrego czwartku!',
+        'Dzięki za głos! Miłego weekendu, baw się dobrze!!!',
+        'Dzięki za głos! Miłej soboty!',
+    ];
+
+    const date = new Date();
+    const dayOfWeek = date.getDay();
+
+    const greeting = greetings[dayOfWeek];
 
     return (
-        <div className='home-container'>
-            <div className='home-icons-container'>
+        <div className='social-page-container'>
+            <p>{greeting}</p>
+            <div className='sm-icon-container'>
                 <a
                     href={instagramLink}
                     target='_blank'
@@ -23,7 +38,9 @@ const Home = ({ isNight }) => {
                 >
                     <FontAwesomeIcon
                         icon={faInstagram}
-                        className={`fa-icon home-icon-insta ${dayNight}`}
+                        className={`fa-icon icon-insta ${
+                            isNight ? 'night' : 'day'
+                        }`}
                     />
                 </a>
                 <a
@@ -33,26 +50,23 @@ const Home = ({ isNight }) => {
                 >
                     <FontAwesomeIcon
                         icon={faFacebook}
-                        className={`fa-icon home-icon-fb ${dayNight}`}
+                        className={`fa-icon icon-fb ${
+                            isNight ? 'night' : 'day'
+                        }`}
                     />
                 </a>
                 <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon
                         icon={faTwitter}
-                        className={`fa-icon home-icon-twitter ${dayNight}`}
+                        className={`fa-icon icon-twitter ${
+                            isNight ? 'night' : 'day'
+                        }`}
                     />
                 </a>
             </div>
-            <p>
-                Na mieście znajdziesz pytania, na które możesz odpowiedzieć i
-                wziąć udział w miejskiej ankiecie.
-            </p>
-            <p>
-                Obserwuj profile na Instagramie, Facebooku i Twitterze, aby
-                śledzić wyniki.
-            </p>
+            <p>Obserwuj, aby śledzić wyniki.</p>
         </div>
     );
 };
 
-export default Home;
+export default SocialMediaPage;

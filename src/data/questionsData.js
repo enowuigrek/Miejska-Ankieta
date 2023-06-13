@@ -3,7 +3,7 @@ export const QUESTIONS_DATA = {
         questionText: 'Koty czy psy?',
         options: [
             { id: 'koty', label: 'koty' },
-            { id: 'psy', label: 'psy' },
+            { id: 'psy', label: 'psy' }
         ],
     },
     pomidorowa: {
@@ -83,7 +83,7 @@ export const QUESTIONS_DATA = {
         options: [
             { id: 'Kielecki', label: 'Kielecki' },
             { id: 'Winiary', label: 'Winiary' },
-            { id: 'Helmans', label: 'Helmans - czemu on nigdy nie walczy?' },
+            { id: 'Helmans', label: 'Helmans - i czemu on nigdy nie walczy?' },
         ],
     },
 

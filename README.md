@@ -6,7 +6,7 @@
 
 "Miejska Ankieta" is a web application based on React, which allows the residents of the city of Częstochowa to answer loose questions that often become a topic of discussion, and sometimes even big disputes ;). The questions can be found in the form of stickers and leaflets in various locations in the city, and residents can answer them by scanning a QR code, and after answering the question, they will be shown a random fun fact about the city and various other topics. Responses to questions are anonymous and are stored in the Firebase database.
 
-The results are shared on Instagram.
+The results are shared on social media.
 
 Here are a few example questions, for the rest, you need to take a walk around Częstochowa :)
 
@@ -29,7 +29,7 @@ To use the "Miejska Ankieta", follow these steps:
 * You will be redirected to a question in the "Miejska Ankieta" application.
 * Choose your answer from the available options.
 * Click the "Answer" button to submit your response. Your answer will be stored anonymously in the database.
-* Follow the Instagram profile to keep track of the results.
+* Follow the social media profile to keep track of the results.
 
 ## Project Status
 

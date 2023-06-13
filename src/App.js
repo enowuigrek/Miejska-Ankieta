@@ -4,8 +4,8 @@ import './App.css';
 import Home from './components/Home';
 import Question from './components/Question';
 import Fact from './components/Fact';
-import InstagramPage from './components/InstagramPage';
 import PageNotFound from './components/PageNotFound';
+import SocialMediaPage from './components/SocialMediaPage';
 
 function App() {
     const [isNight, setIsNight] = useState(false);
@@ -22,7 +22,7 @@ function App() {
                     <Route path='/' element={<Home isNight={isNight} />} />
                     <Route path='/:questionId' element={<Question isNight={isNight} />} />
                     <Route path='/fact' element={<Fact isNight={isNight} />} />
-                    <Route path='/instagram' element={<InstagramPage isNight={isNight} />} />
+                    <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
                     <Route path='/404' element={<PageNotFound isNight={isNight} />} />
                     <Route path='*' element={<Navigate replace to="/404" />} />
                 </Routes>
