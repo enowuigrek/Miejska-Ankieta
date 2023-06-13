@@ -30,7 +30,7 @@ const SocialMediaPage = ({ isNight }) => {
     return (
         <div className='social-page-container'>
             <p>{greeting}</p>
-            <div className='sm-icon-container'>
+            <div className='social-icon-container'>
                 <a
                     href={instagramLink}
                     target='_blank'

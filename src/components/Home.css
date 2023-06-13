@@ -11,7 +11,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 100%;
     text-align: center;
+    margin: 0 auto;
 }
 
 .home-icon-insta.day,
@@ -21,18 +23,27 @@
     transition: 0.3s;
     margin-bottom: 52px;
     color: rgb(69, 69, 69);
+    margin: 0 1px;
 }
+
 .home-icon-insta.night,
-.home-icon-fb.day.night,
+.home-icon-fb.night,  
 .home-icon-twitter.night {
     font-size: 76px;
     transition: 0.3s;
     margin-bottom: 52px;
     color: #f3f2f2;
+    margin: 0 1px;
 }
 
 .home-icon-insta:hover,
 .home-icon-fb:hover,
 .home-icon-twitter:hover {
     color: #56cde4;
+}
+
+@media (max-width: 600px) {
+    .home-icons-container {
+        margin: 0 20px;
+    }
 }
