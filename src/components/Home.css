@@ -11,6 +11,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 80%;  /* Dodaj tę linię */
     text-align: center;
 }
 
@@ -22,8 +23,9 @@
     margin-bottom: 52px;
     color: rgb(69, 69, 69);
 }
+
 .home-icon-insta.night,
-.home-icon-fb.day.night,
+.home-icon-fb.night,  /* Popraw literówkę tutaj */
 .home-icon-twitter.night {
     font-size: 76px;
     transition: 0.3s;
