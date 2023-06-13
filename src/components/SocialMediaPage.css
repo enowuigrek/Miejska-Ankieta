@@ -24,10 +24,6 @@
     color: #56cde4;
 }
 
-.social-page-container p {
-    text-align: center;
-}
-
 @media (max-width: 600px) {
     .social-icons-container {
         width: 100%;
