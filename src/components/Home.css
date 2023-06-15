@@ -9,31 +9,29 @@
 
 .home-icons-container {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    width: 100%;
-    text-align: center;
-    margin: 0 auto;
+    width: 80%;
+    margin: 0 auto 24px;
+}
+
+.home-icon-insta,
+.home-icon-fb,
+.home-icon-twitter {
+    font-size: 76px;
+    transition: 0.3s;
+    margin: 0 5px;
 }
 
 .home-icon-insta.day,
 .home-icon-fb.day,
 .home-icon-twitter.day {
-    font-size: 76px;
-    transition: 0.3s;
-    margin-bottom: 52px;
     color: rgb(69, 69, 69);
-    margin: 0 1px;
 }
 
 .home-icon-insta.night,
-.home-icon-fb.night,  
+.home-icon-fb.night,
 .home-icon-twitter.night {
-    font-size: 76px;
-    transition: 0.3s;
-    margin-bottom: 52px;
     color: #f3f2f2;
-    margin: 0 1px;
 }
 
 .home-icon-insta:hover,
@@ -44,6 +42,25 @@
 
 @media (max-width: 600px) {
     .home-icons-container {
-        margin: 0 20px;
+        width: 90%;
+        margin: 0 auto;
+    }
+    .home-icon-insta,
+    .home-icon-fb,
+    .home-icon-twitter {
+        font-size: 76px;
+        margin: 5px;
+    }
+}
+
+@media (max-width: 300px) {
+    .home-icons-container {
+        width: 100%;
+        margin: 0 auto;
+    }
+    .home-icon-insta,
+    .home-icon-fb,
+    .home-icon-twitter {
+        font-size: 56px;
     }
 }

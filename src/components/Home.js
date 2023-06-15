@@ -45,12 +45,10 @@ const Home = ({ isNight }) => {
             </div>
             <p>
                 Na mieście znajdziesz pytania, na które możesz odpowiedzieć i
-                wziąć udział w miejskiej ankiecie.
+                wziąć udział w miejskiej ankiecie skanując QR kod. Ankieta jest
+                w pełni anonimowa.
             </p>
-            <p>
-                Obserwuj profile na Instagramie, Facebooku i Twitterze, aby
-                śledzić wyniki.
-            </p>
+            <p>Obserwuj social media, aby śledzić wyniki.</p>
         </div>
     );
 };
