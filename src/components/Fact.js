@@ -11,7 +11,8 @@ const Fact = () => {
     useEffect(() => {
         let storedFact = sessionStorage.getItem('fact');
         if (!storedFact) {
-            storedFact = FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
+            storedFact =
+                FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
             sessionStorage.setItem('fact', storedFact);
         }
         setFact(storedFact);
@@ -21,11 +22,14 @@ const Fact = () => {
         <div className='fact-container'>
             <h1>Czy wiesz, że...</h1>
             <p className='fact-text'>{fact}</p>
-            <Link to='/social_media'>
-                <button className='next'>
-                    <FontAwesomeIcon icon={faArrowRight} className='fa-icon icon-next' />
-                </button>
-            </Link>
+            <button className='next'>
+                <Link to='/social_media'>
+                    <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className='fa-icon icon-next'
+                    />
+                </Link>
+            </button>
         </div>
     );
 };

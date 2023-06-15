@@ -3,3 +3,7 @@
     margin: 36px;
     align-items: center;
 }
+
+.not-found-container h1 {
+    text-align: center;
+}
