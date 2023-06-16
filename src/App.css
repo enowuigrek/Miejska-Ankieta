@@ -8,6 +8,13 @@
     height: 100vh;
     background-color: rgb(243, 242, 242);
     transition: color 0.3s, background-color 0.3s;
+    flex-direction: column;
+}
+
+.app-logo {
+    width: 200px;
+    height: auto;
+    top: 10px;
 }
 
 .App.night {

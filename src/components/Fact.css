@@ -1,6 +1,6 @@
 .fact-container {
     width: 360px;
-    margin: 36px;
+    /* margin: 36px; */
     align-items: center;
   }
   
@@ -23,52 +23,3 @@
   .fact-container p {
     text-align: justify;
   }
-  .fact-container {
-    width: 360px;
-    margin: 36px;
-    align-items: center;
-  }
-  
-  .next {
-    display: inline-block;
-    width: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    width: 38px;
-  }
-  
-  .icon-next {
-    font-size: 24px;
-    margin: 0;
-  }
-  
-  .fact-container p {
-    text-align: justify;
-  }
-  .fact-container {
-    width: 360px;
-    margin: 36px;
-    align-items: center;
-  }
-  
-  .next {
-    display: inline-block;
-    width: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    width: 38px;
-  }
-  
-  .icon-next {
-    font-size: 24px;
-    margin: 0;
-  }
-  
-  .fact-container p {
-    text-align: justify;
-  }
-      
