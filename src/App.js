@@ -6,31 +6,32 @@ import Question from './components/Question';
 import Fact from './components/Fact';
 import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
-import logo from './assets/images/logo.png'; // Zaktualizowana ścieżka do logotypu
+import { ReactComponent as Logo } from './assets/images/logo.svg'; // Import SVG jako komponent React
+import './App.css';
 
 function App() {
-    const [isNight, setIsNight] = useState(false);
+  const [isNight, setIsNight] = useState(false);
 
-    useEffect(() => {
-        const hour = new Date().getHours();
-        setIsNight(hour < 6 || hour > 20);
-    }, []);
+  useEffect(() => {
+    const hour = new Date().getHours();
+    setIsNight(hour < 9 || hour > 9);
+  }, []);
 
-    return (
-        <Router>
-            <div className={`App ${isNight ? 'night' : 'day'}`}>
-                <img src={logo} alt="Logo Miejska Ankieta" className='app-logo'/>
-                <Routes>
-                    <Route path='/' element={<Home isNight={isNight} />} />
-                    <Route path='/:questionId' element={<Question isNight={isNight} />} />
-                    <Route path='/fact' element={<Fact isNight={isNight} />} />
-                    <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
-                    <Route path='/404' element={<PageNotFound isNight={isNight} />} />
-                    <Route path='*' element={<Navigate replace to="/404" />} />
-                </Routes>
-            </div>
-        </Router>
-    );
+  return (
+    <Router>
+      <div className={`App ${isNight ? 'night' : 'day'}`}>
+        <Logo className='app-logo' style={{ color: isNight ? '#FFF' : '#000' }} />
+        <Routes>
+          <Route path='/' element={<Home isNight={isNight} />} />
+          <Route path='/:questionId' element={<Question isNight={isNight} />} />
+          <Route path='/fact' element={<Fact isNight={isNight} />} />
+          <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
+          <Route path='/404' element={<PageNotFound isNight={isNight} />} />
+          <Route path='*' element={<Navigate replace to="/404" />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
