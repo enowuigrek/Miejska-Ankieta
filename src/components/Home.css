@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    margin-top: 0;
 }
 
 .home-icons-container {
@@ -40,9 +41,9 @@
     color: #56cde4;
 }
 
-@media (max-width: 350px) {
+@media (max-width: 360px) {
     .home-container {
-        width: 310px;
+        width: 300px;
     }
     .home-icon-insta,
     .home-icon-fb,

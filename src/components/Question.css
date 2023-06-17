@@ -22,9 +22,6 @@
 .hidden {
     visibility: hidden;
 }
-.question-title {
-    font-family: 'Archivo Black', sans-serif;
-}
 
 h1.day::after {
     content: '';
@@ -42,8 +39,8 @@ h1.night::after {
     background-color: rgb(243, 242, 242);
 }
 
-@media (max-width: 350px) {
+@media (max-width: 360px) {
     .question-container {
-        width: 310px;
+        width: 300px;
     }
 }

@@ -23,8 +23,8 @@
     text-align: justify;
 }
 
-@media (max-width: 320px) {
+@media (max-width: 360px) {
     .fact-container {
-        width: 310px;
+        width: 300px;
     }
 }
