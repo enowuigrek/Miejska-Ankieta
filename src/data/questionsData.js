@@ -3,7 +3,7 @@ export const QUESTIONS_DATA = {
         questionText: 'Koty czy psy?',
         options: [
             { id: 'koty', label: 'koty' },
-            { id: 'psy', label: 'psy' }
+            { id: 'psy', label: 'psy' },
         ],
     },
     pomidorowa: {
@@ -90,7 +90,7 @@ export const QUESTIONS_DATA = {
     ipa: {
         questionText: 'IPA',
         options: [
-            { id: 'za gożkie', label: 'za gożkie' },
+            { id: 'za gorzkie', label: 'za gorzkie' },
             { id: 'uwielbiam!!', label: 'uwielbiam!!' },
             {
                 id: 'drogie te krafty, wole Harnasia',
