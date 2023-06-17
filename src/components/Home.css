@@ -40,23 +40,9 @@
     color: #56cde4;
 }
 
-@media (max-width: 600px) {
-    .home-icons-container {
-        width: 90%;
-        margin: 0 auto;
-    }
-    .home-icon-insta,
-    .home-icon-fb,
-    .home-icon-twitter {
-        font-size: 76px;
-        margin: 5px;
-    }
-}
-
-@media (max-width: 300px) {
-    .home-icons-container {
-        width: 100%;
-        margin: 0 auto;
+@media (max-width: 350px) {
+    .home-container {
+        width: 310px;
     }
     .home-icon-insta,
     .home-icon-fb,

@@ -31,7 +31,7 @@
     color: #56cde4;
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
     .social-icons-container {
         width: 100%;
         margin: 0 auto;
@@ -41,4 +41,4 @@
     .icon-twitter {
         margin: 0 12px;
     }
-}
+} */

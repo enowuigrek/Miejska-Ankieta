@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     const hour = new Date().getHours();
-    setIsNight(hour < 9 || hour > 9);
+    setIsNight(hour < 1 || hour > 24);
   }, []);
 
   return (
