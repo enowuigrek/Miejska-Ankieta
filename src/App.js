@@ -6,7 +6,7 @@ import Question from './components/Question';
 import Fact from './components/Fact';
 import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
-import { ReactComponent as Logo } from './assets/images/logo.svg'; // Import SVG jako komponent React
+import { ReactComponent as Logo } from './assets/images/logo.svg';
 import './App.css';
 
 function App() {
