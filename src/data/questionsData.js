@@ -93,8 +93,8 @@ export const QUESTIONS_DATA = {
             { id: 'za gorzkie', label: 'za gorzkie' },
             { id: 'uwielbiam!!', label: 'uwielbiam!!' },
             {
-                id: 'drogie te krafty, wole Harnasia',
-                label: 'drogie te krafty, wole Harnasia',
+                id: 'drogie te krafty, wolę Harnasia',
+                label: 'drogie te krafty, wolę Harnasia',
             },
         ],
     },
@@ -112,16 +112,6 @@ export const QUESTIONS_DATA = {
         options: [
             { id: 'do ściany', label: 'DO ściany' },
             { id: 'od ściany', label: 'OD ściany' },
-        ],
-    },
-
-    droga_do_pracy: {
-        questionText: 'Dzisiaj do pracy',
-        options: [
-            { id: 'rower', label: 'rower' },
-            { id: 'wesoły samochód', label: 'wesoły samochód' },
-            { id: 'idziemy z buta', label: 'idziemy z buta' },
-            { id: 'wagary', label: 'wagary' },
         ],
     },
 };
