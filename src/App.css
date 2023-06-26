@@ -24,7 +24,7 @@
 
 button {
     font-family: 'Urbanist', sans-serif;
-    background-color: #56cde4;
+    background-color: #FF2323;
     color: rgb(243, 242, 242);
     font-size: 18px;
     margin-top: 18px;
@@ -36,7 +36,7 @@ button {
 }
 
 button:hover {
-    background-color: #95dceb;
+    background-color: #8b2121;
 }
 
 .home-icon-insta.day,
