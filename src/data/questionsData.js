@@ -120,7 +120,7 @@ export const QUESTIONS_DATA = {
         options: [
             { id: 'mniej niż 6 000', label: 'mniej niż 6 000' },
             { id: 'między 6 000 a 10 000', label: 'między 6 000 a 10 000' },
-            { id: 'między 10 000 a 15 000', label: 'iędzy 10 000 a 15 000' },
+            { id: 'między 10 000 a 15 000', label: 'między 10 000 a 15 000' },
             { id: 'więcej niż 15 000', label: 'więcej niż 15 000' },
         ],
     },
