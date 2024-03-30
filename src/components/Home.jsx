@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faInstagram,
     faFacebook,
-    faTwitter,
+    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import './Home.css';
 
@@ -38,7 +38,7 @@ const Home = ({ isNight }) => {
                 </a>
                 <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon
-                        icon={faTwitter}
+                        icon={faXTwitter}
                         className={`fa-icon home-icon-twitter ${dayNight}`}
                     />
                 </a>

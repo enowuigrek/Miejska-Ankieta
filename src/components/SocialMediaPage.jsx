@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faInstagram,
     faFacebook,
-    faTwitter,
+    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import './SocialMediaPage.css';
 
@@ -57,7 +57,7 @@ const SocialMediaPage = ({ isNight }) => {
                 </a>
                 <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon
-                        icon={faTwitter}
+                        icon={faXTwitter}
                         className={`fa-icon icon-twitter ${
                             isNight ? 'night' : 'day'
                         }`}
