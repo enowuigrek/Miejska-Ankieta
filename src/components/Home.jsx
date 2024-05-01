@@ -5,7 +5,7 @@ import {
     faFacebook,
     faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
-import './Home.css';
+import './Home.scss';
 
 const Home = ({ isNight }) => {
     const instagramLink = 'https://www.instagram.com/miejska_ankieta/';

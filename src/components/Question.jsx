@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { QUESTIONS_DATA } from '../data/questionsData';
-import './Question.css';
+import './Question.scss';
 import { db } from '../firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

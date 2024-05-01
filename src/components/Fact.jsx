@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Fact.css';
+import './Fact.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FACTS_DATA } from '../data/factsData';
