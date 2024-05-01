@@ -22,14 +22,14 @@ const Fact = () => {
         <div className='fact-container'>
             <h1>Czy wiesz, że...</h1>
             <p className='fact-text'>{fact}</p>
-            <button className='next'>
-                <Link to='/social_media'>
+            <Link to='/social_media'>
+                <button>
                     <FontAwesomeIcon
                         icon={faArrowRight}
                         className='fa-icon icon-next'
                     />
-                </Link>
-            </button>
+                </button>
+            </Link>
         </div>
     );
 };
