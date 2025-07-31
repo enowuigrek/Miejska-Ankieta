@@ -1,17 +1,33 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+// Konfiguracja Firebase z zmiennych środowiskowych
 const firebaseConfig = {
-  apiKey: "AIzaSyCwG5bHjTnEGct9GvwweMoAeZ257yfWCZ8",
-  authDomain: "miejska-ankieta.firebaseapp.com",
-  projectId: "miejska-ankieta",
-  storageBucket: "miejska-ankieta.appspot.com",
-  messagingSenderId: "891252926440",
-  appId: "1:891252926440:web:3383e7248c7a69fe46a65d",
-  measurementId: "G-T8W987M3FZ"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
-initializeApp(firebaseConfig);
-const db = getFirestore();
+// Sprawdź czy wszystkie wymagane zmienne są ustawione
+const requiredEnvVars = [
+  'REACT_APP_FIREBASE_API_KEY',
+  'REACT_APP_FIREBASE_AUTH_DOMAIN',
+  'REACT_APP_FIREBASE_PROJECT_ID'
+];
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`❌ Brakuje zmiennej środowiskowej: ${envVar}`);
+    console.error('📝 Sprawdź plik .env.local');
+  }
+}
+
+// Inicjalizacja Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export { db };

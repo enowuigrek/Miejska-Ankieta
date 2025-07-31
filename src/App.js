@@ -18,7 +18,8 @@ function App() {
 
     useEffect(() => {
         const hour = new Date().getHours();
-        setIsNight(hour < 1 || hour > 24);
+        // Poprawiona logika: noc to 22:00 - 06:00
+        setIsNight(hour < 6 || hour >= 22);
     }, []);
 
     return (
