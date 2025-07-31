@@ -1,7 +1,9 @@
 # Miejska Ankieta - Development Documentation
 
 ## 🎯 Cel projektu
-Interaktywny system ankiet miejskich dla mieszkańców **Częstochowy** oparty na kodach QR, z anonimowym zbieraniem odpowiedzi, bazą ciekawych faktów i integracją z mediami społecznościowymi.
+Interaktywny system ankiet miejskich dla mieszkańców **Częstochowy** (z potencjalną ekspansją na **Warszawę**) oparty na kodach QR, z anonimowym zbieraniem odpowiedzi, bazą ciekawych faktów i integracją z mediami społecznościowymi.
+
+**Status:** For fun + portfolio project z potencjałem na community engagement
 
 ## ✅ AKTUALNY STAN
 
@@ -27,7 +29,7 @@ Interaktywny system ankiet miejskich dla mieszkańców **Częstochowy** oparty n
 ### 🔧 Tech stack:
 ```json
 {
-  "frontend": "React 18 + Create React App",
+  "frontend": "React 18 + Create React App → MIGRACJA NA VITE",
   "styling": "SCSS/Sass", 
   "database": "Firebase Firestore",
   "icons": "FontAwesome",
@@ -43,7 +45,7 @@ src/
 ├── components/
 │   ├── Fact.jsx (wyświetlanie ciekawych faktów)
 │   ├── Home.jsx (strona główna z instrukcjami)
-│   ├── Question.jsx (interfejs pytań ankiety - 150+ linii)
+│   ├── Question.jsx (interfejs pytań ankiety - 150+ linii - DO REFAKTORYZACJI)
 │   ├── PageNotFound.jsx (strona błędu 404)
 │   └── SocialMediaPage.jsx (finalna strona z social media)
 ├── assets/
@@ -60,7 +62,7 @@ src/
 │   ├── Question.scss
 │   ├── PageNotFound.scss
 │   └── SocialMediaPage.scss
-├── firebase.js (konfiguracja Firebase)
+├── firebase.js (konfiguracja Firebase - WYMAGA ZABEZPIECZENIA)
 └── App.js (główny router aplikacji)
 ```
 
@@ -109,7 +111,7 @@ src/
 6. **Fact** - wyświetlenie losowego ciekawego faktu
 7. **Social** - zachęta do obserwowania social media dla wyników
 
-### **Data Structure:**
+### **Data Structure (Current):**
 ```javascript
 // Firebase document structure:
 {
@@ -119,11 +121,23 @@ src/
 }
 ```
 
+### **Data Structure (Planned with QRfy integration):**
+```javascript
+// Future structure with location tracking:
+{
+  questionId: "pizza_ananas",
+  answer: "tak, bardzo lubię",
+  location: "rynek", // NOWE - z QRfy integration
+  scanSource: "qrfy", // NOWE
+  timestamp: "2025-07-31T10:30:00.000Z"
+}
+```
+
 ## 🛠️ Development setup
 
 ```bash
 npm install
-npm start          # http://localhost:3000
+npm start          # http://localhost:3000 (DO ZMIANY NA: npm run dev)
 npm run build      # Production build
 npm run export     # Export data from Firebase (node export.js)
 npm run stats      # Generate statistics (node stats.js)
@@ -135,20 +149,25 @@ npm run stats      # Generate statistics (node stats.js)
 
 ## 🚀 **TODO - PLAN ROZWOJU - SZCZEGÓŁOWA ROADMAPA**
 
-### **🎯 PROBLEM DO ROZWIĄZANIA:**
-Projekt wymaga modernizacji i reorganizacji:
-- **Migracja z CRA na Vite** - szybszy development
-- **Bezpieczeństwo Firebase** - config w zmiennych środowiskowych
-- **Refaktoring komponentów** - podział na mniejsze moduły
-- **Lepszy error handling** - obsługa błędów i loading states
-- **Code quality improvement** - nowoczesne React patterns
+### **🎯 GŁÓWNE CELE:**
+- **Modernizacja techniczna** - lepszy developer experience
+- **Bezpieczeństwo** - zabezpieczenie Firebase config
+- **Code quality** - podział na mniejsze komponenty
+- **Fun factor** - zachowanie zabawy przy dodawaniu nowych funkcji
+- **Portfolio value** - pokazanie umiejętności full-stack development
+
+### **🎯 PROJECT PHILOSOPHY:**
+- **For fun + portfolio** - główny cel to zabawa i nauka
+- **Community engagement** - prawdziwa wartość dla mieszkańców
+- **No pressure monetization** - ewentualne zarabianie w przyszłości
+- **Multi-city potential** - Częstochowa + Warszawa expansion
 
 ---
 
 ## 🚀 **ETAP 1: FUNDAMENTY - MIGRACJA NA VITE (PRIORYTET 1)**
 
 ### **📋 Cel:** Migracja z Create React App na Vite
-**Powód:** Szybszy development, lepszy DX, nowoczesny tooling
+**Powód:** `npm run dev` zamiast `npm start`, szybszy hot reload, lepszy DX
 
 #### **🔧 Kroki migracji:**
 1. **Backup & Setup**
@@ -162,16 +181,18 @@ Projekt wymaga modernizacji i reorganizacji:
 
 2. **Instalacja Vite**
    ```bash
-   npm install --save-dev vite @vitejs/plugin-react
+   npm install --save-dev vite @vitejs/plugin-react --legacy-peer-deps
    ```
 
 3. **Nowy package.json scripts**
    ```json
    {
      "scripts": {
-       "dev": "vite",
+       "dev": "vite",           // ⭐ GŁÓWNY CEL
        "build": "vite build", 
-       "preview": "vite preview"
+       "preview": "vite preview",
+       "export": "node export.js",
+       "stats": "node stats.js"
      }
    }
    ```
@@ -183,38 +204,46 @@ Projekt wymaga modernizacji i reorganizacji:
    
    export default defineConfig({
      plugins: [react()],
-     server: {
-       port: 3000
+     server: { port: 3000 },
+     define: {
+       'process.env': process.env
      }
    })
    ```
 
 5. **HTML restructure**
-    - Przenieś `public/index.html` → `index.html` (root)
-    - Usuń `%PUBLIC_URL%` placeholders
-    - Dodaj `<script type="module" src="/src/main.jsx"></script>`
+   - Przenieś `public/index.html` → `index.html` (root)
+   - Usuń `%PUBLIC_URL%` placeholders
+   - Dodaj `<script type="module" src="/src/main.jsx"></script>`
 
-6. **Zmienne środowiskowe**
-    - `REACT_APP_` → `VITE_` prefix
-    - Aktualizuj `.env.local`
+6. **Entry point**
+   - Rename `src/index.js` → `src/main.jsx`
+
+7. **Zmienne środowiskowe**
+   - `REACT_APP_` → `VITE_` prefix w `.env.local`
+   - `process.env` → `import.meta.env` w kodzie
 
 **Szacowany czas:** 2-3 godziny  
-**Rezultat:** `npm run dev` zamiast `npm start`, szybszy hot reload
+**Rezultat:** `npm run dev` działa, ~3x szybszy hot reload
 
 ---
 
 ## 🔒 **ETAP 2: BEZPIECZEŃSTWO FIREBASE (PRIORYTET 1)**
 
 ### **📋 Cel:** Zabezpieczenie konfiguracji Firebase
-**Problem:** Klucze API są hardcoded w kodzie źródłowym
+**Problem:** Klucze API są hardcoded w `src/firebase.js`
 
 #### **🔧 Kroki zabezpieczania:**
-1. **Environment variables** - przenieś do `.env.local`:
+1. **Environment variables** - aktualizuj `.env.local`:
    ```bash
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_domain
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   # ... etc
+   # Zmień prefix REACT_APP_ → VITE_
+   VITE_FIREBASE_API_KEY=AIzaSyCwG5bHjTnEGct9GvwweMoAeZ257yfWCZ8
+   VITE_FIREBASE_AUTH_DOMAIN=miejska-ankieta.firebaseapp.com  
+   VITE_FIREBASE_PROJECT_ID=miejska-ankieta
+   VITE_FIREBASE_STORAGE_BUCKET=miejska-ankieta.appspot.com
+   VITE_FIREBASE_MESSAGING_SENDER_ID=891252926440
+   VITE_FIREBASE_APP_ID=1:891252926440:web:3383e7248c7a69fe46a65d
+   VITE_FIREBASE_MEASUREMENT_ID=G-T8W987M3FZ
    ```
 
 2. **Zaktualizuj firebase.js**:
@@ -222,7 +251,11 @@ Projekt wymaga modernizacji i reorganizacji:
    const firebaseConfig = {
      apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-     // ... etc
+     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+     appId: import.meta.env.VITE_FIREBASE_APP_ID,
+     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
    };
    ```
 
@@ -241,15 +274,6 @@ Projekt wymaga modernizacji i reorganizacji:
    }
    ```
 
-4. **Aktualizuj .gitignore**:
-   ```
-   # Firebase security
-   .env
-   .env.local
-   .env.production
-   my-firebase-adminsdk.json
-   ```
-
 **Szacowany czas:** 1-2 godziny  
 **Rezultat:** Bezpieczna konfiguracja, brak wrażliwych danych w repo
 
@@ -257,128 +281,131 @@ Projekt wymaga modernizacji i reorganizacji:
 
 ## 🧩 **ETAP 3: COMPONENT REFACTORING (PRIORYTET 2)**
 
-### **📋 Cel:** Podział dużych komponentów na mniejsze moduły
-**Problem:** Question.jsx ma 150+ linii - trudny w utrzymaniu
+### **📋 Cel:** Podział Question.jsx (150+ linii) na mniejsze komponenty
+**Powód:** Łatwiejsze utrzymanie, dodawanie nowych pytań, testowanie
 
 #### **📁 Docelowa struktura:**
 ```
 src/
 ├── components/
 │   ├── common/
-│   │   ├── Button/
-│   │   │   ├── Button.jsx (reusable button component)
-│   │   │   └── Button.module.scss
 │   │   ├── SocialIcons/
-│   │   │   ├── SocialIcons.jsx (używany w 2 miejscach)
+│   │   │   ├── SocialIcons.jsx (reusable - używany w 2 miejscach)
 │   │   │   └── SocialIcons.module.scss
+│   │   ├── Button/
+│   │   │   ├── Button.jsx (reusable button)
+│   │   │   └── Button.module.scss
 │   │   └── Layout/
 │   │       ├── Layout.jsx (wrapper z logo)
 │   │       └── Layout.module.scss
 │   ├── Question/
 │   │   ├── Question.jsx (główny kontener - ~50 linii)
 │   │   ├── QuestionHeader.jsx (tytuł + dzień/noc styling)
-│   │   ├── QuestionForm.jsx (form logic)
-│   │   ├── RadioOption.jsx (pojedyncza opcja)
+│   │   ├── QuestionForm.jsx (form logic + validation)
+│   │   ├── RadioOption.jsx (pojedyncza opcja z FontAwesome)
 │   │   ├── LoadingSpinner.jsx (loading state)
-│   │   └── ErrorMessage.jsx (error handling)
-│   ├── Fact/
-│   │   ├── Fact.jsx (główny komponent)
-│   │   ├── FactContent.jsx (wyświetlanie faktu)
-│   │   └── FactNavigation.jsx (przycisk dalej)
-│   └── Home/
-│       ├── Home.jsx (główny kontener)
-│       ├── Instructions.jsx (instrukcje użytkowania)
-│       └── SocialMediaLinks.jsx (social media icons)
+│   │   └── ErrorMessage.jsx (error display)
+│   ├── Fact/ (refactoring opcjonalny)
+│   └── Home/ (refactoring opcjonalny)
 ├── hooks/
-│   ├── useFirestore.js (Firebase operations)
+│   ├── useFirestore.js (Firebase operations + error handling)
 │   ├── useTheme.js (day/night logic)
-│   └── useLocalStorage.js (local storage operations)
+│   └── useLocalStorage.js (localStorage operations)
 ├── utils/
-│   ├── constants.js (social media links, config)
+│   ├── constants.js (social media links, URLs)
 │   ├── helpers.js (utility functions)
 │   └── validators.js (form validation)
 └── context/
     └── ThemeContext.js (global theme state)
 ```
 
-#### **🔧 Komponenty do utworzenia:**
+#### **🔧 Key Components do utworzenia:**
 
-1. **SocialIcons Component** (najpierw - używany w 2 miejscach):
-   ```jsx
-   // components/common/SocialIcons/SocialIcons.jsx
-   const SocialIcons = ({ size = 'large', className = '' }) => {
-     // Reusable social media icons with hover effects
-   };
-   ```
-
-2. **RadioOption Component**:
-   ```jsx
-   // components/Question/RadioOption.jsx  
-   const RadioOption = ({ option, isSelected, onChange, disabled }) => {
-     // Single radio option with FontAwesome check icon
-   };
-   ```
-
-3. **useFirestore Hook**:
+1. **useFirestore Hook** (najważniejszy):
    ```javascript
-   // hooks/useFirestore.js
    export const useFirestore = () => {
      const [loading, setLoading] = useState(false);
      const [error, setError] = useState(null);
      
-     const addAnswer = async (questionId, answer) => {
-       // Firebase operations with error handling
+     const addAnswer = async (questionId, answer, location = 'unknown') => {
+       setLoading(true);
+       try {
+         await addDoc(collection(db, "answers"), {
+           questionId,
+           answer,
+           location, // dla przyszłej QRfy integration
+           timestamp: new Date().toISOString()
+         });
+       } catch (err) {
+         setError('Wystąpił błąd. Spróbuj ponownie.');
+       } finally {
+         setLoading(false);
+       }
      };
      
      return { addAnswer, loading, error };
    };
    ```
 
-4. **ThemeContext** (zamiast logiki w App.js):
+2. **SocialIcons Component** (eliminuje duplikację):
    ```jsx
-   // context/ThemeContext.js
-   export const ThemeProvider = ({ children }) => {
-     const [isNight, setIsNight] = useState(false);
-     
-     useEffect(() => {
-       const hour = new Date().getHours();
-       setIsNight(hour < 6 || hour >= 22); // Poprawiona logika
-     }, []);
-     
+   const SocialIcons = ({ size = 'large', className = '' }) => {
+     const socialLinks = {
+       instagram: 'https://www.instagram.com/miejska_ankieta/',
+       facebook: 'https://www.facebook.com/miejska.ankieta',
+       twitter: 'https://twitter.com/miejska_ankieta'
+     };
+     // Render social icons with FontAwesome
+   };
+   ```
+
+3. **RadioOption Component**:
+   ```jsx
+   const RadioOption = ({ option, isSelected, onChange, disabled }) => {
      return (
-       <ThemeContext.Provider value={{ isNight }}>
-         {children}
-       </ThemeContext.Provider>
+       <label className={`radio-container ${disabled ? 'disabled' : ''}`}>
+         <input 
+           type="radio" 
+           checked={isSelected}
+           onChange={() => onChange(option.id)}
+           disabled={disabled}
+         />
+         <FontAwesomeIcon 
+           icon={faCheck} 
+           className={isSelected ? 'check-icon' : 'check-icon hidden'} 
+         />
+         <span>{option.label}</span>
+       </label>
      );
    };
    ```
 
 **Szacowany czas:** 3-4 dni  
-**Rezultat:** 150+ linii → 8 komponentów po 20-40 linii każdy
+**Rezultat:** Question.jsx: 150+ linii → 6 komponentów po 20-40 linii
 
 ---
 
-## ⚡ **ETAP 4: PERFORMANCE & UX IMPROVEMENTS (PRIORYTET 3)**
+## ⚡ **ETAP 4: UX IMPROVEMENTS (PRIORYTET 3)**
 
-### **📋 Cel:** Lepszy UX i performance
+### **📋 Cel:** Lepszy user experience
 
 #### **🔧 Usprawnienia:**
 
-1. **Loading States** - dodaj loading spinnery:
+1. **Loading States & Error Handling**:
    ```jsx
    const [loading, setLoading] = useState(false);
+   const [error, setError] = useState(null);
    
+   // Button state
    <button disabled={loading || !selectedOption}>
      {loading ? 'Wysyłanie...' : 'Odpowiedz'}
    </button>
-   ```
-
-2. **Error Handling** - lepsze komunikaty błędów:
-   ```jsx
+   
+   // Error display
    {error && <ErrorMessage message={error} />}
    ```
 
-3. **Form Validation** - walidacja przed wysłaniem:
+2. **Form Validation**:
    ```javascript
    const validateAnswer = (selectedOption) => {
      if (!selectedOption) {
@@ -389,370 +416,159 @@ src/
    };
    ```
 
-4. **Better Date Handling**:
+3. **Better Date Handling**:
    ```javascript
    timestamp: new Date().toISOString() // Zamiast .toLocaleString()
    ```
 
-5. **Accessibility Improvements**:
-   ```jsx
-   <label className="radio-container" aria-label={option.label}>
-     <input 
-       type="radio"
-       aria-describedby="question-instructions"
-       // ... etc
-     />
-   </label>
-   ```
-
 **Szacowany czas:** 1-2 dni  
-**Rezultat:** Lepszy UX, accessibility, error handling
+**Rezultat:** Lepszy UX, proper error handling
 
 ---
 
-## 🎨 **ETAP 5: STYLING & DESIGN IMPROVEMENTS (OPCJONALNIE)**
+## 🌆 **ETAP 5: FUTURE ENHANCEMENTS (OPCJONALNIE)**
 
-### **📋 Cel:** Modernizacja designu
+### **🔧 QRfy.com Integration** (zapisane lokalnie w osobnym pliku)
+- **Location tracking** - różne QR kody per lokalizacja
+- **Analytics integration** - statystyki skanowań
+- **Multi-city support** - Częstochowa vs Warszawa comparison
 
-#### **🔧 Możliwe usprawnienia:**
-1. **CSS Modules** - zamiast globalnych SCSS:
-   ```
-   Component.module.scss → import styles from './Component.module.scss'
-   ```
+### **🎨 Design Improvements**
+- **CSS Modules** migration
+- **Design system** - spójne kolory i spacing
+- **Animations** - smooth transitions między stronami
 
-2. **Design System** - spójne kolory i typography:
-   ```scss  
-   // styles/variables.scss
-   $primary-color: #FF2323;
-   $night-bg: rgb(69, 69, 69);
-   $day-bg: rgb(243, 242, 242);
-   ```
-
-3. **Animations** - transitions między stronami:
-   ```scss
-   .page-transition {
-     transition: opacity 0.3s ease-in-out;
-   }
-   ```
-
-4. **Mobile Improvements** - lepsze touch targets:
-   ```scss
-   .radio-container {
-     min-height: 44px; // Minimum touch target size
-     padding: 12px;
-   }
-   ```
-
-**Szacowany czas:** 2-3 dni (opcjonalnie)  
-**Rezultat:** Nowoczesny, spójny design system
-
----
-
-## 📊 **ETAP 6: ADMIN DASHBOARD (FUTURE ENHANCEMENT)**
-
-### **📋 Cel:** Panel admina do zarządzania ankietami
-**Status:** Nice to have - przyszła funkcjonalność po podstawowych usprawnieniach
-
-#### **🔧 Funkcjonalności admina:**
-1. **Authentication System** - secure login dla administratora
-2. **Statistics Dashboard** - wyniki ankiet w czasie rzeczywistym
-3. **Question Management** - dodawanie/edytowanie pytań
-4. **Response Analytics** - wykresy i statystyki odpowiedzi
-5. **Export functionality** - eksport danych do CSV/JSON
-
-**Szacowany czas:** 1 tydzień (po zakończeniu Etapów 1-5)
+### **📊 Admin Dashboard** (jeśli będzie potrzebny)
+- **Statistics view** - wykresy odpowiedzi
+- **Question management** - dodawanie nowych pytań
+- **Export functionality** - CSV/JSON export
 
 ---
 
 ## 💡 **HARMONOGRAM ROZWOJU**
 
-### **Tydzień 1: Fundamenty & Bezpieczeństwo (Status: DO ROZPOCZĘCIA)**
-- **Dzień 1:** ✅ Dokumentacja + commit backup **GOTOWE**
-- **Dzień 2:** Migracja na Vite (package.json, config, HTML restructure)
-- **Dzień 3:** Zabezpieczenie Firebase (env variables, security rules)
-- **Dzień 4:** Testy migracji, poprawki, deployment test
-- **Dzień 5:** Code review, dokumentacja zmian
+### **Tydzień 1: Fundamenty (DO ROZPOCZĘCIA TERAZ)**
+- **Dzień 1:** ✅ Dokumentacja + backup commit **GOTOWE**
+- **Dzień 2:** Migracja na Vite (`npm run dev` working)
+- **Dzień 3:** Firebase security (env variables)
+- **Dzień 4:** Testing migracji + deployment
+- **Dzień 5:** Code review + dokumentacja
 
-### **Tydzień 2: Component Refactoring**
-- **Dzień 1:** Utworzenie hooks (useFirestore, useTheme, useLocalStorage)
-- **Dzień 2:** SocialIcons + RadioOption components
-- **Dzień 3:** Question component breakdown (QuestionForm, QuestionHeader)
-- **Dzień 4:** Fact + Home component refactoring
-- **Dzień 5:** ThemeContext integration, testy komponentów
+### **Tydzień 2: Refactoring**
+- **Dzień 1-2:** useFirestore + SocialIcons components
+- **Dzień 3-4:** Question component breakdown
+- **Dzień 5:** Testing + integration
 
-### **Tydzień 3: Performance & UX**
-- **Dzień 1:** Loading states + error handling
-- **Dzień 2:** Form validation + accessibility improvements
-- **Dzień 3:** Performance optimization + bundle analysis
-- **Dzień 4:** Mobile UX improvements
-- **Dzień 5:** Final testing, deployment, dokumentacja
-
-### **Opcjonalnie - Tydzień 4: Design & Future Features**
-- **Dzień 1-2:** CSS Modules migration
-- **Dzień 3-4:** Design system + animations
-- **Dzień 5:** Admin dashboard planning (jeśli potrzebny)
+### **Tydzień 3: Polish & Fun**
+- **Dzień 1-2:** UX improvements (loading, errors)
+- **Dzień 3:** More questions + content
+- **Dzień 4:** Warsaw test deployment? 😄
+- **Dzień 5:** Documentation + planning next features
 
 ---
 
-## 🎯 **OCZEKIWANE REZULTATY**
+## 📋 **QUICK START - NASTĘPNE KROKI**
 
-### **Code Quality Improvement:**
-- **Question.jsx:** 150+ linii → 6 komponentów (~20-40 linii każdy) = **73% redukcja**
-- **App.js:** Simplified routing + ThemeContext = **50% redukcja logiki**
-- **Reusable components:** SocialIcons, Button, RadioOption = **DRY principle**
-- **Custom hooks:** Separation of concerns = **Better maintainability**
+### **🚀 Start Vite Migration (RIGHT NOW):**
 
-### **Performance Benefits:**
-- **Vite dev server:** ~3x szybszy hot reload niż CRA
-- **Bundle optimization:** Tree shaking + better chunking
-- **Loading states:** Lepszy UX podczas Firebase operations
-- **Error boundaries:** Graceful error handling
-
-### **Security Improvements:**
-- **Environment variables:** No sensitive data in source code
-- **Firestore rules:** Proper database security
-- **Input validation:** XSS protection + data sanitization
-
-### **Developer Experience:**
-- **npm run dev** instead of **npm start** - szybki start
-- **Modular architecture** - łatwiejsze dodawanie nowych pytań
-- **Comprehensive documentation** - nowi developerzy szybko się orientują
-- **Modern React patterns** - hooks, context, component composition
-
----
-
-## 📋 **INSTRUKCJE DLA DEWELOPERA - STEP BY STEP**
-
-### **🚀 Jak rozpocząć Etap 1 (Vite Migration):**
-
-1. **Przygotowanie:**
-   ```bash
-   # Commit obecny stan (już zrobione)
-   git status # sprawdź czy wszystko commitowane
-   
-   # Zatrzymaj serwer (Ctrl+C)
-   # Backup (opcjonalnie)
-   cp -r . ../miejska-ankieta-backup
-   ```
-
-2. **Usuń CRA:**
-   ```bash
-   npm uninstall react-scripts
-   ```
-
-3. **Zainstaluj Vite:**
-   ```bash
-   npm install --save-dev vite @vitejs/plugin-react --legacy-peer-deps
-   ```
-
-4. **Utwórz vite.config.js:**
-   ```javascript
-   import { defineConfig } from 'vite'
-   import react from '@vitejs/plugin-react'
-   
-   export default defineConfig({
-     plugins: [react()],
-     server: { port: 3000 },
-     define: {
-       'process.env': process.env
-     }
-   })
-   ```
-
-5. **Aktualizuj package.json:**
-   ```json
-   {
-     "scripts": {
-       "dev": "vite",
-       "build": "vite build", 
-       "preview": "vite preview",
-       "export": "node export.js",
-       "stats": "node stats.js"
-     }
-   }
-   ```
-
-6. **Przenieś HTML:**
-   ```bash
-   mv public/index.html ./index.html
-   ```
-
-7. **Edytuj index.html:**
-   ```html
-   <!DOCTYPE html>
-   <html lang="pl">
-   <head>
-       <meta charset="UTF-8" />
-       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-       <title>Miejska ankieta</title>
-       <link rel="icon" href="/src/assets/images/favicon.ico">
-       <link rel="preconnect" href="https://fonts.googleapis.com" />
-       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-       <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;400&display=swap" rel="stylesheet" />
-       <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-   </head>
-   <body>
-       <div id="root"></div>
-       <script type="module" src="/src/main.jsx"></script>
-   </body>
-   </html>
-   ```
-
-8. **Rename entry point:**
-   ```bash
-   mv src/index.js src/main.jsx
-   ```
-
-9. **Test migration:**
-   ```bash
-   npm run dev # Should start on http://localhost:3000
-   ```
-
-### **🔒 Jak rozpocząć Etap 2 (Firebase Security):**
-
-1. **Aktualizuj .env.local:**
-   ```bash
-   # Zmień REACT_APP_ na VITE_
-   VITE_FIREBASE_API_KEY=AIzaSyCwG5bHjTnEGct9GvwweMoAeZ257yfWCZ8
-   VITE_FIREBASE_AUTH_DOMAIN=miejska-ankieta.firebaseapp.com
-   # ... etc
-   ```
-
-2. **Aktualizuj firebase.js:**
-   ```javascript
-   const firebaseConfig = {
-     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-     // ... etc - use import.meta.env instead of process.env
-   };
-   ```
-
-3. **Test Firebase connection:**
-   ```bash
-   npm run dev
-   # Spróbuj odpowiedzieć na pytanie - sprawdź czy zapisuje do Firebase
-   ```
-
----
-
-## ⚠️ **POTENCJALNE PROBLEMY I ROZWIĄZANIA**
-
-### **Problem 1: SCSS w Vite**
 ```bash
-# Jeśli SCSS nie działa:
-npm install -D sass
+# 1. Zatrzymaj serwer (Ctrl+C)
+# 2. Usuń CRA
+npm uninstall react-scripts
+
+# 3. Zainstaluj Vite  
+npm install --save-dev vite @vitejs/plugin-react --legacy-peer-deps
+
+# 4. Zmień package.json scripts na:
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+
+# 5. Test
+npm run dev  # Should work on :3000
 ```
 
-### **Problem 2: SVG imports**
-```javascript
-// Jeśli logo nie działa, zmień w App.js:
-import { ReactComponent as Logo } from './assets/images/logo_red.svg';
-// NA:
-import logoSvg from './assets/images/logo_red.svg?react';
-```
-
-### **Problem 3: FontAwesome icons**
-```bash
-# Jeśli ikony nie działają:
-npm install @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons @fortawesome/react-fontawesome
-```
-
-### **Problem 4: Firebase errors**
-```javascript
-// Sprawdź console.log w firebase.js:
-console.log('Firebase Config:', {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? '✅' : '❌',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ? '✅' : '❌'
-});
-```
+**Goal:** `npm run dev` working instead of `npm start`
 
 ---
 
-## 🔧 **NARZĘDZIA ROZWOJU**
+## ⚠️ **KNOWN ISSUES & SOLUTIONS**
 
-### **Przydatne komendy podczas refactoringu:**
-```bash
-# Development
-npm run dev              # Start Vite dev server
-npm run build           # Production build  
-npm run preview         # Preview build locally
+### **Vite Migration Issues:**
+- **SCSS:** `npm install -D sass`
+- **SVG imports:** May need `?react` suffix
+- **FontAwesome:** Should work out of box
+- **Environment variables:** `REACT_APP_` → `VITE_` + `import.meta.env`
 
-# Database operations
-npm run export          # Export Firebase data
-npm run stats          # Generate statistics
-
-# Git workflow
-git add .
-git commit -m "feat: opis zmian"
-git push origin master
-
-# Bundle analysis (po instalacji)
-npm install --save-dev vite-bundle-analyzer
-npm run build -- --analyze
-```
-
-### **Debugging tools:**
-- **React Developer Tools** - Chrome extension
-- **Firebase Console** - database inspection
-- **Vite DevTools** - build analysis
-- **Network tab** - Firebase requests monitoring
+### **Firebase Security:**
+- Check `.env.local` is in `.gitignore` ✅
+- Test Firebase connection after env change
+- Update Firestore rules in Firebase Console
 
 ---
 
-## 📈 **METRYKI SUKCESU**
+## 🎯 **SUCCESS METRICS**
 
-### **Przed refactoringiem:**
-- ❌ Długi czas uruchomienia (npm start ~30s)
-- ❌ Duże komponenty (Question.jsx 150+ linii)
-- ❌ Hardcoded Firebase config
-- ❌ Brak error handling
-- ❌ Duplikacja kodu (SocialIcons)
-
-### **Po refactoringu:**
-- ✅ Szybki start (npm run dev ~3s)
-- ✅ Małe, focused komponenty (<50 linii)
-- ✅ Bezpieczna konfiguracja (env variables)
+### **Technical Goals:**
+- ✅ `npm run dev` working (fast startup)
+- ✅ Secure Firebase config (no hardcoded keys)
+- ✅ Modular components (<50 lines each)
 - ✅ Proper error handling & loading states
-- ✅ Reusable components (DRY principle)
-- ✅ Modern React patterns (hooks, context)
+
+### **Fun Goals:**
+- 🎉 More interesting questions added
+- 🎉 Warsaw deployment tested
+- 🎉 Community engagement maintained
+- 🎉 Portfolio-worthy codebase
+
+### **Learning Goals:**
+- 📚 Vite build system experience
+- 📚 React best practices (hooks, context)
+- 📚 Firebase security implementation
+- 📚 Component architecture design
 
 ---
 
-## 📞 **Kontakt Techniczny**
-**Developer:** enowuigrek@gmail.com
+## 📞 **Kontakt**
+**Developer:** enowuigrek@gmail.com  
 **GitHub:** github.com/enowuigrek/Miejska-Ankieta  
 **Live Site:** http://miejska-ankieta.czest.pl  
-**Location:** Częstochowa, Polska
+**Location:** Częstochowa (+ Warszawa spacery) 🚶‍♂️
 
 ---
 
-## 📈 **Ostatnie zmiany (Current Session)**
+## 📈 **Status Update (Current Session)**
 
-### ✅ **Pre-Migration Setup - ZAKOŃCZONY**
-- **Bezpieczny commit** - Firebase config + day/night logic fix
-- **Environment setup** - .env.local z Firebase credentials
-- **Dokumentacja** - kompletna roadmapa rozwoju
-- **Backup** - git history zabezpieczony przed migracją
+### ✅ **COMPLETED TODAY**
+- **Documentation:** Comprehensive README.md + DEVELOPMENT.md ✅
+- **Planning:** 3-week development roadmap ✅
+- **Security:** .env.local setup with Firebase credentials ✅
+- **Git:** Safe backup commit przed migracją ✅
+- **Vision:** Clear project goals (fun + portfolio + community) ✅
 
-### 🔄 **Migracja na Vite - DO ROZPOCZĘCIA**
-- **Next step:** npm uninstall react-scripts
-- **Target:** npm run dev working with Vite
-- **Timeline:** 2-3 godziny na pełną migrację
+### 🔄 **NEXT STEPS (Po powrocie z biegu)**
+- **Vite Migration:** `npm uninstall react-scripts` → `npm run dev`
+- **Firebase Security:** Environment variables implementation
+- **Component Refactoring:** Break down Question.jsx
 
-### 📝 **Dokumentacja - ZAKOŃCZONA**
-- **README.md** - profesjonalna prezentacja projektu
-- **DEVELOPMENT.md** - szczegółowy plan rozwoju 3-tygodniowy
-- **Spójny format** - zgodny z najnowszymi projektami
+### 🎯 **PROJECT PHILOSOPHY**
+**For fun + portfolio + community engagement**  
+**No pressure on monetization**  
+**Multi-city potential (Częstochowa + Warszawa)**  
+**Focus on code quality and developer experience** ⚡
 
 ---
 
-## 🏆 **Status Projektu**
+## 🏆 **CURRENT STATUS**
 
-✅ **Live Urban Survey System** - http://miejska-ankieta.czest.pl  
-✅ **Real Community Engagement** - QR codes deployed in Częstochowa  
-✅ **Anonymous Data Collection** - Privacy-focused Firebase backend  
-✅ **Social Media Integration** - Active community building  
-✅ **Mobile-Optimized Experience** - Smartphone QR scanning ready  
-🔄 **Vite Migration Ready** - Modern development setup prepared  
-📋 **Comprehensive Development Plan** - 3-week improvement roadmap  
-🚀 **Ready for Next Development Phase** - Better performance, maintainability, security
+✅ **Live Community Platform** - http://miejska-ankieta.czest.pl  
+✅ **Real User Engagement** - QR codes active in Częstochowa  
+✅ **Modern Tech Stack** - React + Firebase backend  
+✅ **Comprehensive Documentation** - Ready for development  
+🔄 **Vite Migration Prepared** - Step-by-step instructions ready  
+🚶‍♂️ **Multi-city Vision** - Częstochowa + Warsaw expansion  
+🎉 **Fun Factor Maintained** - Project enjoyment is priority #1
