@@ -26,10 +26,10 @@ Interaktywny system ankiet miejskich dla mieszkańców **Częstochowy** (z poten
 - **Day/night theme:** Time-based UI switching ✅
 - **Social media integration:** Linki do wszystkich platform ✅
 
-### 🔧 Tech stack:
+### **🔧 Tech stack:**
 ```json
 {
-  "frontend": "React 18 + Create React App → MIGRACJA NA VITE",
+  "frontend": "React 18 + Vite ✅ COMPLETED",
   "styling": "SCSS/Sass", 
   "database": "Firebase Firestore",
   "icons": "FontAwesome",
@@ -135,10 +135,10 @@ src/
 
 ```bash
 npm install
-npm start          # http://localhost:3000 (DO ZMIANY NA: npm run dev)
-npm run build      # Production build
-npm run export     # Export data from Firebase (node export.js)
-npm run stats      # Generate statistics (node stats.js)
+npm run dev           # ✅ VITE - http://localhost:3000 (szybki hot reload)
+npm run build         # Production build
+npm run export        # Export data from Firebase (node export.js)
+npm run stats         # Generate statistics (node stats.js)
 ```
 
 **Live Website:** http://miejska-ankieta.czest.pl ✅ **ACTIVE SURVEY PLATFORM**
@@ -162,71 +162,63 @@ npm run stats      # Generate statistics (node stats.js)
 
 ---
 
-## 🚀 **ETAP 1: FUNDAMENTY - MIGRACJA NA VITE (PRIORYTET 1)**
+## 🚀 **ETAP 1: FUNDAMENTY - MIGRACJA NA VITE ✅ ZAKOŃCZONY**
 
 ### **📋 Cel:** Migracja z Create React App na Vite
-**Powód:** `npm run dev` zamiast `npm start`, szybszy hot reload, lepszy DX
+**Status:** ✅ **COMPLETED** - `npm run dev` działa, szybszy hot reload
 
-#### **🔧 Kroki migracji:**
-1. **Backup & Setup**
-   ```bash
-   # Backup obecnego stanu
-   git commit -m "🔒 Backup: Before Vite migration"
-   
-   # Usuń CRA dependencies
-   npm uninstall react-scripts
-   ```
+#### **✅ Wykonane kroki:**
+1. **Usunięto CRA dependencies** - react-scripts uninstalled
+2. **Zainstalowano Vite** - vite + @vitejs/plugin-react
+3. **Utworzono vite.config.js** - configuration with React plugin
+4. **Zaktualizowano package.json** - scripts changed to `dev/build/preview`
+5. **Przeniesiono index.html** - moved from public/ to root
+6. **Poprawiono entry point** - src/index.js → src/main.jsx
+7. **Naprawiono SVG imports** - ReactComponent → img src pattern
+8. **Zaktualizowano env variables** - process.env → import.meta.env
+9. **Zainstalowano SASS** - for SCSS support
 
-2. **Instalacja Vite**
-   ```bash
-   npm install --save-dev vite @vitejs/plugin-react --legacy-peer-deps
-   ```
-
-3. **Nowy package.json scripts**
-   ```json
-   {
-     "scripts": {
-       "dev": "vite",           // ⭐ GŁÓWNY CEL
-       "build": "vite build", 
-       "preview": "vite preview",
-       "export": "node export.js",
-       "stats": "node stats.js"
-     }
-   }
-   ```
-
-4. **Vite config** - `vite.config.js`:
-   ```javascript
-   import { defineConfig } from 'vite'
-   import react from '@vitejs/plugin-react'
-   
-   export default defineConfig({
-     plugins: [react()],
-     server: { port: 3000 },
-     define: {
-       'process.env': process.env
-     }
-   })
-   ```
-
-5. **HTML restructure**
-   - Przenieś `public/index.html` → `index.html` (root)
-   - Usuń `%PUBLIC_URL%` placeholders
-   - Dodaj `<script type="module" src="/src/main.jsx"></script>`
-
-6. **Entry point**
-   - Rename `src/index.js` → `src/main.jsx`
-
-7. **Zmienne środowiskowe**
-   - `REACT_APP_` → `VITE_` prefix w `.env.local`
-   - `process.env` → `import.meta.env` w kodzie
-
-**Szacowany czas:** 2-3 godziny  
-**Rezultat:** `npm run dev` działa, ~3x szybszy hot reload
+**Rezultat:** ⚡ `npm run dev` working, ~3x faster hot reload than CRA
 
 ---
 
-## 🔒 **ETAP 2: BEZPIECZEŃSTWO FIREBASE (PRIORYTET 1)**
+## 🔒 **ETAP 2: LOGO DAY/NIGHT MODE (AKTUALNY PRIORYTET)**
+
+### **📋 Cel:** Logo widoczne w trybie nocnym
+**Problem:** Czerwone logo (#FF2323) nie jest widoczne na ciemnym tle nocnym
+
+#### **🔧 Rozwiązania do implementacji:**
+
+**Opcja A: CSS Filter (QUICK FIX)**
+```css
+.app-logo.night {
+  filter: brightness(0) invert(1); /* Zamienia na białe */
+}
+```
+
+**Opcja B: Dwa osobne pliki SVG (RECOMMENDED)**
+```
+src/assets/images/
+├── logo_red.svg (dzień)
+└── logo_white.svg (noc)
+```
+
+**Opcja C: CSS Variables w SVG**
+```css
+.app-logo {
+  --logo-color: #FF2323; /* dzień */
+}
+.app-logo.night {
+  --logo-color: #FFFFFF; /* noc */
+}
+```
+
+**Szacowany czas:** 30 minut  
+**Rezultat:** Logo widoczne w obu trybach dzień/noc
+
+---
+
+## 🔒 **ETAP 3: BEZPIECZEŃSTWO FIREBASE (PRIORYTET 2)**
 
 ### **📋 Cel:** Zabezpieczenie konfiguracji Firebase
 **Problem:** Klucze API są hardcoded w `src/firebase.js`

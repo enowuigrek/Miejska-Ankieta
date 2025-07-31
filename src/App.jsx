@@ -10,7 +10,7 @@ import Question from './components/Question';
 import Fact from './components/Fact';
 import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
-import { ReactComponent as Logo } from './assets/images/logo_red.svg';
+import logoSvg from './assets/images/logo_red.svg';
 import './App.scss';
 
 function App() {
@@ -25,10 +25,7 @@ function App() {
     return (
         <Router>
             <div className={`App ${isNight ? 'night' : 'day'}`}>
-                <Logo
-                    className='app-logo'
-                    style={{ color: isNight ? '#FFF' : '#000' }}
-                />
+                <img src={logoSvg} alt="Logo" className='app-logo' />
                 <Routes>
                     <Route path='/' element={<Home isNight={isNight} />} />
                     <Route
