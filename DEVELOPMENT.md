@@ -75,30 +75,28 @@ src/
 - **Real-time storage** - odpowiedzi zapisywane w Firebase Firestore
 - **Mobile-first design** - zoptymalizowane pod smartfony
 
-### 2. **Question Database** ⭐
-```javascript
-// Przykłady pytań:
-- "Koty czy psy?" (zwierzeta)
-- "Pizza z ananasem" (pizza_ananas)  
-- "Pomidorowa" - z ryżem czy makaronem (pomidorowa)
-- "Gram na" - PC/PlayStation/Xbox/telefonie (gaming)
-- "Książka" - papier/e-book/audiobook (ksiazka)
-- "Majonez" - Kielecki/Winiary/Helmans (majonez)
-- "IPA" - za gorzkie/uwielbiam/drogie (ipa)
-```
+### 2. **Baza pytań** ⭐
+**Przykłady pytań w systemie:**
+- "Koty czy psy?" (`zwierzeta`)
+- "Pizza z ananasem" (`pizza_ananas`)
+- "Pomidorowa" - z ryżem czy makaronem (`pomidorowa`)
+- "Gram na" - PC/PlayStation/Xbox/telefonie (`gaming`)
+- "Książka" - papier/e-book/audiobook (`ksiazka`)
+- "Majonez" - Kielecki/Winiary/Helmans (`majonez`)
+- "IPA" - za gorzkie/uwielbiam/drogie (`ipa`)
 
-### 3. **Fun Facts System** ⭐
+### 3. **System ciekawych faktów** ⭐
 - **29 ciekawych faktów** - edukacyjna zawartość po ankiecie
-- **Random selection** - różny fakt przy każdej odpowiedzi
-- **Diverse topics** - nauka, przyroda, technologia, ciekawostki
+- **Losowy wybór** - różny fakt przy każdej odpowiedzi
+- **Różnorodne tematy** - nauka, przyroda, technologia, ciekawostki
 - **SessionStorage** - unikalne fakty w sesji
 
-### 4. **Social Media Integration** ⭐
+### 4. **Integracja social media** ⭐
 - **Instagram:** @miejska_ankieta
 - **Facebook:** miejska.ankieta
 - **Twitter:** @miejska_ankieta
-- **Results sharing** - wyniki publikowane na social media
-- **Community building** - budowanie społeczności wokół ankiet
+- **Udostępnianie wyników** - wyniki publikowane na social media
+- **Budowanie społeczności** - budowanie społeczności wokół ankiet
 
 ## 📊 **Survey Flow & User Journey**
 
@@ -111,7 +109,7 @@ src/
 6. **Fact** - wyświetlenie losowego ciekawego faktu
 7. **Social** - zachęta do obserwowania social media dla wyników
 
-### **Data Structure (Current):**
+### **Struktura danych (obecna):**
 ```javascript
 // Firebase document structure:
 {
@@ -121,13 +119,13 @@ src/
 }
 ```
 
-### **Data Structure (Planned with QRfy integration):**
+### **Struktura danych (planowana z integracją QRfy):**
 ```javascript
-// Future structure with location tracking:
+// Przyszła struktura z location tracking:
 {
   questionId: "pizza_ananas",
   answer: "tak, bardzo lubię",
-  location: "rynek", // NOWE - z QRfy integration
+  location: "rynek", // NOWE - z integracji QRfy
   scanSource: "qrfy", // NOWE
   timestamp: "2025-07-31T10:30:00.000Z"
 }
@@ -237,13 +235,14 @@ npm run stats      # Generate statistics (node stats.js)
 1. **Environment variables** - aktualizuj `.env.local`:
    ```bash
    # Zmień prefix REACT_APP_ → VITE_
-   VITE_FIREBASE_API_KEY=AIzaSyCwG5bHjTnEGct9GvwweMoAeZ257yfWCZ8
-   VITE_FIREBASE_AUTH_DOMAIN=miejska-ankieta.firebaseapp.com  
-   VITE_FIREBASE_PROJECT_ID=miejska-ankieta
-   VITE_FIREBASE_STORAGE_BUCKET=miejska-ankieta.appspot.com
-   VITE_FIREBASE_MESSAGING_SENDER_ID=891252926440
-   VITE_FIREBASE_APP_ID=1:891252926440:web:3383e7248c7a69fe46a65d
-   VITE_FIREBASE_MEASUREMENT_ID=G-T8W987M3FZ
+   # WAŻNE: Użyj SWOICH prawdziwych kluczy Firebase!
+   VITE_FIREBASE_API_KEY=your_firebase_api_key_here
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com  
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
    ```
 
 2. **Zaktualizuj firebase.js**:
