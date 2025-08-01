@@ -20,7 +20,10 @@ export const QUESTIONS_DATA = {
             { id: 'PC', label: 'PC' },
             { id: 'PlayStation', label: 'PlayStation' },
             { id: 'Xbox', label: 'Xbox' },
+            { id: 'Nintendo', label: 'Nintendo' },
             { id: 'telefonie', label: 'telefonie' },
+            { id: 'nie gram', label: 'nie gram' },
+
         ],
     },
 

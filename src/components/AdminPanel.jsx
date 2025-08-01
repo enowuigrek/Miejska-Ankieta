@@ -99,22 +99,6 @@ const AdminPanel = ({ isNight }) => {
         setStats(statsData);
     };
 
-    const exportToCSV = () => {
-        const csvContent = "data:text/csv;charset=utf-8," +
-            "Pytanie,Odpowiedź,Data\n" +
-            answers.map(answer =>
-                `"${QUESTIONS_DATA[answer.questionId]?.questionText || answer.questionId}","${answer.answer}","${answer.timestamp}"`
-            ).join("\n");
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `ankieta-odpowiedzi-${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
     const getFilteredStats = () => {
         if (selectedQuestion === 'all') {
             return stats;
@@ -158,19 +142,11 @@ const AdminPanel = ({ isNight }) => {
                 <div className="header-left">
                     <div className="header-title">
                         <h1> Admin Dashboard</h1>
-                        <span className="subtitle">Częstochowa Survey System</span>
+                        <span className="subtitle">Miejska Ankieta</span>
                     </div>
                 </div>
 
                 <div className="header-actions">
-                    <button
-                        onClick={exportToCSV}
-                        className="action-btn export-btn"
-                        disabled={answers.length === 0}
-                        title="Pobierz dane jako CSV"
-                    >
-                        📥 Export CSV
-                    </button>
                     <button
                         onClick={fetchAnswers}
                         className={`action-btn refresh-btn ${refreshing ? 'spinning' : ''}`}
@@ -244,7 +220,7 @@ const AdminPanel = ({ isNight }) => {
                         onChange={(e) => setSelectedQuestion(e.target.value)}
                         className="filter-select"
                     >
-                        <option value="all">📊 Wszystkie pytania ({stats._questionsCount || 0})</option>
+                        <option value="all">Wszystkie pytania ({stats._questionsCount || 0})</option>
                         {Object.keys(stats).filter(k => !k.startsWith('_')).map(questionId => (
                             <option key={questionId} value={questionId}>
                                 🎯 {QUESTIONS_DATA[questionId]?.questionText || questionId} ({stats[questionId]?.total || 0})
