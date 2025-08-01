@@ -26,28 +26,30 @@ function App() {
     return (
         <Router>
             <div className={`App ${isNight ? 'night' : 'day'}`}>
-                <img
-                    src={isNight ? logoWhite : logoGrey}
-                    alt="Miejska Ankieta Logo"
-                    className='app-logo'
-                />
-                <Routes>
-                    <Route path='/' element={<Home isNight={isNight} />} />
-                    <Route
-                        path='/:questionId'
-                        element={<Question isNight={isNight} />}
+                <div className="main-container">
+                    <img
+                        src={isNight ? logoWhite : logoGrey}
+                        alt="Miejska Ankieta Logo"
+                        className='app-logo'
                     />
-                    <Route path='/fact' element={<Fact isNight={isNight} />} />
-                    <Route
-                        path='/social_media'
-                        element={<SocialMediaPage isNight={isNight} />}
-                    />
-                    <Route
-                        path='/404'
-                        element={<PageNotFound isNight={isNight} />}
-                    />
-                    <Route path='*' element={<Navigate replace to='/404' />} />
-                </Routes>
+                    <Routes>
+                        <Route path='/' element={<Home isNight={isNight} />} />
+                        <Route
+                            path='/:questionId'
+                            element={<Question isNight={isNight} />}
+                        />
+                        <Route path='/fact' element={<Fact isNight={isNight} />} />
+                        <Route
+                            path='/social_media'
+                            element={<SocialMediaPage isNight={isNight} />}
+                        />
+                        <Route
+                            path='/404'
+                            element={<PageNotFound isNight={isNight} />}
+                        />
+                        <Route path='*' element={<Navigate replace to='/404' />} />
+                    </Routes>
+                </div>
             </div>
         </Router>
     );
