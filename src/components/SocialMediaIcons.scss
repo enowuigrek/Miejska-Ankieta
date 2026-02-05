@@ -1,0 +1,18 @@
+.social-icons-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+
+    &.home {
+        gap: 2rem;
+    }
+
+    a {
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
