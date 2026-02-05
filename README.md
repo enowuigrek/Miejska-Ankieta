@@ -58,19 +58,6 @@ The goal is to spark reflection, conversation, and curiosity about everyday topi
 
 ---
 
-## 🧪 Local Setup (optional)
-
-```bash
-git clone https://github.com/enowuigrek/Miejska-Ankieta.git
-cd Miejska-Ankieta
-npm install
-npm run dev
-```
-
-You’ll need your own Firebase configuration in `.env`.
-
----
-
 ## 📁 Project Structure (simplified)
 
 ```bash
