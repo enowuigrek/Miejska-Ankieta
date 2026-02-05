@@ -49,15 +49,6 @@ The goal is to spark reflection, conversation, and curiosity about everyday topi
 
 ---
 
-## 🖼 Screenshots
-
-_Add 2–3 screenshots here (mobile UI, voting screen, results screen):_
-
-![Voting screen](./screenshots/vote.png)
-![Results screen](./screenshots/results.png)
-
----
-
 ## 🛠 Tech Stack
 
 - React
