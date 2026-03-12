@@ -2,18 +2,68 @@
     font-size: 18px;
     font-family: 'Urbanist', sans-serif;
     color: rgb(69, 69, 69);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     background-color: rgb(243, 242, 242);
     transition: color 0.3s, background-color 0.3s;
-    flex-direction: column;
+    min-height: 100vh;
 }
 
 .App.night {
     color: rgb(243, 242, 242);
     background-color: rgb(69, 69, 69);
+}
+
+// Dwie strefy: górna = logo, dolna = treść
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.brand-zone {
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question-zone {
+    min-height: 50vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+// Brand — stacked typograficzny efekt
+.app-brand-header {
+    font-family: 'Archivo Black', sans-serif;
+    letter-spacing: -4px;
+    font-size: 3.2em;
+    text-align: center;
+    line-height: 0.82;
+}
+
+.app-brand-line1 {
+    display: block;
+    margin-bottom: -0.12em;
+    opacity: 0.45;
+    font-size: 0.65em;
+}
+
+.app-brand-line2 {
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+.app-brand-line3 {
+    display: block;
+    margin-top: -0.12em;
+    font-size: 0.85em;
+}
+
+.app-brand-q {
+    color: #FF2323;
 }
 
 button {
@@ -33,16 +83,6 @@ button:hover {
     background-color: #8b2121;
 }
 
-.home-icon-insta.day,
-.icon-insta.day {
-    color: rgb(69, 69, 69);
-}
-
-.home-icon-insta.night,
-.icon-insta.night {
-    color: rgb(243, 242, 242);
-}
-
 h1 {
     margin-top: 0;
     font-family: 'Archivo Black', sans-serif;
@@ -57,21 +97,4 @@ p {
     .app-logo {
         display: none;
     }
-}
-
-.main-container {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.app-logo {
-    width: 100%;
-    max-width: 480px;
-    max-height: 45vh;
-    height: auto;
-    display: block;
 }

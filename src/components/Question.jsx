@@ -28,6 +28,7 @@ const Question = ({ isNight }) => {
     const [fact, setFact] = useState('');
     const [loading, setLoading] = useState(false);
     const timerRef = React.useRef(null);
+    const scanRecorded = React.useRef(false);
     const { questionId } = useParams();
     const [searchParams] = useSearchParams();
     const location = searchParams.get('loc') || null;
@@ -40,6 +41,18 @@ const Question = ({ isNight }) => {
             }, 0);
         }
     }, [navigate, questionData]);
+
+    // Zapis skanu (raz przy wejściu na stronę)
+    useEffect(() => {
+        if (!questionData) return;
+        if (scanRecorded.current) return;
+        scanRecorded.current = true;
+        addDoc(collection(db, "scans"), {
+            questionId,
+            timestamp: new Date().toLocaleString(),
+            ...(location && { location }),
+        }).catch(err => console.error("Scan record error:", err));
+    }, [questionId]);
 
     useEffect(() => {
         return () => {
@@ -109,8 +122,14 @@ const Question = ({ isNight }) => {
                 <div className='results'>
                     {results.map((r, i) => (
                         <div key={i} className='result-row'>
-                            <span className='result-label'>{r.label.toUpperCase()}</span>
-                            <span className='result-percent'>— {r.percent}%</span>
+                            <div className={`result-bar-box ${isNight ? 'night' : 'day'}`}>
+                                <div
+                                    className='result-bar-fill'
+                                    style={{ width: `${r.percent}%` }}
+                                />
+                                <span className='result-label'>{r.label.toUpperCase()}</span>
+                            </div>
+                            <span className='result-percent'>{r.percent}%</span>
                         </div>
                     ))}
                 </div>
@@ -134,6 +153,7 @@ const Question = ({ isNight }) => {
 
     return (
         <div className='question-container'>
+
             <h1 className={`question-title ${isNight ? 'night' : 'day'}`}>
                 {questionData.questionText}
             </h1>

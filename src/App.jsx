@@ -20,29 +20,33 @@ const AppContent = ({ isNight }) => {
 
     return (
         <div className={`App ${isNight ? 'night' : 'day'}`}>
-            <div className={isAdminRoute ? 'admin-content' : 'main-content'}>
-                <Routes>
-                    <Route path='/' element={<Home isNight={isNight} />} />
-                    <Route
-                        path='/:questionId'
-                        element={<Question isNight={isNight} />}
-                    />
-                    <Route path='/fact' element={<Fact isNight={isNight} />} />
-                    <Route
-                        path='/social_media'
-                        element={<SocialMediaPage isNight={isNight} />}
-                    />
-                    <Route
-                        path='/admin'
-                        element={<AdminPanel isNight={isNight} />}
-                    />
-                    <Route
-                        path='/404'
-                        element={<PageNotFound isNight={isNight} />}
-                    />
-                    <Route path='*' element={<Navigate replace to='/404' />} />
-                </Routes>
-            </div>
+            {isAdminRoute ? (
+                <div className='admin-content'>
+                    <Routes>
+                        <Route path='/admin' element={<AdminPanel isNight={isNight} />} />
+                    </Routes>
+                </div>
+            ) : (
+                <div className='main-content'>
+                    <div className='brand-zone'>
+                        <div className='app-brand-header'>
+                            <div className='app-brand-line1'>jak</div>
+                            <div className='app-brand-line2'>myślisz</div>
+                            <div className='app-brand-line3'><span className='app-brand-q'>?</span></div>
+                        </div>
+                    </div>
+                    <div className='question-zone'>
+                        <Routes>
+                            <Route path='/' element={<Home isNight={isNight} />} />
+                            <Route path='/:questionId' element={<Question isNight={isNight} />} />
+                            <Route path='/fact' element={<Fact isNight={isNight} />} />
+                            <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
+                            <Route path='/404' element={<PageNotFound isNight={isNight} />} />
+                            <Route path='*' element={<Navigate replace to='/404' />} />
+                        </Routes>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
