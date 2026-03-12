@@ -38,7 +38,7 @@ const AppContent = ({ isNight }) => {
                             </div>
                         </div>
                     )}
-                    <div className='question-zone'>
+                    <div className={`question-zone${hideBrand ? ' full' : ''}`}>
                         <Routes>
                             <Route path='/' element={<Home isNight={isNight} />} />
                             <Route path='/:questionId' element={<Question isNight={isNight} onResultsView={setHideBrand} />} />
@@ -61,6 +61,13 @@ function App() {
         const hour = new Date().getHours();
         setIsNight(hour < 6 || hour >= 22);
     }, []);
+
+    useEffect(() => {
+        const color = isNight ? 'rgb(69, 69, 69)' : 'rgb(243, 242, 242)';
+        document.body.style.backgroundColor = color;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', color);
+    }, [isNight]);
 
     return (
         <Router>
