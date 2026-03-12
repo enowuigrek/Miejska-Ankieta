@@ -33,8 +33,7 @@ const AppContent = ({ isNight }) => {
                         <div className='brand-zone'>
                             <div className='app-brand-header'>
                                 <div className='app-brand-line1'>jak</div>
-                                <div className='app-brand-line2'>myślisz</div>
-                                <div className='app-brand-line3'><span className='app-brand-q'>?</span></div>
+                                <div className='app-brand-line2'>myślisz<span className='app-brand-q'>?</span></div>
                             </div>
                         </div>
                     )}
