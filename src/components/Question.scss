@@ -60,10 +60,11 @@ h1.night::after {
     }
 
     &.selected {
-        background-color: #FF2323;
         border-color: #FF2323;
 
         .option-label {
+            position: relative;
+            z-index: 1;
             color: rgb(243, 242, 242);
         }
 
@@ -77,7 +78,7 @@ h1.night::after {
     }
 
     &.selected:hover {
-        background-color: #FF2323;
+        background-color: transparent;
     }
 
     &:active {
@@ -87,11 +88,11 @@ h1.night::after {
 
 .countdown-bar {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
-    height: 3px;
+    height: 100%;
     width: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #FF2323;
 }
 
 .option-btn.disabled {
@@ -125,6 +126,7 @@ h1.night::after {
 // Ciekawostka — nagłówek z podkreśleniem jak h1
 .fact-header {
     font-family: 'Archivo Black', sans-serif;
+    font-size: 2em;
     letter-spacing: -2px;
     margin: 0 0 16px;
 
@@ -179,7 +181,7 @@ h1.night::after {
 }
 
 .social-icon {
-    font-size: 26px;
+    font-size: 32px;
     color: inherit;
 }
 
