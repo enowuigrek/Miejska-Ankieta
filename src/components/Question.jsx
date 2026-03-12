@@ -127,7 +127,7 @@ const Question = ({ isNight }) => {
                                     className='result-bar-fill'
                                     style={{ width: `${r.percent}%` }}
                                 />
-                                <span className='result-label'>{r.label.toUpperCase()}</span>
+                                <span className='result-label'>{r.label}</span>
                             </div>
                             <span className='result-percent'>{r.percent}%</span>
                         </div>
