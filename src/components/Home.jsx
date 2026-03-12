@@ -14,8 +14,8 @@ const Home = ({ isNight }) => {
     return (
         <div className='home-container'>
             <p>
-                Na mieście znajdziesz pytania, na które możesz odpowiedzieć
-                skanując QR kod. Ankieta jest w pełni anonimowa.
+                Znajdź pytanie na mieście, zeskanuj kod i daj znać
+                jak myślisz. Spokojnie, nikt nie wie że to Ty.
             </p>
 
             <div className='social-links'>
