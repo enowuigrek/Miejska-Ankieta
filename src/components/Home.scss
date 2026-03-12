@@ -3,51 +3,44 @@
     margin: 36px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     margin-top: 0;
-}
 
-.home-icons-container {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-    margin: 0 auto 24px;
-}
+    p {
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 32px;
+        text-align: left;
+    }
 
-.home-icon-insta,
-.home-icon-fb,
-.home-icon-twitter {
-    font-size: 76px;
-    transition: 0.3s;
-    margin: 0 5px;
-}
+    .social-links {
+        display: flex;
+        gap: 24px;
+        justify-content: flex-start;
 
-.home-icon-insta.day,
-.home-icon-fb.day,
-.home-icon-twitter.day {
-    color: rgb(69, 69, 69);
-}
+        a {
+            color: inherit;
+            transition: color 0.15s;
 
-.home-icon-insta.night,
-.home-icon-fb.night,
-.home-icon-twitter.night {
-    color: rgb(243, 242, 242);
-}
+            &:active {
+                color: #FF2323;
+            }
 
-.home-icon-insta:hover,
-.home-icon-fb:hover,
-.home-icon-twitter:hover {
-    color: #FF2323
+            &:hover {
+                color: inherit;
+            }
+        }
+    }
+
+    .social-icon {
+        font-size: 26px;
+        color: inherit;
+    }
 }
 
 @media (max-width: 360px) {
     .home-container {
         width: 300px;
-    }
-    .home-icon-insta,
-    .home-icon-fb,
-    .home-icon-twitter {
-        font-size: 56px;
     }
 }

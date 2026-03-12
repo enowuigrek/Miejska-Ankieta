@@ -127,7 +127,6 @@ h1.night::after {
     font-family: 'Archivo Black', sans-serif;
     letter-spacing: -2px;
     margin: 0 0 16px;
-    font-size: 1.4em;
 
     &.day::after {
         content: '';
@@ -163,7 +162,7 @@ h1.night::after {
 .social-links {
     display: flex;
     gap: 24px;
-    justify-content: center;
+    justify-content: flex-start;
 
     a {
         color: inherit;

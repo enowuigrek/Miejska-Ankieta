@@ -6,7 +6,7 @@ import './Question.scss';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const GREETINGS = [
     'Dzięki za głos! Udanej niedzieli.',
@@ -112,17 +112,17 @@ const Question = ({ isNight }) => {
                     ))}
                 </div>
 
-                <h2 className={`fact-header ${isNight ? 'night' : 'day'}`}>Czy wiesz, że...</h2>
+                <h2 className={`fact-header ${isNight ? 'night' : 'day'}`}>a czy wiesz, że...</h2>
                 <p className='fact-text'>{fact}</p>
 
                 <p className='greeting'>{greeting}</p>
 
                 <div className='social-links'>
                     <a href='https://www.instagram.com/miejska_ankieta/' target='_blank' rel='noopener noreferrer'>
-                        <FontAwesomeIcon icon={faInstagram} className='social-icon' />
+                        <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                     </a>
                     <a href='https://www.facebook.com/miejska.ankieta' target='_blank' rel='noopener noreferrer'>
-                        <FontAwesomeIcon icon={faFacebook} className='social-icon' />
+                        <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                     </a>
                 </div>
             </div>
