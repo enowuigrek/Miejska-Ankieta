@@ -127,7 +127,7 @@ const Question = ({ isNight }) => {
                                     className='result-bar-fill'
                                     style={{ width: `${r.percent}%` }}
                                 />
-                                <span className='result-label'>{r.label}</span>
+                                <span className='result-label'>{r.label.charAt(0).toUpperCase() + r.label.slice(1)}</span>
                             </div>
                             <span className='result-percent'>{r.percent}%</span>
                         </div>
@@ -166,7 +166,7 @@ const Question = ({ isNight }) => {
                         onClick={() => handleOptionClick(option.id)}
                         disabled={loading}
                     >
-                        <span className='option-label'>{option.label}</span>
+                        <span className='option-label'>{option.label.charAt(0).toUpperCase() + option.label.slice(1)}</span>
                         <div className='countdown-bar' key={selectedOption === option.id ? 'active' : 'idle'} />
                     </button>
                 ))}
