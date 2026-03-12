@@ -49,6 +49,17 @@ h1.night::after {
     }
 }
 
+// Separator "czy"
+.czy-separator {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.3em;
+    letter-spacing: -2px;
+    margin: 2px 0;
+
+    &.day { color: rgb(69, 69, 69); }
+    &.night { color: rgb(243, 242, 242); }
+}
+
 // Opcje odpowiedzi
 .option-btn {
     position: relative;

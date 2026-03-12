@@ -20,7 +20,7 @@ const GREETINGS = [
 
 const AUTO_SUBMIT_DELAY = 2000;
 
-const Question = ({ isNight }) => {
+const Question = ({ isNight, onResultsView }) => {
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const [view, setView] = useState('question');
@@ -57,6 +57,7 @@ const Question = ({ isNight }) => {
     useEffect(() => {
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
+            if (onResultsView) onResultsView(false);
         };
     }, []);
 
@@ -95,6 +96,7 @@ const Question = ({ isNight }) => {
             setResults(computed);
             setFact(randomFact);
             setView('results');
+            if (onResultsView) onResultsView(true);
         } catch (err) {
             console.error("Error:", err);
         } finally {
@@ -127,7 +129,7 @@ const Question = ({ isNight }) => {
                                     className='result-bar-fill'
                                     style={{ width: `${r.percent}%` }}
                                 />
-                                <span className='result-label'>{r.label.charAt(0).toUpperCase() + r.label.slice(1)}</span>
+                                <span className='result-label'>{r.label}</span>
                             </div>
                             <span className='result-percent'>{r.percent}%</span>
                         </div>
@@ -158,17 +160,21 @@ const Question = ({ isNight }) => {
                 {questionData.questionText}
             </h1>
             <div className='options'>
-                {questionData.options.map((option) => (
-                    <button
-                        key={option.id}
-                        type='button'
-                        className={`option-btn ${isNight ? 'night' : 'day'}${selectedOption === option.id ? ' selected' : ''}${loading ? ' disabled' : ''}`}
-                        onClick={() => handleOptionClick(option.id)}
-                        disabled={loading}
-                    >
-                        <span className='option-label'>{option.label.charAt(0).toUpperCase() + option.label.slice(1)}</span>
-                        <div className='countdown-bar' key={selectedOption === option.id ? 'active' : 'idle'} />
-                    </button>
+                {questionData.options.map((option, index) => (
+                    <React.Fragment key={option.id}>
+                        {index === questionData.options.length - 1 && (
+                            <div className={`czy-separator ${isNight ? 'night' : 'day'}`}>czy</div>
+                        )}
+                        <button
+                            type='button'
+                            className={`option-btn ${isNight ? 'night' : 'day'}${selectedOption === option.id ? ' selected' : ''}${loading ? ' disabled' : ''}`}
+                            onClick={() => handleOptionClick(option.id)}
+                            disabled={loading}
+                        >
+                            <span className='option-label'>{option.label}</span>
+                            <div className='countdown-bar' key={selectedOption === option.id ? 'active' : 'idle'} />
+                        </button>
+                    </React.Fragment>
                 ))}
             </div>
         </div>

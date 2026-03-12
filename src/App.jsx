@@ -17,6 +17,7 @@ import './App.scss';
 const AppContent = ({ isNight }) => {
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
+    const [hideBrand, setHideBrand] = React.useState(false);
 
     return (
         <div className={`App ${isNight ? 'night' : 'day'}`}>
@@ -28,17 +29,19 @@ const AppContent = ({ isNight }) => {
                 </div>
             ) : (
                 <div className='main-content'>
-                    <div className='brand-zone'>
-                        <div className='app-brand-header'>
-                            <div className='app-brand-line1'>jak</div>
-                            <div className='app-brand-line2'>myślisz</div>
-                            <div className='app-brand-line3'><span className='app-brand-q'>?</span></div>
+                    {!hideBrand && (
+                        <div className='brand-zone'>
+                            <div className='app-brand-header'>
+                                <div className='app-brand-line1'>jak</div>
+                                <div className='app-brand-line2'>myślisz</div>
+                                <div className='app-brand-line3'><span className='app-brand-q'>?</span></div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div className='question-zone'>
                         <Routes>
                             <Route path='/' element={<Home isNight={isNight} />} />
-                            <Route path='/:questionId' element={<Question isNight={isNight} />} />
+                            <Route path='/:questionId' element={<Question isNight={isNight} onResultsView={setHideBrand} />} />
                             <Route path='/fact' element={<Fact isNight={isNight} />} />
                             <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
                             <Route path='/404' element={<PageNotFound isNight={isNight} />} />
