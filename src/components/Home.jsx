@@ -3,14 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faInstagram,
     faFacebook,
-    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import './Home.scss';
 
 const Home = ({ isNight }) => {
     const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
     const facebookLink = 'https://www.facebook.com/miejska.ankieta';
-    const twitterLink = 'https://twitter.com/miejska_ankieta';
     const dayNight = isNight ? 'night' : 'day';
 
     return (
@@ -36,17 +34,10 @@ const Home = ({ isNight }) => {
                         className={`fa-icon home-icon-fb ${dayNight}`}
                     />
                 </a>
-                <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
-                    <FontAwesomeIcon
-                        icon={faXTwitter}
-                        className={`fa-icon home-icon-twitter ${dayNight}`}
-                    />
-                </a>
             </div>
             <p>
-                Na mieście znajdziesz pytania, na które możesz odpowiedzieć i
-                wziąć udział w miejskiej ankiecie skanując QR kod. Ankieta jest
-                w pełni anonimowa.
+                Na mieście znajdziesz pytania, na które możesz odpowiedzieć
+                skanując QR kod. Ankieta jest w pełni anonimowa.
             </p>
             <p>Obserwuj social media, aby śledzić wyniki.</p>
         </div>

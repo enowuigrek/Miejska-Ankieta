@@ -142,7 +142,7 @@ const AdminPanel = ({ isNight }) => {
                 <div className="header-left">
                     <div className="header-title">
                         <h1> Admin Dashboard</h1>
-                        <span className="subtitle">Miejska Ankieta</span>
+                        <span className="subtitle">jakmyślisz</span>
                     </div>
                 </div>
 

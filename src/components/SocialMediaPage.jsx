@@ -3,18 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faInstagram,
     faFacebook,
-    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import './SocialMediaPage.scss';
 
 const SocialMediaPage = ({ isNight }) => {
     const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
     const facebookLink = 'https://www.facebook.com/miejska.ankieta';
-    const twitterLink = 'https://twitter.com/miejska_ankieta';
 
     const greetings = [
         'Dzięki za głos! Udanej niedzieli.',
-        'Dzięki za głos! Dobrego tygonia!',
+        'Dzięki za głos! Dobrego tygodnia!',
         'Dzięki za głos! Udanego wtorku!',
         'Dzięki za głos! Miłej środy!',
         'Dzięki za głos! Dobrego czwartku!',
@@ -51,14 +49,6 @@ const SocialMediaPage = ({ isNight }) => {
                     <FontAwesomeIcon
                         icon={faFacebook}
                         className={`fa-icon icon-fb ${
-                            isNight ? 'night' : 'day'
-                        }`}
-                    />
-                </a>
-                <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
-                    <FontAwesomeIcon
-                        icon={faXTwitter}
-                        className={`fa-icon icon-twitter ${
                             isNight ? 'night' : 'day'
                         }`}
                     />

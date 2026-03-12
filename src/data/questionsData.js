@@ -1,13 +1,13 @@
 export const QUESTIONS_DATA = {
     zwierzeta: {
-        questionText: 'Koty czy psy?',
+        questionText: 'Lepszy kompan',
         options: [
-            { id: 'koty', label: 'koty' },
-            { id: 'psy', label: 'psy' },
+            { id: 'pies', label: 'pies' },
+            { id: 'kot', label: 'kot' },
         ],
     },
     pomidorowa: {
-        questionText: 'Pomidorowa',
+        questionText: 'Pomidorowa lepsza',
         options: [
             { id: 'z ryżem', label: 'z ryżem' },
             { id: 'z makaronem', label: 'z makaronem' },
@@ -15,7 +15,7 @@ export const QUESTIONS_DATA = {
     },
 
     gaming: {
-        questionText: 'Gram na',
+        questionText: 'Lepiej się gra na',
         options: [
             { id: 'PC', label: 'PC' },
             { id: 'PlayStation', label: 'PlayStation' },
@@ -28,7 +28,7 @@ export const QUESTIONS_DATA = {
     },
 
     pizza_ananas: {
-        questionText: 'Pizza z ananasem',
+        questionText: 'Pizza z ananasem?',
         options: [
             { id: 'tak, bardzo lubię', label: 'tak, bardzo lubię' },
             { id: 'NIE %@*&#?!!!', label: 'NIE %@*&#?!!!' },
@@ -36,7 +36,7 @@ export const QUESTIONS_DATA = {
     },
 
     dom_mieszkanie: {
-        questionText: 'Dom czy mieszkanie?',
+        questionText: 'Lepiej się mieszka w',
         options: [
             { id: 'dom', label: 'dom' },
             { id: 'mieszkanie', label: 'mieszkanie' },
@@ -44,7 +44,7 @@ export const QUESTIONS_DATA = {
     },
 
     ksiazka: {
-        questionText: 'Książka',
+        questionText: 'Książka lepsza jako',
         options: [
             { id: 'papier', label: 'papier' },
             { id: 'e-book', label: 'e-book' },
@@ -53,7 +53,7 @@ export const QUESTIONS_DATA = {
     },
 
     kordeckiego: {
-        questionText: 'Zgadujemy',
+        questionText: 'Co tu będzie?',
         options: [
             { id: 'parking', label: 'parking' },
             {
@@ -66,7 +66,7 @@ export const QUESTIONS_DATA = {
     },
 
     kawa: {
-        questionText: 'Jak czarna, to?',
+        questionText: 'Jak czarna, to',
         options: [
             { id: 'owocowa, z kwasowością', label: 'owocowa, z kwasowością' },
             { id: 'czekoladowa, z goryczką', label: 'czekoladowa, z goryczką' },
@@ -74,7 +74,7 @@ export const QUESTIONS_DATA = {
     },
 
     mleko: {
-        questionText: 'mleko',
+        questionText: 'Mleko lepsze',
         options: [
             { id: 'krowie', label: 'krowie' },
             { id: 'roślinne', label: 'roślinne' },
@@ -82,7 +82,7 @@ export const QUESTIONS_DATA = {
     },
 
     majonez: {
-        questionText: 'Majonez',
+        questionText: 'Lepszy majonez',
         options: [
             { id: 'Kielecki', label: 'Kielecki' },
             { id: 'Winiary', label: 'Winiary' },
@@ -91,7 +91,7 @@ export const QUESTIONS_DATA = {
     },
 
     ipa: {
-        questionText: 'IPA',
+        questionText: 'IPA?',
         options: [
             { id: 'za gorzkie', label: 'za gorzkie' },
             { id: 'uwielbiam!!', label: 'uwielbiam!!' },
@@ -103,7 +103,7 @@ export const QUESTIONS_DATA = {
     },
 
     piwo: {
-        questionText: 'Piwo',
+        questionText: 'Piwo lepsze',
         options: [
             { id: 'jasne', label: 'jasne' },
             { id: 'ciemne', label: 'ciemne' },
@@ -111,7 +111,7 @@ export const QUESTIONS_DATA = {
     },
 
     papier: {
-        questionText: 'Papier toaletowy ma wisieć',
+        questionText: 'Papier toaletowy wisi',
         options: [
             { id: 'do ściany', label: 'DO ściany' },
             { id: 'od ściany', label: 'OD ściany' },
@@ -119,7 +119,7 @@ export const QUESTIONS_DATA = {
     },
 
     kroki: {
-        questionText: 'Ile kroków dziennie robisz?',
+        questionText: 'Ile kroków dziennie?',
         options: [
             { id: 'mniej niż 6 000', label: 'mniej niż 6 000' },
             { id: 'między 6 000 a 10 000', label: 'między 6 000 a 10 000' },

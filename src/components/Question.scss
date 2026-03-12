@@ -4,25 +4,6 @@
     align-items: center;
 }
 
-.radio-container {
-    display: flex;
-    align-items: center;
-    margin: 0 0 16px 12px;
-}
-
-.radio-container input[type='radio'] {
-    display: none;
-}
-
-.check-icon {
-    margin-right: 10px;
-    transition: opacity 0.3s ease;
-}
-
-.hidden {
-    visibility: hidden;
-}
-
 h1.day::after {
     content: '';
     display: block;
@@ -37,6 +18,170 @@ h1.night::after {
     height: 2px;
     width: 100%;
     background-color: rgb(243, 242, 242);
+}
+
+@keyframes countdownFill {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Opcje odpowiedzi
+.option-btn {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    text-align: left;
+    border: 1.5px solid;
+    touch-action: manipulation;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+
+    &.day {
+        color: rgb(69, 69, 69);
+        border-color: rgb(69, 69, 69);
+    }
+
+    &.night {
+        color: rgb(243, 242, 242);
+        border-color: rgb(243, 242, 242);
+    }
+
+    &.selected {
+        background-color: #FF2323;
+        border-color: #FF2323;
+
+        .option-label {
+            color: rgb(243, 242, 242);
+        }
+
+        .countdown-bar {
+            animation: countdownFill 2s linear forwards;
+        }
+    }
+
+    &:hover {
+        background-color: transparent;
+    }
+
+    &.selected:hover {
+        background-color: #FF2323;
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+}
+
+.countdown-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.option-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+// Widok wyników
+.view-results {
+    animation: slideUp 0.4s ease-out;
+}
+
+.results {
+    margin: 0 0 28px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    font-size: 18px;
+}
+
+.result-percent {
+    color: #FF2323;
+    white-space: nowrap;
+    margin-left: 12px;
+}
+
+// Ciekawostka — nagłówek z podkreśleniem jak h1
+.fact-header {
+    font-family: 'Archivo Black', sans-serif;
+    letter-spacing: -2px;
+    margin: 0 0 16px;
+    font-size: 1.4em;
+
+    &.day::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(69, 69, 69);
+    }
+
+    &.night::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(243, 242, 242);
+    }
+}
+
+.fact-text {
+    font-size: 15px;
+    margin: 0 0 32px;
+    text-align: left;
+    line-height: 1.6;
+}
+
+.greeting {
+    font-size: 16px;
+    margin: 0 0 32px;
+    text-align: left;
+}
+
+// Social — centered, subtle
+.social-links {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+
+    a {
+        color: inherit;
+        transition: color 0.15s;
+
+        &:active {
+            color: #FF2323;
+        }
+
+        &:hover {
+            color: inherit;
+        }
+    }
+}
+
+.social-icon {
+    font-size: 26px;
+    color: inherit;
 }
 
 @media (max-width: 360px) {

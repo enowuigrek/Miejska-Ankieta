@@ -12,27 +12,14 @@ import Fact from './components/Fact';
 import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
 import AdminPanel from './components/AdminPanel';
-import logoWhite from './assets/images/logo_white.svg';
-import logoGrey from './assets/images/logo_grey.svg';
 import './App.scss';
 
-// Component to conditionally show logo
 const AppContent = ({ isNight }) => {
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
 
     return (
         <div className={`App ${isNight ? 'night' : 'day'}`}>
-            {!isAdminRoute && (
-                <div className="main-container">
-                    <img
-                        src={isNight ? logoWhite : logoGrey}
-                        alt="Miejska Ankieta Logo"
-                        className={`app-logo ${isNight ? 'night' : 'day'}`}
-                    />
-                </div>
-            )}
-
             <div className={isAdminRoute ? 'admin-content' : 'main-content'}>
                 <Routes>
                     <Route path='/' element={<Home isNight={isNight} />} />
