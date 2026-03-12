@@ -133,18 +133,12 @@ h1.night::after {
 .result-bar-box {
     flex: 1;
     position: relative;
-    border: 1.5px solid;
     padding: 14px 16px;
     overflow: hidden;
-
-    &.day {
-        border-color: rgb(69, 69, 69);
-        color: rgb(69, 69, 69);
-    }
+    background-color: rgba(69, 69, 69, 0.08);
 
     &.night {
-        border-color: rgb(243, 242, 242);
-        color: rgb(243, 242, 242);
+        background-color: rgba(243, 242, 242, 0.12);
     }
 }
 
@@ -161,8 +155,6 @@ h1.night::after {
     position: relative;
     z-index: 1;
     font-size: 1em;
-    color: rgb(243, 242, 242);
-    text-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
 }
 
 .result-percent {
