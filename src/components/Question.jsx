@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { QUESTIONS_DATA } from '../data/questionsData';
 import { FACTS_DATA } from '../data/factsData';
 import './Question.scss';
@@ -29,6 +29,8 @@ const Question = ({ isNight }) => {
     const [loading, setLoading] = useState(false);
     const timerRef = React.useRef(null);
     const { questionId } = useParams();
+    const [searchParams] = useSearchParams();
+    const location = searchParams.get('loc') || null;
     const questionData = QUESTIONS_DATA[questionId];
 
     useEffect(() => {
@@ -58,6 +60,7 @@ const Question = ({ isNight }) => {
                 questionId,
                 answer: answerId,
                 timestamp: new Date().toLocaleString(),
+                ...(location && { location }),
             });
 
             const q = query(collection(db, "answers"), where("questionId", "==", questionId));
