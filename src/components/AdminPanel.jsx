@@ -153,7 +153,10 @@ const AdminPanel = () => {
         <div className='admin-dashboard'>
             <header className='admin-header'>
                 <div className='admin-brand'>
-                    Jak Myślisz<span className='brand-q'>?</span>
+                    <div className='admin-brand-stacked'>
+                        <div className='admin-brand-line1'>jak</div>
+                        <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+                    </div>
                     <span className='admin-label'>admin</span>
                 </div>
                 <button

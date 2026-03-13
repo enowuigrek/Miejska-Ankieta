@@ -66,7 +66,7 @@ export const QUESTIONS_DATA = {
     },
 
     kawa: {
-        questionText: 'Jak czarna, to',
+        questionText: 'Jak czarna kawa, to',
         options: [
             { id: 'owocowa, z kwasowością', label: 'owocowa, z kwasowością' },
             { id: 'czekoladowa, z goryczką', label: 'czekoladowa, z goryczką' },
