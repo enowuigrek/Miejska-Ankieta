@@ -1,6 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/LIVE-miejska--ankieta.czest.pl-brightgreen" />
-  <img src="https://img.shields.io/badge/domain-jakmyslisz.com-blue" />
+  <img src="https://img.shields.io/badge/LIVE-jakmyslisz.com-brightgreen" />
   <img src="https://img.shields.io/badge/React-18-blue" />
   <img src="https://img.shields.io/badge/Vite-7.0-purple" />
   <img src="https://img.shields.io/badge/Firebase-yellow" />
@@ -21,15 +20,15 @@ The goal is to spark reflection, conversation, and curiosity about everyday topi
 ## 🚀 Status & Demo
 
 **Status:** Live
-**Live URL:** https://miejska-ankieta.czest.pl/ *(moving to jakmyslisz.com)*
+**Live URL:** https://jakmyslisz.com/
 
 > The full experience requires scanning a physical QR sticker in the city.
 > Questions are also accessible directly via URL.
 
 ### Example questions
 
-- https://miejska-ankieta.czest.pl/kawa
-- https://miejska-ankieta.czest.pl/pomidorowa
+- https://jakmyslisz.com/kawa
+- https://jakmyslisz.com/pomidorowa
 
 ---
 
