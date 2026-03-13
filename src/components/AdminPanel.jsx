@@ -6,7 +6,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 import './AdminPanel.scss';
 
+const ADMIN_PIN = import.meta.env.VITE_ADMIN_PIN;
+
 const AdminPanel = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        sessionStorage.getItem('admin_auth') === 'true'
+    );
+    const [pinInput, setPinInput] = useState('');
+    const [pinError, setPinError] = useState(false);
+
     const [answers, setAnswers] = useState([]);
     const [scans, setScans] = useState([]);
     const [stats, setStats] = useState({});
@@ -16,8 +24,48 @@ const AdminPanel = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (isAuthenticated) fetchData();
+    }, [isAuthenticated]);
+
+    const handlePinSubmit = (e) => {
+        e.preventDefault();
+        if (pinInput === ADMIN_PIN) {
+            sessionStorage.setItem('admin_auth', 'true');
+            setIsAuthenticated(true);
+        } else {
+            setPinError(true);
+            setPinInput('');
+            setTimeout(() => setPinError(false), 1500);
+        }
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className='admin-login'>
+                <div className='admin-login-box'>
+                    <div className='admin-brand'>
+                        <div className='admin-brand-stacked'>
+                            <div className='admin-brand-line1'>jak</div>
+                            <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+                        </div>
+                        <span className='admin-label'>admin</span>
+                    </div>
+                    <form onSubmit={handlePinSubmit} className='pin-form'>
+                        <input
+                            type='password'
+                            className={`pin-input${pinError ? ' error' : ''}`}
+                            value={pinInput}
+                            onChange={e => setPinInput(e.target.value)}
+                            placeholder='PIN'
+                            autoFocus
+                        />
+                        <button type='submit' className='pin-btn'>Wejdź</button>
+                    </form>
+                    {pinError && <p className='pin-error'>Zły PIN</p>}
+                </div>
+            </div>
+        );
+    }
 
     const fetchData = async () => {
         try {
