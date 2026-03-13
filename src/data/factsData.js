@@ -56,4 +56,42 @@ export const FACTS_DATA = [
     'Tłumik w pistoletach nie sprawia, że strzały stają się całkowicie bezszelestne ani niemożliwe do wykrycia. Służy głównie ochronie słuchu strzelca oraz redukcji hałasu dla osób w pobliżu. Psiu psiu w filmach to mit. Swoją drogą jak dodatkowa nasadka na lufie, miałaby wyciszyć wybuchający proch? Ona działa głównie na redukcję hałasu wytwarzanego przez gaz wydobywający się z lufy.',
 
     'Czerwona papryka zawiera więcej witaminy C niż cytryna. Na przykład, 100 gramów czerwonej papryki może dostarczyć około 128 mg witaminy C, podczas gdy ta sama ilość cytryny zawiera około 53 mg witaminy C.',
+
+    'Podejmujesz około 35 000 decyzji dziennie. Większość z nich nieświadomie.',
+
+    'Ludzkie DNA jest w 60% identyczne z DNA banana.',
+
+    'Samotność jest statystycznie groźniejsza dla zdrowia niż palenie 15 papierosów dziennie.',
+
+    'Na Saturnie i Jowiszu pada deszcz z diamentów.',
+
+    'Płaczemy trzema rodzajami łez: odruchowymi, bazalnymi i emocjonalnymi. Tylko te ostatnie zawierają hormony stresu.',
+
+    'W ciągu życia przejdziesz około 150 000 km — prawie 4 razy dookoła Ziemi.',
+
+    'Twój mózg zużywa 20% energii ciała, choć waży tylko 2% jego masy.',
+
+    'Przeciętny człowiek spędza 6 miesięcy życia czekając na zielone światło.',
+
+    'Pszczoły potrafią rozpoznawać ludzkie twarze.',
+
+    'Na świecie jest więcej telefonów komórkowych niż ludzi.',
+
+    'Twój żołądek produkuje nową warstwę śluzu co dwa tygodnie — inaczej strawiłby sam siebie.',
+
+    'Każda decyzja którą podjąłeś doprowadziła Cię do czytania tego zdania.',
+
+    'Najstarsze znane drzewo na świecie ma ponad 5 000 lat i stoi w Kalifornii.',
+
+    'Gdybyś mógł złożyć kartkę papieru 42 razy, sięgnęłaby do Księżyca.',
+
+    'Światło docierające do nas ze Słońca ma 8 minut i 20 sekund. Widzisz przeszłość.',
+
+    'Częstochowa leży dokładnie na 50. równoleżniku północnym — tak samo jak Praga i Kraków.',
+
+    'Średnio spędzamy 2 lata życia na scrollowaniu telefonu.',
+
+    'Twoje ciało zawiera wystarczająco dużo żelaza, żeby zrobić z niego gwóźdź o długości 7 cm.',
+
+    'Koty mruczą z częstotliwością 25-150 Hz — dokładnie taką, która przyspiesza gojenie kości.',
 ];

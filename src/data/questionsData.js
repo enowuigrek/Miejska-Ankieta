@@ -325,4 +325,107 @@ export const QUESTIONS_DATA = {
             { id: 'trochę', label: 'trochę' },
         ],
     },
+
+    // --- MOCNE / EGZYSTENCJALNE ---
+
+    cofnij_czas: {
+        questionText: 'Gdybyś mógł cofnąć czas',
+        options: [
+            { id: 'zmieniłbym coś', label: 'zmieniłbym coś' },
+            { id: 'nic bym nie zmienił', label: 'nic bym nie zmienił' },
+        ],
+    },
+
+    symulacja: {
+        questionText: 'Żyjemy w symulacji?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'nie chcę wiedzieć', label: 'nie chcę wiedzieć' },
+        ],
+    },
+
+    sami_wszechswiat: {
+        questionText: 'Jesteśmy sami we wszechświecie?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'boję się odpowiedzi', label: 'boję się odpowiedzi' },
+        ],
+    },
+
+    wiedziec_kiedy: {
+        questionText: 'Wolałbyś wiedzieć kiedy umrzesz?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+        ],
+    },
+
+    los_istnieje: {
+        questionText: 'Los istnieje?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie, sami kształtujemy życie' },
+        ],
+    },
+
+    piec_lat_temu: {
+        questionText: 'Jesteś tam, gdzie chciałeś być 5 lat temu?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'lepiej niż myślałem', label: 'lepiej niż myślałem' },
+        ],
+    },
+
+    bogaty_szczesliwy: {
+        questionText: 'Wolisz być',
+        options: [
+            { id: 'bogaty i smutny', label: 'bogaty i smutny' },
+            { id: 'biedny i szczęśliwy', label: 'biedny i szczęśliwy' },
+        ],
+    },
+
+    nikt_nie_wie: {
+        questionText: 'Gdyby nikt się nie dowiedział',
+        options: [
+            { id: 'zrobiłbym coś inaczej', label: 'zrobiłbym coś inaczej' },
+            { id: 'nic bym nie zmienił', label: 'i tak bym nic nie zmienił' },
+        ],
+    },
+
+    smierc_sens: {
+        questionText: 'Śmierć nadaje życiu sens?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+        ],
+    },
+
+    wolna_wola: {
+        questionText: 'Wolna wola istnieje?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie, jesteśmy zaprogramowani' },
+            { id: 'nie wiem', label: 'nie wiem i to mnie przeraża' },
+        ],
+    },
+
+    zycie_sens: {
+        questionText: 'Życie ma sens?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie ale to OK', label: 'nie, ale to OK' },
+            { id: 'sam go sobie nadaję', label: 'sam go sobie nadaję' },
+        ],
+    },
+
+    samotnosc_dzis: {
+        questionText: 'Ludzie są dziś bardziej samotni?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+        ],
+    },
 };
