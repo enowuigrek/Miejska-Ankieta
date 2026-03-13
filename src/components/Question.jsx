@@ -132,15 +132,6 @@ const Question = ({ isNight, onResultsView }) => {
         }, AUTO_SUBMIT_DELAY);
     };
 
-    const handleChangeVote = () => {
-        localStorage.removeItem(`voted_${questionId}`);
-        setPrevAnswer(null);
-        setView('question');
-        setResults(null);
-        setSelectedOption(null);
-        if (onResultsView) onResultsView(false);
-    };
-
     if (view === 'results') {
         const greeting = GREETINGS[new Date().getDay()];
         const prevAnswerLabel = prevAnswer
@@ -151,18 +142,9 @@ const Question = ({ isNight, onResultsView }) => {
             <div className='question-container view-results'>
                 {/* Poprzednia odpowiedź */}
                 {prevAnswerLabel && (
-                    <div className={`prev-answer-bar ${isNight ? 'night' : 'day'}`}>
-                        <span className='prev-answer-text'>
-                            twoja odpowiedź: <strong>{prevAnswerLabel}</strong>
-                        </span>
-                        <button
-                            type='button'
-                            className='change-vote-btn'
-                            onClick={handleChangeVote}
-                        >
-                            zmień
-                        </button>
-                    </div>
+                    <p className={`prev-answer-line ${isNight ? 'night' : 'day'}`}>
+                        twoja odpowiedź: <strong>{prevAnswerLabel}</strong>
+                    </p>
                 )}
 
                 <h1 className={`question-title ${isNight ? 'night' : 'day'}`}>

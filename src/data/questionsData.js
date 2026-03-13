@@ -251,7 +251,7 @@ export const QUESTIONS_DATA = {
         options: [
             { id: 'pomoże ludziom', label: 'pomoże ludziom' },
             { id: 'zaszkodzi', label: 'zaszkodzi' },
-            { id: 'już przejęła', label: 'już przejęła' },
+            { id: 'nie obchodzi mnie to', label: 'nie obchodzi mnie to' },
         ],
     },
 
