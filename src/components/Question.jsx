@@ -27,6 +27,7 @@ const Question = ({ isNight, onResultsView }) => {
     const [results, setResults] = useState(null);
     const [fact, setFact] = useState('');
     const [loading, setLoading] = useState(false);
+    const [prevAnswer, setPrevAnswer] = useState(null);
     const timerRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
     const { questionId } = useParams();
@@ -59,6 +60,7 @@ const Question = ({ isNight, onResultsView }) => {
         if (!questionData) return;
         const voted = localStorage.getItem(`voted_${questionId}`);
         if (voted) {
+            setPrevAnswer(voted);
             fetchResults();
         }
     }, [questionId]);
@@ -111,6 +113,7 @@ const Question = ({ isNight, onResultsView }) => {
             });
 
             localStorage.setItem(`voted_${questionId}`, answerId);
+            setPrevAnswer(answerId);
             await fetchResults();
         } catch (err) {
             console.error("Error:", err);
@@ -129,10 +132,39 @@ const Question = ({ isNight, onResultsView }) => {
         }, AUTO_SUBMIT_DELAY);
     };
 
+    const handleChangeVote = () => {
+        localStorage.removeItem(`voted_${questionId}`);
+        setPrevAnswer(null);
+        setView('question');
+        setResults(null);
+        setSelectedOption(null);
+        if (onResultsView) onResultsView(false);
+    };
+
     if (view === 'results') {
         const greeting = GREETINGS[new Date().getDay()];
+        const prevAnswerLabel = prevAnswer
+            ? questionData.options.find(o => o.id === prevAnswer)?.label
+            : null;
+
         return (
             <div className='question-container view-results'>
+                {/* Poprzednia odpowiedź */}
+                {prevAnswerLabel && (
+                    <div className={`prev-answer-bar ${isNight ? 'night' : 'day'}`}>
+                        <span className='prev-answer-text'>
+                            twoja odpowiedź: <strong>{prevAnswerLabel}</strong>
+                        </span>
+                        <button
+                            type='button'
+                            className='change-vote-btn'
+                            onClick={handleChangeVote}
+                        >
+                            zmień
+                        </button>
+                    </div>
+                )}
+
                 <h1 className={`question-title ${isNight ? 'night' : 'day'}`}>
                     jak myślą inni
                 </h1>
@@ -156,7 +188,8 @@ const Question = ({ isNight, onResultsView }) => {
 
                 <p className='greeting'>{greeting}</p>
 
-                <div className='social-links'>
+                {/* Social — fixed na dole */}
+                <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
                     <a href='https://www.instagram.com/jakmyslisz/' target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                     </a>

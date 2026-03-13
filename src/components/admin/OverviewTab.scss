@@ -1,0 +1,125 @@
+.overview-tab {
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+// KPI
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.kpi-card {
+    padding: 20px 24px;
+    border: 2px solid rgb(69, 69, 69);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &.accent .kpi-number {
+        color: #FF2323;
+    }
+}
+
+.kpi-number {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2rem;
+    letter-spacing: -3px;
+    line-height: 1;
+    color: rgb(69, 69, 69);
+}
+
+.kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0.5;
+    text-transform: lowercase;
+}
+
+// Sections
+.section-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: -0.5px;
+    margin: 0 0 20px;
+    opacity: 0.5;
+    text-transform: lowercase;
+}
+
+// Trends
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px 24px;
+    border: 2px solid rgb(69, 69, 69);
+}
+
+// Charts
+.chart-wrap {
+    width: 100%;
+}
+
+// Tooltip
+.chart-tooltip {
+    background: rgb(243, 242, 242);
+    border: 2px solid rgb(69, 69, 69);
+    padding: 10px 14px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.85rem;
+
+    .chart-tooltip-label {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    p {
+        margin: 2px 0;
+    }
+}
+
+// Empty
+.tab-empty {
+    padding: 60px 40px;
+    font-size: 1rem;
+    opacity: 0.5;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .overview-tab {
+        padding: 24px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .trend-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .overview-tab {
+        padding: 16px;
+        gap: 24px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .kpi-number {
+        font-size: 1.6rem;
+    }
+
+    .trend-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

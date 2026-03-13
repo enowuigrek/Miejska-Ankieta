@@ -214,29 +214,80 @@ h1.night::after {
     text-align: left;
 }
 
-// Social
-.social-links {
+// Poprzednia odpowiedź
+.prev-answer-bar {
     display: flex;
-    gap: 24px;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    border: 1.5px solid;
 
-    a {
-        color: inherit;
-        transition: color 0.15s;
+    &.day {
+        border-color: rgba(69, 69, 69, 0.3);
+        color: rgb(69, 69, 69);
+    }
 
-        &:active {
-            color: #FF2323;
-        }
-
-        &:hover {
-            color: inherit;
-        }
+    &.night {
+        border-color: rgba(243, 242, 242, 0.3);
+        color: rgb(243, 242, 242);
     }
 }
 
+.prev-answer-text {
+    font-size: 0.82rem;
+    opacity: 0.7;
+
+    strong {
+        opacity: 1;
+    }
+}
+
+.change-vote-btn {
+    background: none;
+    border: none;
+    padding: 2px 0;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: -0.5px;
+    color: #FF2323;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+    width: auto;
+
+    &:hover {
+        background: transparent;
+        opacity: 0.8;
+    }
+}
+
+// Social — fixed na dole
+.social-fixed {
+    position: fixed;
+    bottom: 24px;
+    left: 36px;
+    display: flex;
+    gap: 14px;
+    z-index: 50;
+
+    a {
+        transition: opacity 0.15s;
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+
+    &.day a { color: rgb(69, 69, 69); }
+    &.night a { color: rgb(243, 242, 242); }
+}
+
 .social-icon {
-    font-size: 64px;
+    font-size: 48px;
     color: inherit;
+    display: block;
 }
 
 @media (max-width: 360px) {

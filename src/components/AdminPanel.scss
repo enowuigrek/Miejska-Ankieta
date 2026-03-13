@@ -7,6 +7,10 @@
     padding-bottom: 60px;
 }
 
+.admin-content {
+    min-height: calc(100vh - 73px - 53px);
+}
+
 /* HEADER */
 .admin-header {
     display: flex;

@@ -1,0 +1,132 @@
+.question-detail {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(69, 69, 69, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: rgba(69, 69, 69, 0.02);
+}
+
+// Charts row
+.detail-charts-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.detail-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-response-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-bar-box {
+    flex: 1;
+    position: relative;
+    padding: 10px 12px;
+    overflow: hidden;
+    background-color: rgba(69, 69, 69, 0.07);
+}
+
+.detail-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #FF2323;
+    transition: width 0.6s ease;
+}
+
+.detail-bar-label {
+    position: relative;
+    z-index: 1;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.detail-bar-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 44px;
+    gap: 2px;
+}
+
+.detail-pct {
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.detail-count {
+    font-size: 0.72rem;
+    opacity: 0.5;
+}
+
+.detail-pie {
+    flex-shrink: 0;
+}
+
+// Locations
+.detail-locations {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.4;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.detail-location-tag {
+    padding: 4px 10px;
+    border: 1px solid rgba(69, 69, 69, 0.3);
+    font-size: 0.78rem;
+    font-weight: 600;
+
+    strong {
+        color: #FF2323;
+        margin-left: 4px;
+    }
+}
+
+// Timeline
+.detail-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+// Shared tooltip (from LocationsTab)
+.chart-tooltip {
+    background: rgb(243, 242, 242);
+    border: 2px solid rgb(69, 69, 69);
+    padding: 8px 12px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.82rem;
+
+    p { margin: 0; }
+}
+
+@media (max-width: 600px) {
+    .detail-charts-row {
+        flex-direction: column;
+    }
+
+    .detail-pie {
+        align-self: center;
+    }
+}

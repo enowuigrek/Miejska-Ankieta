@@ -1,0 +1,40 @@
+.trend-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.trend-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.5;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+}
+
+.trend-value {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.trend-change {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    &.up { color: #2a9d2a; }
+    &.down { color: #FF2323; }
+    &.neutral { opacity: 0.4; }
+}
+
+.trend-arrow {
+    font-size: 0.9rem;
+}
+
+.trend-diff {
+    font-size: 0.72rem;
+}
