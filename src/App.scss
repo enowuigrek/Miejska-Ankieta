@@ -18,30 +18,39 @@ html, body {
     background-color: rgb(69, 69, 69);
 }
 
-// Dwie strefy: górna = logo, dolna = treść
+// Dwie strefy: górna = logo (elastyczna), dolna = treść (naturalna wysokość)
 .main-content {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
 }
 
 .brand-zone {
-    height: 50vh;
+    flex: 1 1 0;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    padding: 20px 0;
 }
 
 .question-zone {
-    min-height: 50vh;
+    flex: 0 0 auto;
+    max-height: calc(100dvh - 24px); // logo zawsze ma min 24px miejsca
     display: flex;
     align-items: flex-start;
     justify-content: center;
     overflow-y: auto;
+    padding-bottom: 20px;
 
     &.full {
-        min-height: 100vh;
-        align-items: center;
+        flex: 1 1 0;
+        min-height: 0;
+        max-height: none;
+        align-items: flex-start;
+        overflow-y: auto;
     }
 }
 
@@ -49,7 +58,7 @@ html, body {
 .app-brand-header {
     font-family: 'Archivo Black', sans-serif;
     letter-spacing: -4px;
-    font-size: 3.2em;
+    font-size: min(3.2em, 10dvh);
     text-align: center;
     line-height: 0.82;
 }
