@@ -7,6 +7,7 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
+import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 
 const GREETINGS = [
     'Dzięki za głos! Udanej niedzieli.',
@@ -90,7 +91,13 @@ const Question = ({ isNight, onResultsView }) => {
                 label: opt.label,
                 percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
             }));
-            const randomFact = FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
+            const factKey = `fact_${questionId}`;
+            const storedFactIdx = localStorage.getItem(factKey);
+            const factIdx = storedFactIdx !== null
+                ? parseInt(storedFactIdx)
+                : Math.floor(Math.random() * FACTS_DATA.length);
+            if (storedFactIdx === null) localStorage.setItem(factKey, factIdx);
+            const randomFact = FACTS_DATA[factIdx];
             setResults(computed);
             setFact(randomFact);
             setView('results');
@@ -172,10 +179,10 @@ const Question = ({ isNight, onResultsView }) => {
 
                 {/* Social — fixed na dole */}
                 <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
-                    <a href='https://www.instagram.com/jakmyslisz/' target='_blank' rel='noopener noreferrer'>
+                    <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                     </a>
-                    <a href='https://www.facebook.com/jakmyslisz' target='_blank' rel='noopener noreferrer'>
+                    <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                     </a>
                 </div>

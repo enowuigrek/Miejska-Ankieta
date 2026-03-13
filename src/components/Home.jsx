@@ -5,10 +5,9 @@ import {
     faSquareFacebook,
 } from '@fortawesome/free-brands-svg-icons';
 import './Home.scss';
+import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 
 const Home = ({ isNight }) => {
-    const instagramLink = 'https://www.instagram.com/jakmyslisz/';
-    const facebookLink = 'https://www.facebook.com/jakmyslisz';
     const dayNight = isNight ? 'night' : 'day';
 
     return (
@@ -19,10 +18,10 @@ const Home = ({ isNight }) => {
             </p>
 
             <div className='social-links'>
-                <a href={instagramLink} target='_blank' rel='noopener noreferrer'>
+                <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                 </a>
-                <a href={facebookLink} target='_blank' rel='noopener noreferrer'>
+                <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                 </a>
             </div>
