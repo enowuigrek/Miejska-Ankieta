@@ -55,6 +55,7 @@ h1.night::after {
     font-size: 1.3em;
     letter-spacing: -2px;
     margin: 2px 0;
+    padding-left: 14px;
 
     &.day { color: rgb(69, 69, 69); }
     &.night { color: rgb(243, 242, 242); }

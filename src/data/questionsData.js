@@ -127,4 +127,202 @@ export const QUESTIONS_DATA = {
             { id: 'więcej niż 15 000', label: 'więcej niż 15 000' },
         ],
     },
+
+    // --- FILOZOFICZNE ---
+
+    spokój_emocje: {
+        questionText: 'Lepiej mieć',
+        options: [
+            { id: 'spokój', label: 'spokój' },
+            { id: 'emocje', label: 'emocje' },
+        ],
+    },
+
+    wolnosc_bezpieczenstwo: {
+        questionText: 'Ważniejsze',
+        options: [
+            { id: 'wolność', label: 'wolność' },
+            { id: 'bezpieczeństwo', label: 'bezpieczeństwo' },
+        ],
+    },
+
+    pieniadze_szczescie: {
+        questionText: 'Pieniądze dają szczęście?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'pomagają', label: 'nie, ale bardzo pomagają' },
+            { id: 'nie', label: 'nie' },
+        ],
+    },
+
+    ludzie_natura: {
+        questionText: 'Ludzie z natury są',
+        options: [
+            { id: 'dobrzy', label: 'dobrzy' },
+            { id: 'egoistyczni', label: 'egoistyczni' },
+        ],
+    },
+
+    byc_soba: {
+        questionText: 'Lepiej',
+        options: [
+            { id: 'być sobą', label: 'być sobą' },
+            { id: 'dopasować się', label: 'dopasować się' },
+        ],
+    },
+
+    // --- MIASTO ---
+
+    wyprowadzka: {
+        questionText: 'Zostaniesz w Częstochowie?',
+        options: [
+            { id: 'tak', label: 'tak, tu jest OK' },
+            { id: 'nie', label: 'nie, planuję wyjechać' },
+            { id: 'juz wyjechałem', label: 'już wyjechałem/am' },
+        ],
+    },
+
+    perspektywy_mlodych: {
+        questionText: 'Młodzi mają tu perspektywy?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'szukają gdzie indziej', label: 'szukają gdzie indziej' },
+        ],
+    },
+
+    komunikacja_miejska: {
+        questionText: 'Komunikacja miejska w Częstochowie',
+        options: [
+            { id: 'działa OK', label: 'działa OK' },
+            { id: 'mogłoby być lepiej', label: 'mogłoby być lepiej' },
+            { id: 'tragedia', label: 'tragedia' },
+        ],
+    },
+
+    mieszkania_ceny: {
+        questionText: 'Ceny mieszkań tu są',
+        options: [
+            { id: 'za wysokie', label: 'za wysokie' },
+            { id: 'w porządku', label: 'w porządku' },
+            { id: 'niskie? gdzie?!', label: 'niskie? gdzie?!' },
+        ],
+    },
+
+    // --- RELACJE ---
+
+    singiel_zwiazek: {
+        questionText: 'Lepiej być',
+        options: [
+            { id: 'singlem', label: 'singlem' },
+            { id: 'w związku', label: 'w związku' },
+        ],
+    },
+
+    milosc_niezaleznosc: {
+        questionText: 'Ważniejsza',
+        options: [
+            { id: 'miłość', label: 'miłość' },
+            { id: 'niezależność', label: 'niezależność' },
+        ],
+    },
+
+    przyjazn_ex: {
+        questionText: 'Da się przyjaźnić z ex?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'absolutnie nie' },
+            { id: 'z niektórymi', label: 'z niektórymi' },
+        ],
+    },
+
+    stabilizacja_spontan: {
+        questionText: 'Wolisz',
+        options: [
+            { id: 'stabilizację', label: 'stabilizację' },
+            { id: 'spontaniczność', label: 'spontaniczność' },
+        ],
+    },
+
+    // --- TECHNOLOGIA / PRZYSZŁOŚĆ ---
+
+    ai_przyszlosc: {
+        questionText: 'Sztuczna inteligencja',
+        options: [
+            { id: 'pomoże ludziom', label: 'pomoże ludziom' },
+            { id: 'zaszkodzi', label: 'zaszkodzi' },
+            { id: 'już przejęła', label: 'już przejęła' },
+        ],
+    },
+
+    swiat_kierunek: {
+        questionText: 'Świat idzie',
+        options: [
+            { id: 'w dobrą stronę', label: 'w dobrą stronę' },
+            { id: 'w złą stronę', label: 'w złą stronę' },
+        ],
+    },
+
+    technologia_ludzie: {
+        questionText: 'Technologia nas',
+        options: [
+            { id: 'zbliża', label: 'zbliża' },
+            { id: 'oddala', label: 'oddala' },
+        ],
+    },
+
+    // --- LIFESTYLE ---
+
+    nocny_poranny: {
+        questionText: 'Jesteś',
+        options: [
+            { id: 'nocnym markiem', label: 'nocnym markiem' },
+            { id: 'rannym ptakiem', label: 'rannym ptakiem' },
+        ],
+    },
+
+    miasto_natura: {
+        questionText: 'Lepiej',
+        options: [
+            { id: 'miasto', label: 'miasto' },
+            { id: 'natura', label: 'natura' },
+        ],
+    },
+
+    // --- SPOŁECZNE ---
+
+    social_media: {
+        questionText: 'Social media',
+        options: [
+            { id: 'pomagają', label: 'pomagają' },
+            { id: 'szkodzą', label: 'szkodzą' },
+        ],
+    },
+
+    studia_sens: {
+        questionText: 'Studia mają dziś sens?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'zależy od kierunku', label: 'zależy od kierunku' },
+        ],
+    },
+
+    praca_pasja: {
+        questionText: 'Praca powinna być pasją?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nieważne byle płacili', label: 'nieważne, byle płacili' },
+            { id: 'idealnie gdyby tak było', label: 'idealnie gdyby tak było' },
+        ],
+    },
+
+    szkola_zycie: {
+        questionText: 'Szkoła przygotowuje do życia?',
+        options: [
+            { id: 'tak', label: 'tak' },
+            { id: 'nie', label: 'nie' },
+            { id: 'trochę', label: 'trochę' },
+        ],
+    },
 };
