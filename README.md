@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="src/assets/images/logo_grey.svg" width="260" alt="jakmyślisz logo" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/LIVE-jakmyslisz.com-brightgreen" />
   <img src="https://img.shields.io/badge/React-18-blue" />
   <img src="https://img.shields.io/badge/Vite-7.0-purple" />
