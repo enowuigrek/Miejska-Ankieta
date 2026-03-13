@@ -42,7 +42,10 @@ const Question = ({ isNight, onResultsView }) => {
             setTimeout(() => {
                 navigate('/404', { replace: true });
             }, 0);
+        } else {
+            document.title = `${questionData.questionText} — jakmyślisz`;
         }
+        return () => { document.title = 'jakmyślisz'; };
     }, [navigate, questionData]);
 
     // Zapis skanu (raz przy wejściu na stronę)

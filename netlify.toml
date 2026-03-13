@@ -1,6 +1,10 @@
 [build.environment]
   NODE_VERSION = "22.12.0"
 
+[[edge_functions]]
+  path = "/:questionId"
+  function = "og"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

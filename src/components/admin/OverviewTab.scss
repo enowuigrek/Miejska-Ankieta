@@ -61,6 +61,8 @@
 // Charts
 .chart-wrap {
     width: 100%;
+
+    svg { outline: none; }
 }
 
 // Tooltip
