@@ -19,7 +19,7 @@ const PieTooltip = ({ active, payload }) => {
     );
 };
 
-const QuestionDetail = ({ question }) => {
+const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
     const { responsesWithPct, locationEntries, timelineData } = question;
     const axisStyle = { fontFamily: FONT, fontSize: 10, fill: DARK, opacity: 0.5 };
 
@@ -115,6 +115,15 @@ const QuestionDetail = ({ question }) => {
                     </ResponsiveContainer>
                 </div>
             )}
+
+            {/* Printed toggle */}
+            <button
+                type='button'
+                className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
+                onClick={onTogglePrinted}
+            >
+                {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+            </button>
         </div>
     );
 };

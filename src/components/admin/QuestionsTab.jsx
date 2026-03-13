@@ -69,14 +69,9 @@ const QuestionsTab = ({ stats }) => {
         return (
             <div key={q.id} className={`question-row${isOpen ? ' open' : ''}${grayed ? ' grayed' : ''}`}>
                 <div className='question-row-header-wrap'>
-                    <button
-                        type='button'
-                        className={`printed-checkbox${isPrinted ? ' checked' : ''}`}
-                        onClick={(e) => togglePrinted(q.id, e)}
-                        title={isPrinted ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
-                    >
-                        {isPrinted ? '🖨' : ''}
-                    </button>
+                    {isPrinted && (
+                        <span className='printed-indicator' title='Wydrukowane'>🖨</span>
+                    )}
                     <button
                         type='button'
                         className='question-row-header'
@@ -105,10 +100,23 @@ const QuestionsTab = ({ stats }) => {
                         </div>
                     </button>
                 </div>
-                {isOpen && q.answers > 0 && <QuestionDetail question={q} />}
+                {isOpen && q.answers > 0 && (
+                    <QuestionDetail
+                        question={q}
+                        isPrinted={isPrinted}
+                        onTogglePrinted={(e) => togglePrinted(q.id, e)}
+                    />
+                )}
                 {isOpen && q.answers === 0 && (
                     <div className='question-detail'>
                         <p style={{ opacity: 0.4, fontSize: '0.9rem' }}>Brak odpowiedzi na to pytanie.</p>
+                        <button
+                            type='button'
+                            className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
+                            onClick={(e) => togglePrinted(q.id, e)}
+                        >
+                            {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+                        </button>
                     </div>
                 )}
             </div>

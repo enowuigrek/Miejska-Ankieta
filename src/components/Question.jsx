@@ -29,6 +29,7 @@ const Question = ({ isNight, onResultsView }) => {
     const [fact, setFact] = useState('');
     const [loading, setLoading] = useState(false);
     const [prevAnswer, setPrevAnswer] = useState(null);
+    const [barsVisible, setBarsVisible] = useState(false);
     const timerRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
     const { questionId } = useParams();
@@ -65,6 +66,15 @@ const Question = ({ isNight, onResultsView }) => {
             fetchResults();
         }
     }, [questionId]);
+
+    useEffect(() => {
+        if (view === 'results') {
+            const t = setTimeout(() => setBarsVisible(true), 350);
+            return () => clearTimeout(t);
+        } else {
+            setBarsVisible(false);
+        }
+    }, [view]);
 
     useEffect(() => {
         return () => {
@@ -163,7 +173,7 @@ const Question = ({ isNight, onResultsView }) => {
                             <div className={`result-bar-box ${isNight ? 'night' : 'day'}`}>
                                 <div
                                     className='result-bar-fill'
-                                    style={{ width: `${r.percent}%` }}
+                                    style={{ width: barsVisible ? `${r.percent}%` : '0%' }}
                                 />
                                 <span className='result-label'>{r.label}</span>
                             </div>

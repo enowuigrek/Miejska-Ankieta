@@ -1,6 +1,6 @@
 .question-detail {
-    padding: 20px 24px;
-    border-top: 1px solid rgba(69, 69, 69, 0.15);
+    padding: 24px 24px 20px;
+    border-top: 2px solid rgba(69, 69, 69, 0.15);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -119,6 +119,33 @@
     font-size: 0.82rem;
 
     p { margin: 0; }
+}
+
+// Przycisk "wydrukowane" w detalu pytania
+.printed-toggle-btn {
+    align-self: flex-start;
+    background: transparent;
+    border: 1.5px solid rgba(69, 69, 69, 0.3);
+    color: rgb(69, 69, 69);
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin: 0;
+    width: auto;
+
+    &:hover {
+        border-color: rgb(69, 69, 69);
+        background: transparent;
+    }
+
+    &.active {
+        border-color: #FF2323;
+        color: #FF2323;
+        background: rgba(255, 35, 35, 0.05);
+    }
 }
 
 @media (max-width: 600px) {
