@@ -7,8 +7,8 @@ import {
 import './Home.scss';
 
 const Home = ({ isNight }) => {
-    const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
-    const facebookLink = 'https://www.facebook.com/miejska.ankieta';
+    const instagramLink = 'https://www.instagram.com/jakmyslisz/';
+    const facebookLink = 'https://www.facebook.com/jakmyslisz';
     const dayNight = isNight ? 'night' : 'day';
 
     return (

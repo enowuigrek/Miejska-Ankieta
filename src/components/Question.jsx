@@ -157,10 +157,10 @@ const Question = ({ isNight, onResultsView }) => {
                 <p className='greeting'>{greeting}</p>
 
                 <div className='social-links'>
-                    <a href='https://www.instagram.com/miejska_ankieta/' target='_blank' rel='noopener noreferrer'>
+                    <a href='https://www.instagram.com/jakmyslisz/' target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                     </a>
-                    <a href='https://www.facebook.com/miejska.ankieta' target='_blank' rel='noopener noreferrer'>
+                    <a href='https://www.facebook.com/jakmyslisz' target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                     </a>
                 </div>
