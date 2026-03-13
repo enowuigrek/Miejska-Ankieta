@@ -54,6 +54,15 @@ const Question = ({ isNight, onResultsView }) => {
         }).catch(err => console.error("Scan record error:", err));
     }, [questionId]);
 
+    // Sprawdź czy już głosował — jeśli tak, pokaż wyniki od razu
+    useEffect(() => {
+        if (!questionData) return;
+        const voted = localStorage.getItem(`voted_${questionId}`);
+        if (voted) {
+            fetchResults();
+        }
+    }, [questionId]);
+
     useEffect(() => {
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
@@ -64,6 +73,30 @@ const Question = ({ isNight, onResultsView }) => {
     if (!questionData) {
         return null;
     }
+
+    const fetchResults = async () => {
+        try {
+            const q = query(collection(db, "answers"), where("questionId", "==", questionId));
+            const snapshot = await getDocs(q);
+            const counts = {};
+            snapshot.forEach(doc => {
+                const ans = doc.data().answer;
+                counts[ans] = (counts[ans] || 0) + 1;
+            });
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            const computed = questionData.options.map(opt => ({
+                label: opt.label,
+                percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
+            }));
+            const randomFact = FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
+            setResults(computed);
+            setFact(randomFact);
+            setView('results');
+            if (onResultsView) onResultsView(true);
+        } catch (err) {
+            console.error("Error fetching results:", err);
+        }
+    };
 
     const submitAnswer = async (answerId) => {
         if (loading) return;
@@ -77,26 +110,8 @@ const Question = ({ isNight, onResultsView }) => {
                 ...(location && { location }),
             });
 
-            const q = query(collection(db, "answers"), where("questionId", "==", questionId));
-            const snapshot = await getDocs(q);
-
-            const counts = {};
-            snapshot.forEach(doc => {
-                const ans = doc.data().answer;
-                counts[ans] = (counts[ans] || 0) + 1;
-            });
-
-            const total = Object.values(counts).reduce((a, b) => a + b, 0);
-            const computed = questionData.options.map(opt => ({
-                label: opt.label,
-                percent: Math.round(((counts[opt.id] || 0) / total) * 100),
-            }));
-
-            const randomFact = FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
-            setResults(computed);
-            setFact(randomFact);
-            setView('results');
-            if (onResultsView) onResultsView(true);
+            localStorage.setItem(`voted_${questionId}`, answerId);
+            await fetchResults();
         } catch (err) {
             console.error("Error:", err);
         } finally {
