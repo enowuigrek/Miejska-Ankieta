@@ -49,7 +49,7 @@ const Question = ({ isNight, onResultsView }) => {
         scanRecorded.current = true;
         addDoc(collection(db, "scans"), {
             questionId,
-            timestamp: new Date().toLocaleString(),
+            timestamp: new Date().toISOString(),
             ...(location && { location }),
         }).catch(err => console.error("Scan record error:", err));
     }, [questionId]);
@@ -73,7 +73,7 @@ const Question = ({ isNight, onResultsView }) => {
             await addDoc(collection(db, "answers"), {
                 questionId,
                 answer: answerId,
-                timestamp: new Date().toLocaleString(),
+                timestamp: new Date().toISOString(),
                 ...(location && { location }),
             });
 
