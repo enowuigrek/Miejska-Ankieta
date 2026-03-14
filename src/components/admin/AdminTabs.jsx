@@ -2,9 +2,10 @@ import React from 'react';
 import './AdminTabs.scss';
 
 const TABS = [
-    { id: 'overview', label: 'Przegląd' },
-    { id: 'locations', label: 'Lokalizacje' },
-    { id: 'questions', label: 'Pytania' },
+    { id: 'overview',   label: 'Przegląd'    },
+    { id: 'locations',  label: 'Lokalizacje'  },
+    { id: 'questions',  label: 'Pytania'      },
+    { id: 'content',    label: 'Treści'       },
 ];
 
 const AdminTabs = ({ activeTab, onTabChange }) => {

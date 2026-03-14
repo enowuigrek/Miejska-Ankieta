@@ -4,10 +4,12 @@ import { db } from '../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 import useAdminStats from '../hooks/useAdminStats';
+import { useData } from '../contexts/DataContext';
 import AdminTabs from './admin/AdminTabs';
 import OverviewTab from './admin/OverviewTab';
 import LocationsTab from './admin/LocationsTab';
 import QuestionsTab from './admin/QuestionsTab';
+import ContentTab from './admin/ContentTab';
 import './AdminPanel.scss';
 
 const ADMIN_PIN = import.meta.env.VITE_ADMIN_PIN;
@@ -26,7 +28,8 @@ const AdminPanel = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
 
-    const stats = useAdminStats(answers, scans);
+    const { questions } = useData();
+    const stats = useAdminStats(answers, scans, questions);
 
     const fetchData = async () => {
         try {
@@ -121,30 +124,33 @@ const AdminPanel = () => {
 
     return (
         <div className='admin-dashboard'>
-            <header className='admin-header'>
-                <div className='admin-brand'>
-                    <div className='admin-brand-stacked'>
-                        <div className='admin-brand-line1'>jak</div>
-                        <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+            <div className='admin-topbar'>
+                <header className='admin-header'>
+                    <div className='admin-brand'>
+                        <div className='admin-brand-stacked'>
+                            <div className='admin-brand-line1'>jak</div>
+                            <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+                        </div>
+                        <span className='admin-label'>admin</span>
                     </div>
-                    <span className='admin-label'>admin</span>
-                </div>
-                <button
-                    onClick={fetchData}
-                    className={`refresh-btn ${refreshing ? 'spinning' : ''}`}
-                    disabled={refreshing}
-                >
-                    <FontAwesomeIcon icon={faRefresh} />
-                    Odśwież
-                </button>
-            </header>
+                    <button
+                        onClick={fetchData}
+                        className={`refresh-btn ${refreshing ? 'spinning' : ''}`}
+                        disabled={refreshing}
+                    >
+                        <FontAwesomeIcon icon={faRefresh} />
+                        Odśwież
+                    </button>
+                </header>
 
-            <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
+                <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            </div>
 
             <div className='admin-content'>
-                {activeTab === 'overview' && <OverviewTab stats={stats.overview} />}
-                {activeTab === 'locations' && <LocationsTab stats={stats.locations} />}
-                {activeTab === 'questions' && <QuestionsTab stats={stats.questions} />}
+                {activeTab === 'overview'   && <OverviewTab   stats={stats?.overview}   />}
+                {activeTab === 'locations'  && <LocationsTab  stats={stats?.locations}  />}
+                {activeTab === 'questions'  && <QuestionsTab  stats={stats?.questions}  />}
+                {activeTab === 'content'    && <ContentTab />}
             </div>
         </div>
     );

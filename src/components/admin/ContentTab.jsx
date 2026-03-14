@@ -1,0 +1,331 @@
+import React, { useState, useCallback } from 'react';
+import {
+    collection, doc, setDoc, deleteField, writeBatch,
+} from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useData } from '../../contexts/DataContext';
+import './ContentTab.scss';
+
+// Generuje slug z tekstu pytania: "Lepszy kompan?" → "lepszy_kompan"
+const slugify = (text) =>
+    text.toLowerCase()
+        .replace(/[ąćęłńóśźż]/g, c => ({ ą:'a',ć:'c',ę:'e',ł:'l',ń:'n',ó:'o',ś:'s',ź:'z',ż:'z' })[c] || c)
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_|_$/g, '')
+        .slice(0, 40);
+
+const optionSlug = (label) =>
+    label.toLowerCase()
+        .replace(/[ąćęłńóśźż]/g, c => ({ ą:'a',ć:'c',ę:'e',ł:'l',ń:'n',ó:'o',ś:'s',ź:'z',ż:'z' })[c] || c)
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_|_$/g, '')
+        .slice(0, 40);
+
+// ── Formularz pytania ─────────────────────────────────────────────────────────
+const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
+    const [text,    setText]    = useState(initial?.questionText ?? '');
+    const [qId,     setQId]     = useState(initial?.id ?? '');
+    const [options, setOptions] = useState(
+        initial?.options ? initial.options.map(o => ({ ...o })) : [{ id: '', label: '' }, { id: '', label: '' }]
+    );
+    const [saving, setSaving] = useState(false);
+    const [err,    setErr]    = useState('');
+
+    const handleTextChange = (val) => {
+        setText(val);
+        if (isNew) setQId(slugify(val));
+    };
+
+    const handleOptLabel = (idx, val) => {
+        setOptions(prev => prev.map((o, i) => i === idx ? { ...o, label: val, id: isNew ? optionSlug(val) : o.id } : o));
+    };
+
+    const addOption = () => setOptions(prev => [...prev, { id: '', label: '' }]);
+    const removeOption = (idx) => setOptions(prev => prev.filter((_, i) => i !== idx));
+
+    const handleSave = async () => {
+        if (!text.trim()) { setErr('Wpisz treść pytania.'); return; }
+        if (!qId.trim())  { setErr('ID pytania nie może być puste.'); return; }
+        if (options.some(o => !o.label.trim())) { setErr('Każda odpowiedź musi mieć treść.'); return; }
+        setSaving(true);
+        setErr('');
+        try {
+            await onSave({
+                id: qId.trim(),
+                questionText: text.trim(),
+                options: options.map(o => ({
+                    id: o.id || optionSlug(o.label),
+                    label: o.label.trim(),
+                })),
+                number: initial?.number ?? maxNumber + 1,
+            });
+        } catch (e) {
+            setErr('Błąd zapisu: ' + e.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className='ct-form'>
+            <div className='ct-form-field'>
+                <label className='ct-label'>Treść pytania</label>
+                <input
+                    className='ct-input'
+                    value={text}
+                    onChange={e => handleTextChange(e.target.value)}
+                    placeholder='Lepszy kompan?'
+                />
+            </div>
+            {isNew && (
+                <div className='ct-form-field'>
+                    <label className='ct-label'>ID (URL slug)</label>
+                    <input
+                        className='ct-input ct-input--id'
+                        value={qId}
+                        onChange={e => setQId(e.target.value.replace(/[^a-z0-9_]/g, ''))}
+                        placeholder='lepszy_kompan'
+                    />
+                </div>
+            )}
+            <div className='ct-form-field'>
+                <label className='ct-label'>Odpowiedzi</label>
+                <div className='ct-options'>
+                    {options.map((opt, idx) => (
+                        <div key={idx} className='ct-option-row'>
+                            <input
+                                className='ct-input'
+                                value={opt.label}
+                                onChange={e => handleOptLabel(idx, e.target.value)}
+                                placeholder={`opcja ${idx + 1}`}
+                            />
+                            {options.length > 2 && (
+                                <button type='button' className='ct-remove-btn' onClick={() => removeOption(idx)}>✕</button>
+                            )}
+                        </div>
+                    ))}
+                    <button type='button' className='ct-add-btn' onClick={addOption}>+ dodaj odpowiedź</button>
+                </div>
+            </div>
+            {err && <p className='ct-error'>{err}</p>}
+            <div className='ct-form-actions'>
+                <button type='button' className='ct-save-btn' onClick={handleSave} disabled={saving}>
+                    {saving ? 'Zapisuję...' : 'Zapisz'}
+                </button>
+                <button type='button' className='ct-cancel-btn' onClick={onCancel}>Anuluj</button>
+            </div>
+        </div>
+    );
+};
+
+// ── Formularz ciekawostki ─────────────────────────────────────────────────────
+const FactForm = ({ initial, onSave, onCancel }) => {
+    const [text,   setText]   = useState(initial?.text ?? '');
+    const [saving, setSaving] = useState(false);
+    const [err,    setErr]    = useState('');
+
+    const handleSave = async () => {
+        if (!text.trim()) { setErr('Wpisz treść ciekawostki.'); return; }
+        setSaving(true);
+        setErr('');
+        try {
+            await onSave({ text: text.trim() });
+        } catch (e) {
+            setErr('Błąd zapisu: ' + e.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className='ct-form'>
+            <textarea
+                className='ct-textarea'
+                value={text}
+                onChange={e => setText(e.target.value)}
+                rows={4}
+                placeholder='Wpisz ciekawostkę...'
+            />
+            {err && <p className='ct-error'>{err}</p>}
+            <div className='ct-form-actions'>
+                <button type='button' className='ct-save-btn' onClick={handleSave} disabled={saving}>
+                    {saving ? 'Zapisuję...' : 'Zapisz'}
+                </button>
+                <button type='button' className='ct-cancel-btn' onClick={onCancel}>Anuluj</button>
+            </div>
+        </div>
+    );
+};
+
+// ── Główny komponent ──────────────────────────────────────────────────────────
+const ContentTab = () => {
+    const { questions, facts, refresh } = useData();
+    const [section,   setSection]   = useState('pytania'); // 'pytania' | 'ciekawostki'
+    const [editingId, setEditingId] = useState(null);
+    const [addingNew, setAddingNew] = useState(false);
+
+    // ── Pytania — zapis ──────────────────────────────────────────────────────
+    const saveQuestion = useCallback(async (data) => {
+        await setDoc(doc(db, 'questions', data.id), {
+            questionText: data.questionText,
+            options:      data.options,
+            number:       data.number,
+        });
+        await refresh();
+        setEditingId(null);
+        setAddingNew(false);
+    }, [refresh]);
+
+    // ── Ciekawostki — zapis ──────────────────────────────────────────────────
+    const saveFact = useCallback(async (factId, data, number) => {
+        await setDoc(doc(db, 'facts', factId), {
+            text:   data.text,
+            number: number,
+        });
+        await refresh();
+        setEditingId(null);
+        setAddingNew(false);
+    }, [refresh]);
+
+    const addFact = useCallback(async (data) => {
+        const maxNum = facts ? Math.max(0, ...facts.map(f => f.number || 0)) : 0;
+        const newId  = String(maxNum + 1).padStart(4, '0');
+        await setDoc(doc(db, 'facts', newId), {
+            text:   data.text,
+            number: maxNum + 1,
+        });
+        await refresh();
+        setAddingNew(false);
+    }, [facts, refresh]);
+
+    if (!questions || !facts) {
+        return <div className='tab-empty'><p>Ładowanie...</p></div>;
+    }
+
+    const sortedQuestions = Object.entries(questions)
+        .map(([id, q]) => ({ id, ...q }))
+        .sort((a, b) => (a.number || 0) - (b.number || 0));
+
+    const maxQNumber = sortedQuestions.length > 0 ? Math.max(...sortedQuestions.map(q => q.number || 0)) : 0;
+
+    return (
+        <div className='content-tab'>
+            {/* Przełącznik sekcji */}
+            <div className='ct-section-toggle'>
+                <button
+                    type='button'
+                    className={`ct-section-btn${section === 'pytania' ? ' active' : ''}`}
+                    onClick={() => { setSection('pytania'); setEditingId(null); setAddingNew(false); }}
+                >
+                    Pytania <span className='ct-count'>{sortedQuestions.length}</span>
+                </button>
+                <button
+                    type='button'
+                    className={`ct-section-btn${section === 'ciekawostki' ? ' active' : ''}`}
+                    onClick={() => { setSection('ciekawostki'); setEditingId(null); setAddingNew(false); }}
+                >
+                    Ciekawostki <span className='ct-count'>{facts.length}</span>
+                </button>
+            </div>
+
+            {/* ── PYTANIA ── */}
+            {section === 'pytania' && (
+                <div className='ct-list'>
+                    {sortedQuestions.map(q => (
+                        <div key={q.id} className='ct-item'>
+                            {editingId === q.id ? (
+                                <QuestionForm
+                                    initial={q}
+                                    isNew={false}
+                                    onSave={saveQuestion}
+                                    onCancel={() => setEditingId(null)}
+                                    maxNumber={maxQNumber}
+                                />
+                            ) : (
+                                <div className='ct-item-row'>
+                                    <span className='ct-item-num'>#{String(q.number || 0).padStart(3, '0')}</span>
+                                    <div className='ct-item-body'>
+                                        <span className='ct-item-text'>{q.questionText}</span>
+                                        <span className='ct-item-opts'>
+                                            {q.options?.map(o => o.label).join(' / ')}
+                                        </span>
+                                    </div>
+                                    <button
+                                        type='button'
+                                        className='ct-edit-btn'
+                                        onClick={() => { setEditingId(q.id); setAddingNew(false); }}
+                                    >✎</button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+
+                    {/* Dodaj nowe pytanie */}
+                    {addingNew && section === 'pytania' ? (
+                        <div className='ct-item ct-item--new'>
+                            <QuestionForm
+                                initial={null}
+                                isNew={true}
+                                onSave={saveQuestion}
+                                onCancel={() => setAddingNew(false)}
+                                maxNumber={maxQNumber}
+                            />
+                        </div>
+                    ) : (
+                        <button
+                            type='button'
+                            className='ct-add-new-btn'
+                            onClick={() => { setAddingNew(true); setEditingId(null); }}
+                        >+ Dodaj pytanie</button>
+                    )}
+                </div>
+            )}
+
+            {/* ── CIEKAWOSTKI ── */}
+            {section === 'ciekawostki' && (
+                <div className='ct-list'>
+                    {facts.map((fact) => (
+                        <div key={fact.id} className='ct-item'>
+                            {editingId === fact.id ? (
+                                <FactForm
+                                    initial={fact}
+                                    onSave={(data) => saveFact(fact.id, data, fact.number)}
+                                    onCancel={() => setEditingId(null)}
+                                />
+                            ) : (
+                                <div className='ct-item-row'>
+                                    <span className='ct-item-num'>#{String(fact.number || 0).padStart(3, '0')}</span>
+                                    <span className='ct-item-text ct-item-text--fact'>{fact.text}</span>
+                                    <button
+                                        type='button'
+                                        className='ct-edit-btn'
+                                        onClick={() => { setEditingId(fact.id); setAddingNew(false); }}
+                                    >✎</button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+
+                    {/* Dodaj nową ciekawostkę */}
+                    {addingNew && section === 'ciekawostki' ? (
+                        <div className='ct-item ct-item--new'>
+                            <FactForm
+                                initial={null}
+                                onSave={addFact}
+                                onCancel={() => setAddingNew(false)}
+                            />
+                        </div>
+                    ) : (
+                        <button
+                            type='button'
+                            className='ct-add-new-btn'
+                            onClick={() => { setAddingNew(true); setEditingId(null); }}
+                        >+ Dodaj ciekawostkę</button>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default ContentTab;

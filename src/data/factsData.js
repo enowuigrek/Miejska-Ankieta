@@ -1,4 +1,6 @@
-export const FACTS_DATA = [
+// Dane źródłowe — jednorazowe seedowanie Firestore.
+// Do odczytu w aplikacji używaj DataContext (useData()).
+export const SEED_FACTS = [
     'Zielone oliwki rosną na tych samych drzewach co czarne. To te same oliwki tylko, mniej dojżałe.',
 
     'Trytytka, czyli opaska zaciskowa, która ma bardzo wiele zastosowań i dzięki której można naprawić prawie wszystko, swą nazwę wzięła od firmy, która wprowadziła ją na rynek - "Trytyt".',
@@ -95,3 +97,6 @@ export const FACTS_DATA = [
 
     'Koty mruczą z częstotliwością 25-150 Hz — dokładnie taką, która przyspiesza gojenie kości.',
 ];
+
+// Alias dla wstecznej kompatybilności
+export const FACTS_DATA = SEED_FACTS;

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { QUESTIONS_DATA } from '../data/questionsData';
 
 const startOfDay = (date) => {
     const d = new Date(date);
@@ -48,8 +47,9 @@ const fillDays = (scansByDay, answersByDay, since, until) => {
     return result;
 };
 
-const useAdminStats = (answers, scans) => {
+const useAdminStats = (answers, scans, questions) => {
     return useMemo(() => {
+        if (!questions) return null;
         if (!answers.length && !scans.length) {
             return { overview: null, locations: null, questions: null };
         }
@@ -98,10 +98,23 @@ const useAdminStats = (answers, scans) => {
             conversion: { current: thisWeekConversion, previous: prevWeekConversion, change: thisWeekConversion - prevWeekConversion },
         };
 
-        // Daily activity (last 30 days)
-        const scansByDay = groupByDay(scans, last30);
-        const answersByDay = groupByDay(answers, last30);
-        const dailyActivity = fillDays(scansByDay, answersByDay, last30, today);
+        // Daily activity — różne okna czasu
+        const epoch       = new Date(0);
+        const last1       = subDays(today, 1);
+        const last7       = subDays(today, 7);  // uwaga: już zdefiniowane wyżej, tu alias
+
+        const scansByDayAll   = groupByDay(scans,   epoch);
+        const answersByDayAll = groupByDay(answers, epoch);
+
+        const dailyActivity1d  = fillDays(scansByDayAll, answersByDayAll, last1,  today);
+        const dailyActivity7d  = fillDays(scansByDayAll, answersByDayAll, last7,  today);
+        const dailyActivity30d = fillDays(scansByDayAll, answersByDayAll, last30, today);
+        const dailyActivityAll = fillDays(scansByDayAll, answersByDayAll, epoch,  today);
+
+        // Compat alias dla istniejących konsumentów
+        const dailyActivity = dailyActivity30d;
+        const scansByDay    = scansByDayAll;
+        const answersByDay  = answersByDayAll;
 
         // Hourly distribution
         const hourlyScans = new Array(24).fill(0);
@@ -123,6 +136,10 @@ const useAdminStats = (answers, scans) => {
             activeLocations,
             weekTrend,
             dailyActivity,
+            dailyActivity1d,
+            dailyActivity7d,
+            dailyActivity30d,
+            dailyActivityAll,
             hourlyActivity,
         };
 
@@ -167,12 +184,13 @@ const useAdminStats = (answers, scans) => {
 
         const questionMap = {};
 
-        // Init all known questions
-        Object.keys(QUESTIONS_DATA).forEach(qid => {
+        // Init all known questions (z Firestore via DataContext)
+        Object.keys(questions).forEach(qid => {
             questionMap[qid] = {
                 id: qid,
-                questionText: QUESTIONS_DATA[qid].questionText,
-                options: QUESTIONS_DATA[qid].options,
+                questionText: questions[qid].questionText,
+                options:      questions[qid].options,
+                number:       questions[qid].number,
                 scans: 0,
                 answers: 0,
                 responses: {},
@@ -251,14 +269,14 @@ const useAdminStats = (answers, scans) => {
             };
         });
 
-        const questions = {
+        const questionsResult = {
             stats: questionStats,
             totalQuestions: questionStats.length,
             withAnswers: questionStats.filter(q => q.answers > 0).length,
         };
 
-        return { overview, locations, questions };
-    }, [answers, scans]);
+        return { overview, locations, questions: questionsResult };
+    }, [answers, scans, questions]);
 };
 
 export default useAdminStats;

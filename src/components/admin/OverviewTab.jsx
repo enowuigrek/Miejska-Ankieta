@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     AreaChart, Area, BarChart, Bar,
     XAxis, YAxis, CartesianGrid, Tooltip,
@@ -25,7 +25,16 @@ const CustomTooltip = ({ active, payload, label }) => {
     );
 };
 
+const PERIODS = [
+    { id: '1d',  label: '1 dzień',   key: 'dailyActivity1d'  },
+    { id: '7d',  label: '7 dni',     key: 'dailyActivity7d'  },
+    { id: '30d', label: '30 dni',    key: 'dailyActivity30d' },
+    { id: 'all', label: 'wszystko',  key: 'dailyActivityAll' },
+];
+
 const OverviewTab = ({ stats }) => {
+    const [period, setPeriod] = useState('30d');
+
     if (!stats) {
         return (
             <div className='tab-empty'>
@@ -34,7 +43,9 @@ const OverviewTab = ({ stats }) => {
         );
     }
 
-    const { totalScans, totalAnswers, conversion, activeLocations, weekTrend, dailyActivity, hourlyActivity } = stats;
+    const { totalScans, totalAnswers, conversion, activeLocations, weekTrend, hourlyActivity } = stats;
+    const activePeriod = PERIODS.find(p => p.id === period);
+    const dailyActivity = stats[activePeriod.key] || [];
 
     const axisStyle = { fontFamily: FONT, fontSize: 11, fill: DARK, opacity: 0.6 };
 
@@ -86,7 +97,19 @@ const OverviewTab = ({ stats }) => {
 
             {/* Daily activity chart */}
             <section className='overview-section'>
-                <h3 className='section-title'>aktywność — ostatnie 30 dni</h3>
+                <div className='section-title-row'>
+                    <h3 className='section-title'>aktywność</h3>
+                    <div className='period-btns'>
+                        {PERIODS.map(p => (
+                            <button
+                                key={p.id}
+                                type='button'
+                                className={`period-btn${period === p.id ? ' active' : ''}`}
+                                onClick={() => setPeriod(p.id)}
+                            >{p.label}</button>
+                        ))}
+                    </div>
+                </div>
                 <div className='chart-wrap'>
                     <ResponsiveContainer width='100%' height={220}>
                         <AreaChart data={dailyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

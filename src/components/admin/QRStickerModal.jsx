@@ -1,15 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import QRCode from 'qrcode';
-import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QRStickerModal.scss';
 
-const DARK = '#454545';
-const BG   = '#ffffff';
+const DARK    = '#454545';
+const BG      = '#ffffff';
 const F_HEAVY = '"Archivo Black", "Arial Black", Impact, sans-serif';
 
-const PREVIEW_PX  = 560;
-const Q_KEYS      = Object.keys(QUESTIONS_DATA);
-const getQNum     = id => Q_KEYS.indexOf(id) + 1;   // 1-based, 0 = not found
+const PREVIEW_PX = 560;
 
 async function waitForFonts() {
     if (document.fonts) {
@@ -176,14 +173,11 @@ const TABS = [
     { id: 'qmark',   label: '?'       },
 ];
 
-const QRStickerModal = ({ questionId, questionText, onClose }) => {
+const QRStickerModal = ({ questionId, questionText, options = [], questionNum, onClose }) => {
     const [tab,       setTab]       = useState('pytanie');
     const [sizeMM,    setSizeMM]    = useState(80);
     const [rendering, setRendering] = useState(false);
     const previewRef = useRef(null);
-
-    const options     = QUESTIONS_DATA[questionId]?.options ?? [];
-    const questionNum = getQNum(questionId);
 
     const renderPreview = useCallback(async () => {
         if (!previewRef.current) return;

@@ -144,6 +144,8 @@ const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
                 <QRStickerModal
                     questionId={question.id}
                     questionText={question.questionText}
+                    options={question.options || []}
+                    questionNum={question.number || 0}
                     onClose={() => setShowQR(false)}
                 />
             )}

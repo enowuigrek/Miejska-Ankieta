@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { QUESTIONS_DATA } from '../data/questionsData';
-import { FACTS_DATA } from '../data/factsData';
+import { useData } from '../contexts/DataContext';
 import './Question.scss';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
@@ -35,24 +34,27 @@ const Question = ({ isNight, onResultsView }) => {
     const { questionId } = useParams();
     const [searchParams] = useSearchParams();
     const location = searchParams.get('loc') || null;
-    const questionData = QUESTIONS_DATA[questionId];
+    const { questions, facts } = useData();
+    const questionData = questions ? questions[questionId] : undefined;
 
     useEffect(() => {
+        if (questions === null) return; // nadal ładowanie
         if (!questionData) {
-            setTimeout(() => {
-                navigate('/404', { replace: true });
-            }, 0);
+            setTimeout(() => { navigate('/404', { replace: true }); }, 0);
         } else {
             document.title = `${questionData.questionText} — jakmyślisz`;
         }
         return () => { document.title = 'jakmyślisz'; };
-    }, [navigate, questionData]);
+    }, [navigate, questions, questionData]);
 
-    // Zapis skanu (raz przy wejściu na stronę)
+    // Zapis skanu (raz na sesję — nie nabijaj przy odświeżeniu)
     useEffect(() => {
         if (!questionData) return;
         if (scanRecorded.current) return;
+        const sessionKey = `scan_${questionId}`;
+        if (sessionStorage.getItem(sessionKey)) return; // już zeskanowano w tej sesji
         scanRecorded.current = true;
+        sessionStorage.setItem(sessionKey, '1');
         addDoc(collection(db, "scans"), {
             questionId,
             timestamp: new Date().toISOString(),
@@ -86,9 +88,9 @@ const Question = ({ isNight, onResultsView }) => {
         };
     }, []);
 
-    if (!questionData) {
-        return null;
-    }
+    // Ładowanie danych z Firestore
+    if (questions === null) return null;
+    if (!questionData)      return null;
 
     const fetchResults = async () => {
         try {
@@ -104,13 +106,14 @@ const Question = ({ isNight, onResultsView }) => {
                 label: opt.label,
                 percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
             }));
+            const factsArr = facts || [];
             const factKey = `fact_${questionId}`;
             const storedFactIdx = localStorage.getItem(factKey);
             const factIdx = storedFactIdx !== null
                 ? parseInt(storedFactIdx)
-                : Math.floor(Math.random() * FACTS_DATA.length);
+                : Math.floor(Math.random() * (factsArr.length || 1));
             if (storedFactIdx === null) localStorage.setItem(factKey, factIdx);
-            const randomFact = FACTS_DATA[factIdx];
+            const randomFact = factsArr[factIdx]?.text || '';
             setResults(computed);
             setFact(randomFact);
             setView('results');

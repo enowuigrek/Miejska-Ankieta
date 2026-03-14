@@ -1,4 +1,6 @@
-export const QUESTIONS_DATA = {
+// Dane źródłowe — jednorazowe seedowanie Firestore.
+// Do odczytu w aplikacji używaj DataContext (useData()).
+export const SEED_QUESTIONS = {
     zwierzeta: {
         questionText: 'Lepszy kompan',
         options: [
@@ -429,3 +431,6 @@ export const QUESTIONS_DATA = {
         ],
     },
 };
+
+// Alias dla wstecznej kompatybilności
+export const QUESTIONS_DATA = SEED_QUESTIONS;

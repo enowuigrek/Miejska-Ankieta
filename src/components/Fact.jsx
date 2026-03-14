@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react';
 import './Fact.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { FACTS_DATA } from '../data/factsData';
+import { useData } from '../contexts/DataContext';
 import { Link } from 'react-router-dom';
 
 const Fact = () => {
     const [fact, setFact] = useState('');
+    const { facts } = useData();
 
     useEffect(() => {
+        if (!facts || facts.length === 0) return;
         let storedFact = sessionStorage.getItem('fact');
         if (!storedFact) {
-            storedFact =
-                FACTS_DATA[Math.floor(Math.random() * FACTS_DATA.length)];
+            storedFact = facts[Math.floor(Math.random() * facts.length)]?.text || '';
             sessionStorage.setItem('fact', storedFact);
         }
         setFact(storedFact);
-    }, []);
+    }, [facts]);
 
     return (
         <div className='fact-container'>

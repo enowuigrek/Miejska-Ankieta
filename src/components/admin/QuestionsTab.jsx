@@ -3,11 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import QuestionDetail from './QuestionDetail';
 import QRStickerModal from './QRStickerModal';
-import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QuestionsTab.scss';
-
-const Q_KEYS  = Object.keys(QUESTIONS_DATA);
-const getQNum = id => Q_KEYS.indexOf(id) + 1;
 
 const SORT_OPTIONS = [
     { id: 'answers', label: 'odpowiedzi' },
@@ -89,7 +85,7 @@ const QuestionsTab = ({ stats }) => {
                     >
                         <div className='question-row-text'>
                             <span className='question-row-title'>
-                                <span className='question-row-num'>#{String(getQNum(q.id)).padStart(3,'0')}</span>
+                                <span className='question-row-num'>#{String(q.number || 0).padStart(3,'0')}</span>
                                 {q.questionText}
                             </span>
                             {q.dominant && (
@@ -182,6 +178,8 @@ const QuestionsTab = ({ stats }) => {
                 <QRStickerModal
                     questionId={stickerQ.id}
                     questionText={stickerQ.questionText}
+                    options={stickerQ.options || []}
+                    questionNum={stickerQ.number || 0}
                     onClose={() => setStickerQ(null)}
                 />
             )}
