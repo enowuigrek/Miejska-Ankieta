@@ -3,6 +3,8 @@ import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
     AreaChart, Area, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import QRStickerModal from './QRStickerModal';
 import './QuestionDetail.scss';
 
@@ -124,15 +126,17 @@ const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
                     type='button'
                     className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
                     onClick={onTogglePrinted}
+                    title={isPrinted ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
                 >
-                    {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+                    <FontAwesomeIcon icon={faPrint} />
                 </button>
                 <button
                     type='button'
                     className='sticker-btn'
                     onClick={() => setShowQR(true)}
+                    title='Naklejki do druku'
                 >
-                    ⬛ naklejki
+                    <FontAwesomeIcon icon={faQrcode} />
                 </button>
             </div>
 

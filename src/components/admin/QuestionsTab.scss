@@ -181,12 +181,14 @@
     font-size: 1rem;
     letter-spacing: -1px;
     line-height: 1;
+    color: rgb(69, 69, 69);
 }
 
 .meta-lbl {
     font-size: 0.65rem;
-    opacity: 0.4;
+    opacity: 0.55;
     font-weight: 600;
+    color: rgb(69, 69, 69);
 }
 
 .expand-arrow {
@@ -223,6 +225,20 @@
 @media (max-width: 600px) {
     .questions-tab {
         padding: 16px;
+    }
+
+    .questions-sort {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .sort-label {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .printed-counter {
+        margin-left: 0;
     }
 
     .question-row-header {

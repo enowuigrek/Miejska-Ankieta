@@ -68,14 +68,19 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const czyX  = pad + Math.round(sizePx * 0.025);  // lekkie wcięcie dla "czy"
 
     // — Mierzenie —
+    const maxW = sizePx - pad * 2;
     ctx.font    = `${fsQ}px ${F_HEAVY}`;
-    const lines = wrapText(ctx, questionText, sizePx - pad * 2);
+    const lines = wrapText(ctx, questionText, maxW);
     const textH = lines.length * Math.round(fsQ * 1.15);
 
+    // Zawijanie opcji — każda może być wieloliniowa
+    ctx.font = `${fsOpt}px ${F_HEAVY}`;
+    const optLines = options.map(opt => wrapText(ctx, opt.label, maxW));
+
     let optsH = 0;
-    options.forEach((_, i) => {
+    optLines.forEach((wrappedLines, i) => {
         if (i === options.length - 1 && options.length > 1) optsH += czyH;
-        optsH += lineH;
+        optsH += wrappedLines.length * lineH;
     });
 
     const gapQ   = Math.round(sizePx * 0.06);
@@ -90,8 +95,8 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
 
     y += gapQ;
 
-    // — Opcje (plain text, wyrównane do lewej) —
-    options.forEach((opt, i) => {
+    // — Opcje (plain text, wyrównane do lewej, z zawijaniem) —
+    optLines.forEach((wrappedLines, i) => {
         if (i === options.length - 1 && options.length > 1) {
             ctx.font      = `${fsCzy}px ${F_HEAVY}`;
             ctx.fillStyle = DARK;
@@ -102,8 +107,10 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
         ctx.font      = `${fsOpt}px ${F_HEAVY}`;
         ctx.fillStyle = DARK;
         ctx.textAlign = 'left';
-        ctx.fillText(opt.label, pad, y);
-        y += lineH;
+        wrappedLines.forEach(line => {
+            ctx.fillText(line, pad, y);
+            y += lineH;
+        });
     });
 
     drawNum(ctx, questionNum, sizePx);
@@ -143,8 +150,8 @@ function downloadCanvas(canvas, filename) {
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const TABS = [
-    { id: 'pytanie', label: 'samo pytanie' },
-    { id: 'goly',    label: 'goly QR'      },
+    { id: 'pytanie', label: 'pytanie' },
+    { id: 'goly',    label: 'QR'      },
 ];
 
 const QRStickerModal = ({ questionId, questionText, onClose }) => {

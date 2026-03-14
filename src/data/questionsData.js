@@ -407,7 +407,7 @@ export const QUESTIONS_DATA = {
         questionText: 'Wolna wola istnieje?',
         options: [
             { id: 'tak', label: 'tak' },
-            { id: 'nie', label: 'nie, jesteśmy zaprogramowani' },
+            { id: 'nie', label: 'nie, decyzje wynikają z doświadczeń' },
             { id: 'nie wiem', label: 'nie wiem i to mnie przeraża' },
         ],
     },

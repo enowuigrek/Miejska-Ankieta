@@ -135,14 +135,13 @@
     background: transparent;
     border: 1.5px solid rgba(69, 69, 69, 0.3);
     color: rgb(69, 69, 69);
-    font-family: 'Urbanist', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 7px 14px;
+    font-size: 0.88rem;
+    padding: 7px 10px;
     cursor: pointer;
     transition: all 0.15s;
     margin: 0;
     width: auto;
+    line-height: 1;
 
     &:hover {
         border-color: rgb(69, 69, 69);
@@ -161,14 +160,13 @@
     background: transparent;
     border: 1.5px solid rgba(69, 69, 69, 0.3);
     color: rgb(69, 69, 69);
-    font-family: 'Urbanist', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 7px 14px;
+    font-size: 0.88rem;
+    padding: 7px 10px;
     cursor: pointer;
     transition: all 0.15s;
     margin: 0;
     width: auto;
+    line-height: 1;
 
     &:hover {
         border-color: rgb(69, 69, 69);

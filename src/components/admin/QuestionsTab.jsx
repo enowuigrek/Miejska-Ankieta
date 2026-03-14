@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import QuestionDetail from './QuestionDetail';
 import QRStickerModal from './QRStickerModal';
 import { QUESTIONS_DATA } from '../../data/questionsData';
@@ -76,7 +78,9 @@ const QuestionsTab = ({ stats }) => {
             <div key={q.id} className={`question-row${isOpen ? ' open' : ''}${grayed ? ' grayed' : ''}`}>
                 <div className='question-row-header-wrap'>
                     {isPrinted && (
-                        <span className='printed-indicator' title='Wydrukowane'>🖨</span>
+                        <span className='printed-indicator' title='Wydrukowane'>
+                            <FontAwesomeIcon icon={faPrint} />
+                        </span>
                     )}
                     <button
                         type='button'
@@ -124,15 +128,17 @@ const QuestionsTab = ({ stats }) => {
                                 type='button'
                                 className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
                                 onClick={(e) => togglePrinted(q.id, e)}
+                                title={isPrinted ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
                             >
-                                {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+                                <FontAwesomeIcon icon={faPrint} />
                             </button>
                             <button
                                 type='button'
                                 className='sticker-btn'
                                 onClick={() => setStickerQ(q)}
+                                title='Naklejki do druku'
                             >
-                                ⬛ naklejki
+                                <FontAwesomeIcon icon={faQrcode} />
                             </button>
                         </div>
                     </div>
@@ -157,7 +163,7 @@ const QuestionsTab = ({ stats }) => {
                     </button>
                 ))}
                 <span className='printed-counter'>
-                    🖨 {printedCount}/{questions.length}
+                    <FontAwesomeIcon icon={faPrint} /> {printedCount}/{questions.length}
                 </span>
             </div>
 
