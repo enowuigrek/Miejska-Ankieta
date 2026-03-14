@@ -70,7 +70,7 @@ const Question = ({ isNight, onResultsView }) => {
             setPrevAnswer(voted);
             fetchResults();
         }
-    }, [questionId]);
+    }, [questionId, questionData]);
 
     useEffect(() => {
         if (view === 'results') {
