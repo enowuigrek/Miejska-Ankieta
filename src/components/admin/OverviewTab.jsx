@@ -73,7 +73,9 @@ const OverviewTab = ({ stats }) => {
 
             {/* Week trend */}
             <section className='overview-section'>
-                <h3 className='section-title'>tydzień do tygodnia</h3>
+                <div className='section-title-row'>
+                    <h3 className='section-title'>tydzień do tygodnia</h3>
+                </div>
                 <div className='trend-grid'>
                     <TrendIndicator
                         label='skany'
