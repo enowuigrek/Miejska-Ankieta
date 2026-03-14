@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
     AreaChart, Area, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
+import QRStickerModal from './QRStickerModal';
 import './QuestionDetail.scss';
 
 const DARK = 'rgb(69, 69, 69)';
@@ -20,6 +21,7 @@ const PieTooltip = ({ active, payload }) => {
 };
 
 const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
+    const [showQR, setShowQR] = useState(false);
     const { responsesWithPct, locationEntries, timelineData } = question;
     const axisStyle = { fontFamily: FONT, fontSize: 10, fill: DARK, opacity: 0.5 };
 
@@ -116,14 +118,31 @@ const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
                 </div>
             )}
 
-            {/* Printed toggle */}
-            <button
-                type='button'
-                className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
-                onClick={onTogglePrinted}
-            >
-                {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
-            </button>
+            {/* Akcje: printed + naklejki */}
+            <div className='detail-actions'>
+                <button
+                    type='button'
+                    className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
+                    onClick={onTogglePrinted}
+                >
+                    {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+                </button>
+                <button
+                    type='button'
+                    className='sticker-btn'
+                    onClick={() => setShowQR(true)}
+                >
+                    ⬛ naklejki
+                </button>
+            </div>
+
+            {showQR && (
+                <QRStickerModal
+                    questionId={question.id}
+                    questionText={question.questionText}
+                    onClose={() => setShowQR(false)}
+                />
+            )}
         </div>
     );
 };
