@@ -62,10 +62,7 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.066 : qLen > 20 ? 0.084 : 0.102));
     const scale = options.length >= 5 ? 0.78 : options.length >= 4 ? 0.88 : 1;
     const fsOpt = Math.round(sizePx * 0.072 * scale);
-    const fsCzy = Math.round(sizePx * 0.056 * scale);
     const lineH = Math.round(fsOpt * 1.38);
-    const czyH  = Math.round(fsCzy * 1.28);
-    const czyX  = pad + Math.round(sizePx * 0.025);  // lekkie wcięcie dla "czy"
 
     // — Mierzenie —
     const maxW = sizePx - pad * 2;
@@ -78,10 +75,7 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const optLines = options.map(opt => wrapText(ctx, opt.label, maxW));
 
     let optsH = 0;
-    optLines.forEach((wrappedLines, i) => {
-        if (i === options.length - 1 && options.length > 1) optsH += czyH;
-        optsH += wrappedLines.length * lineH;
-    });
+    optLines.forEach(wrappedLines => { optsH += wrappedLines.length * lineH; });
 
     const gapQ   = Math.round(sizePx * 0.06);
     const totalH = textH + gapQ + optsH;
@@ -96,17 +90,10 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     y += gapQ;
 
     // — Opcje (plain text, wyrównane do lewej, z zawijaniem) —
-    optLines.forEach((wrappedLines, i) => {
-        if (i === options.length - 1 && options.length > 1) {
-            ctx.font      = `${fsCzy}px ${F_HEAVY}`;
-            ctx.fillStyle = DARK;
-            ctx.textAlign = 'left';
-            ctx.fillText('czy', czyX, y);
-            y += czyH;
-        }
-        ctx.font      = `${fsOpt}px ${F_HEAVY}`;
-        ctx.fillStyle = DARK;
-        ctx.textAlign = 'left';
+    ctx.font      = `${fsOpt}px ${F_HEAVY}`;
+    ctx.fillStyle = DARK;
+    ctx.textAlign = 'left';
+    optLines.forEach(wrappedLines => {
         wrappedLines.forEach(line => {
             ctx.fillText(line, pad, y);
             y += lineH;
