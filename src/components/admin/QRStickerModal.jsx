@@ -3,26 +3,21 @@ import QRCode from 'qrcode';
 import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QRStickerModal.scss';
 
-const DARK   = 'rgb(69, 69, 69)';
-const RED    = '#FF2323';
-const BG     = 'rgb(243, 242, 242)';
+const DARK = '#454545';   // rgb(69,69,69)
+const BG   = '#f3f2f2';   // rgb(243,242,242)
 const F_HEAVY = '"Archivo Black", "Arial Black", Impact, sans-serif';
-const F_BODY  = '"Urbanist", Arial, sans-serif';
 
-const PREVIEW_PX = 560; // rendered at 2x internally
+const PREVIEW_PX = 560;
 
 async function waitForFonts() {
     if (document.fonts) {
-        await Promise.all([
-            document.fonts.load(`800 16px "Archivo Black"`),
-            document.fonts.load(`600 16px "Urbanist"`),
-        ]);
+        await document.fonts.load(`800 20px "Archivo Black"`).catch(() => {});
     }
 }
 
 function wrapText(ctx, text, maxWidth) {
     const words = text.split(' ');
-    if (words.length === 1 || ctx.measureText(text).width <= maxWidth) return [text];
+    if (ctx.measureText(text).width <= maxWidth) return [text];
     const lines = [];
     let cur = words[0];
     for (let i = 1; i < words.length; i++) {
@@ -34,63 +29,44 @@ function wrapText(ctx, text, maxWidth) {
     return lines;
 }
 
-// ── Naklejka QR ──────────────────────────────────────────────────────────────
+// ── Naklejka QR — pytanie + kod QR ───────────────────────────────────────────
 async function renderQRSticker(canvas, { questionText, questionId, sizePx }) {
     await waitForFonts();
-    canvas.width = sizePx;
+    canvas.width  = sizePx;
     canvas.height = sizePx;
     const ctx = canvas.getContext('2d');
-    const pad = Math.round(sizePx * 0.07);
-    const cx = sizePx / 2;
-    const url = `https://jakmyslisz.com/${questionId}`;
+    const pad = Math.round(sizePx * 0.08);
+    const cx  = sizePx / 2;
 
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, sizePx, sizePx);
-
-    let y = pad;
     ctx.textBaseline = 'top';
 
-    // Logo "jak"
-    const fsSmall = Math.round(sizePx * 0.052);
-    ctx.font = `${fsSmall}px ${F_HEAVY}`;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'center';
-    ctx.fillText('jak', cx, y);
-    y += Math.round(fsSmall * 0.84);
-
-    // Logo "myślisz?"
-    const fsBig = Math.round(sizePx * 0.062);
-    ctx.font = `${fsBig}px ${F_HEAVY}`;
-    const wBase = ctx.measureText('myślisz').width;
-    const wQ    = ctx.measureText('?').width;
-    const logoStartX = cx - (wBase + wQ) / 2;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'left';
-    ctx.fillText('myślisz', logoStartX, y);
-    ctx.fillStyle = RED;
-    ctx.fillText('?', logoStartX + wBase, y);
-    y += Math.round(fsBig * 1.32);
-
-    // Kreska
-    ctx.strokeStyle = DARK;
-    ctx.lineWidth = Math.max(1, Math.round(sizePx * 0.004));
-    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
-    y += Math.round(sizePx * 0.038);
+    let y = pad;
 
     // Pytanie
     const qLen = questionText.length;
-    const fsQ = Math.round(sizePx * (qLen > 40 ? 0.052 : qLen > 20 ? 0.066 : 0.082));
-    ctx.font = `${fsQ}px ${F_HEAVY}`;
+    const fsQ  = Math.round(sizePx * (qLen > 40 ? 0.065 : qLen > 20 ? 0.082 : 0.1));
+    ctx.font      = `${fsQ}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
     ctx.textAlign = 'center';
     const lines = wrapText(ctx, questionText, sizePx - pad * 2);
-    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.18); });
-    y += Math.round(sizePx * 0.028);
+    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.15); });
 
-    // QR
-    const qrSize = Math.round(sizePx * 0.45);
+    // Kreska pod pytaniem
+    y += Math.round(sizePx * 0.02);
+    ctx.strokeStyle = DARK;
+    ctx.lineWidth   = Math.max(2, Math.round(sizePx * 0.004));
+    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
+    y += Math.round(sizePx * 0.04);
+
+    // QR code — wypełnia pozostałe miejsce
+    const qrSize = Math.min(
+        Math.round(sizePx * 0.72),
+        sizePx - y - pad
+    );
     const qrCanvas = document.createElement('canvas');
-    await QRCode.toCanvas(qrCanvas, url, {
+    await QRCode.toCanvas(qrCanvas, `https://jakmyslisz.com/${questionId}`, {
         width: qrSize,
         margin: 1,
         color: { dark: DARK, light: BG },
@@ -98,112 +74,60 @@ async function renderQRSticker(canvas, { questionText, questionId, sizePx }) {
     });
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(qrCanvas, (sizePx - qrSize) / 2, y, qrSize, qrSize);
-    y += qrSize + Math.round(sizePx * 0.022);
-
-    // URL
-    const fsURL = Math.round(sizePx * 0.027);
-    ctx.font = `600 ${fsURL}px ${F_BODY}`;
-    ctx.fillStyle = DARK;
-    ctx.globalAlpha = 0.4;
-    ctx.textAlign = 'center';
-    ctx.fillText(`jakmyslisz.com/${questionId}`, cx, y);
-    ctx.globalAlpha = 1;
 }
 
-// ── Naklejka z pytaniem ───────────────────────────────────────────────────────
-async function renderQuestionSticker(canvas, { questionText, questionId, options, sizePx }) {
+// ── Naklejka z pytaniem — pytanie + opcje jako tekst ─────────────────────────
+async function renderQuestionSticker(canvas, { questionText, options, sizePx }) {
     await waitForFonts();
-    canvas.width = sizePx;
+    canvas.width  = sizePx;
     canvas.height = sizePx;
-    const ctx = canvas.getContext('2d');
-    const pad  = Math.round(sizePx * 0.07);
-    const padH = Math.round(sizePx * 0.045);
+    const ctx  = canvas.getContext('2d');
+    const pad  = Math.round(sizePx * 0.08);
     const cx   = sizePx / 2;
 
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, sizePx, sizePx);
-
-    let y = pad;
     ctx.textBaseline = 'top';
 
-    // Logo
-    const fsSmall = Math.round(sizePx * 0.052);
-    ctx.font = `${fsSmall}px ${F_HEAVY}`;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'center';
-    ctx.fillText('jak', cx, y);
-    y += Math.round(fsSmall * 0.84);
+    let y = pad;
 
-    const fsBig = Math.round(sizePx * 0.062);
-    ctx.font = `${fsBig}px ${F_HEAVY}`;
-    const wBase = ctx.measureText('myślisz').width;
-    const wQ    = ctx.measureText('?').width;
-    const logoStartX = cx - (wBase + wQ) / 2;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'left';
-    ctx.fillText('myślisz', logoStartX, y);
-    ctx.fillStyle = RED;
-    ctx.fillText('?', logoStartX + wBase, y);
-    y += Math.round(fsBig * 1.32);
-
-    // Kreska
-    ctx.strokeStyle = DARK;
-    ctx.lineWidth = Math.max(1, Math.round(sizePx * 0.004));
-    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
-    y += Math.round(sizePx * 0.038);
-
-    // Pytanie (tytuł)
+    // Pytanie
     const qLen = questionText.length;
-    const fsQ  = Math.round(sizePx * (qLen > 40 ? 0.055 : qLen > 20 ? 0.068 : 0.085));
-    ctx.font = `${fsQ}px ${F_HEAVY}`;
+    const fsQ  = Math.round(sizePx * (qLen > 40 ? 0.065 : qLen > 20 ? 0.082 : 0.1));
+    ctx.font      = `${fsQ}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
     ctx.textAlign = 'center';
     const lines = wrapText(ctx, questionText, sizePx - pad * 2);
-    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.18); });
+    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.15); });
 
     // Kreska pod pytaniem
-    y += Math.round(sizePx * 0.012);
+    y += Math.round(sizePx * 0.02);
+    ctx.strokeStyle = DARK;
+    ctx.lineWidth   = Math.max(2, Math.round(sizePx * 0.004));
     ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
-    y += Math.round(sizePx * 0.032);
+    y += Math.round(sizePx * 0.045);
 
-    // Opcje — skaluj gdy dużo
-    const scale    = options.length >= 4 ? 0.82 : 1;
-    const fsOpt    = Math.round(sizePx * 0.053 * scale);
-    const optH     = Math.round(fsOpt * 1.9);
-    const optGap   = Math.round(sizePx * 0.016 * scale);
-    const fsCzy    = Math.round(sizePx * 0.046 * scale);
-
-    ctx.lineWidth = Math.max(1, Math.round(sizePx * 0.003));
+    // Opcje — plain text, jak w appce
+    const scale  = options.length >= 5 ? 0.78 : options.length >= 4 ? 0.88 : 1;
+    const fsOpt  = Math.round(sizePx * 0.072 * scale);
+    const fsCzy  = Math.round(sizePx * 0.055 * scale);
+    const lineH  = Math.round(fsOpt * 1.35);
+    const czyH   = Math.round(fsCzy * 1.3);
 
     options.forEach((opt, i) => {
-        // "czy" przed ostatnią opcją
         if (i === options.length - 1 && options.length > 1) {
-            ctx.font = `${fsCzy}px ${F_HEAVY}`;
+            ctx.font      = `${fsCzy}px ${F_HEAVY}`;
             ctx.fillStyle = DARK;
             ctx.textAlign = 'left';
-            ctx.fillText('czy', pad + padH * 0.3, y + optH * 0.05);
-            y += Math.round(fsCzy * 1.25);
+            ctx.fillText('czy', pad, y);
+            y += czyH;
         }
-        ctx.strokeStyle = DARK;
-        ctx.strokeRect(pad, y, sizePx - pad * 2, optH);
-        ctx.font = `${fsOpt}px ${F_HEAVY}`;
+        ctx.font      = `${fsOpt}px ${F_HEAVY}`;
         ctx.fillStyle = DARK;
         ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(opt.label, pad + padH, y + optH / 2);
-        ctx.textBaseline = 'top';
-        y += optH + optGap;
+        ctx.fillText(opt.label, pad, y);
+        y += lineH;
     });
-
-    // URL
-    y += Math.round(sizePx * 0.02);
-    const fsURL = Math.round(sizePx * 0.027);
-    ctx.font = `600 ${fsURL}px ${F_BODY}`;
-    ctx.fillStyle = DARK;
-    ctx.globalAlpha = 0.38;
-    ctx.textAlign = 'center';
-    ctx.fillText(`jakmyslisz.com/${questionId}`, cx, y);
-    ctx.globalAlpha = 1;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -213,6 +137,15 @@ function slugify(str) {
         .replace(/ł/g,'l').replace(/ń/g,'n').replace(/ó/g,'o')
         .replace(/ś/g,'s').replace(/ź/g,'z').replace(/ż/g,'z')
         .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+function downloadCanvas(canvas, filename) {
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
@@ -232,8 +165,10 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
             if (tab === 'qr') {
                 await renderQRSticker(previewRef.current, { questionText, questionId, sizePx: PREVIEW_PX });
             } else {
-                await renderQuestionSticker(previewRef.current, { questionText, questionId, options, sizePx: PREVIEW_PX });
+                await renderQuestionSticker(previewRef.current, { questionText, options, sizePx: PREVIEW_PX });
             }
+        } catch (e) {
+            console.error('Sticker render error:', e);
         } finally {
             setRendering(false);
         }
@@ -248,18 +183,19 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
     }, [onClose]);
 
     const handleDownload = useCallback(async () => {
-        const sizePx   = Math.round((sizeMM / 25.4) * dpi);
-        const exp      = document.createElement('canvas');
-        const suffix   = tab === 'qr' ? 'qr' : 'pytanie';
-        if (tab === 'qr') {
-            await renderQRSticker(exp, { questionText, questionId, sizePx });
-        } else {
-            await renderQuestionSticker(exp, { questionText, questionId, options, sizePx });
+        const sizePx = Math.round((sizeMM / 25.4) * dpi);
+        const exp    = document.createElement('canvas');
+        const suffix = tab === 'qr' ? 'qr' : 'pytanie';
+        try {
+            if (tab === 'qr') {
+                await renderQRSticker(exp, { questionText, questionId, sizePx });
+            } else {
+                await renderQuestionSticker(exp, { questionText, options, sizePx });
+            }
+            downloadCanvas(exp, `jakmyslisz-${slugify(questionText)}-${suffix}-${sizeMM}mm-${dpi}dpi.png`);
+        } catch (e) {
+            console.error('Download error:', e);
         }
-        const a = document.createElement('a');
-        a.download = `jakmyslisz-${slugify(questionText)}-${suffix}-${sizeMM}mm-${dpi}dpi.png`;
-        a.href = exp.toDataURL('image/png');
-        a.click();
     }, [tab, questionText, questionId, options, sizeMM, dpi]);
 
     const sizePx = Math.round((sizeMM / 25.4) * dpi);
@@ -291,7 +227,7 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
                         width={PREVIEW_PX}
                         height={PREVIEW_PX}
                         className='qr-preview-canvas'
-                        style={{ opacity: rendering ? 0.35 : 1 }}
+                        style={{ opacity: rendering ? 0.3 : 1 }}
                     />
                 </div>
 
