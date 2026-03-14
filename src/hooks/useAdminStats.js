@@ -99,9 +99,8 @@ const useAdminStats = (answers, scans, questions) => {
         };
 
         // Daily activity — różne okna czasu
-        const epoch       = new Date(0);
-        const last1       = subDays(today, 1);
-        const last7       = subDays(today, 7);  // uwaga: już zdefiniowane wyżej, tu alias
+        const epoch = new Date(0);
+        const last1 = subDays(today, 1);
 
         const scansByDayAll   = groupByDay(scans,   epoch);
         const answersByDayAll = groupByDay(answers, epoch);
