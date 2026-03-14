@@ -109,6 +109,8 @@
         overflow: visible;
         text-overflow: unset;
         line-height: 1.4;
+        flex: 1;
+        min-width: 0;
     }
 }
 
@@ -125,7 +127,7 @@
     background: none;
     border: 1.5px solid rgba(69, 69, 69, 0.3);
     color: rgb(69, 69, 69);
-    opacity: 0.5;
+    opacity: 0.7;
     cursor: pointer;
     padding: 6px 10px;
     font-size: 1rem;
@@ -146,7 +148,7 @@
     background: none;
     border: 1.5px solid rgba(69, 69, 69, 0.2);
     color: rgb(69, 69, 69);
-    opacity: 0.3;
+    opacity: 0.55;
     cursor: pointer;
     padding: 6px 9px;
     font-size: 0.7rem;
