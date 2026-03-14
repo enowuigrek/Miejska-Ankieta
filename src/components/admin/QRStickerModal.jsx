@@ -60,9 +60,10 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     // — Rozmiary —
     const qLen  = questionText.length;
     const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.066 : qLen > 20 ? 0.084 : 0.102));
-    const scale = options.length >= 5 ? 0.78 : options.length >= 4 ? 0.88 : 1;
-    const fsOpt = Math.round(sizePx * 0.072 * scale);
-    const lineH = Math.round(fsOpt * 1.38);
+    const scale      = options.length >= 5 ? 0.78 : options.length >= 4 ? 0.88 : 1;
+    const fsOpt      = Math.round(sizePx * 0.072 * scale);
+    const lineH_cont = Math.round(fsOpt * 1.1);   // odstęp między liniami tej samej opcji (ciasny)
+    const lineH_opt  = Math.round(fsOpt * 1.85);  // odstęp między opcjami (wyraźnie większy)
 
     // — Mierzenie —
     const maxW = sizePx - pad * 2;
@@ -74,8 +75,10 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     ctx.font = `${fsOpt}px ${F_HEAVY}`;
     const optLines = options.map(opt => wrapText(ctx, opt.label, maxW));
 
+    // Wysokość: linie wewnątrz opcji ciasno, przerwy między opcjami szeroko
     let optsH = 0;
-    optLines.forEach(wrappedLines => { optsH += wrappedLines.length * lineH; });
+    optLines.forEach(wrappedLines => { optsH += wrappedLines.length * lineH_cont; });
+    optsH += (optLines.length - 1) * (lineH_opt - lineH_cont);
 
     const gapQ   = Math.round(sizePx * 0.06);
     const totalH = textH + gapQ + optsH;
@@ -89,15 +92,18 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
 
     y += gapQ;
 
-    // — Opcje (plain text, wyrównane do lewej, z zawijaniem) —
+    // — Opcje: linie tej samej opcji ciasno, między opcjami większy odstęp —
     ctx.font      = `${fsOpt}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
     ctx.textAlign = 'left';
-    optLines.forEach(wrappedLines => {
+    optLines.forEach((wrappedLines, optIdx) => {
         wrappedLines.forEach(line => {
             ctx.fillText(line, pad, y);
-            y += lineH;
+            y += lineH_cont;
         });
+        if (optIdx < optLines.length - 1) {
+            y += lineH_opt - lineH_cont;  // dodatkowy odstęp między opcjami
+        }
     });
 
     drawNum(ctx, questionNum, sizePx);
