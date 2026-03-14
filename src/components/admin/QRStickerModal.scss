@@ -156,11 +156,11 @@
     }
 }
 
-// ── Download button ───────────────────────────────────────────────────────────
+// ── Download buttons ──────────────────────────────────────────────────────────
 .qr-download-btn {
     background: rgb(69, 69, 69);
     color: rgb(243, 242, 242);
-    border: none;
+    border: 1.5px solid rgb(69, 69, 69);
     font-family: 'Archivo Black', sans-serif;
     font-size: 0.88rem;
     letter-spacing: -0.3px;
@@ -173,5 +173,22 @@
     &:hover {
         opacity: 0.82;
         background: rgb(69, 69, 69);
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    &--secondary {
+        background: transparent;
+        color: rgb(69, 69, 69);
+        border-color: rgba(69, 69, 69, 0.3);
+        font-size: 0.8rem;
+
+        &:hover {
+            background: transparent;
+            opacity: 0.6;
+        }
     }
 }

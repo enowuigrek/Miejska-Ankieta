@@ -167,6 +167,8 @@ function downloadCanvas(canvas, filename) {
     document.body.removeChild(a);
 }
 
+const DPI = 300;
+
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const TABS = [
     { id: 'pytanie', label: 'pytanie' },
@@ -177,7 +179,6 @@ const TABS = [
 const QRStickerModal = ({ questionId, questionText, onClose }) => {
     const [tab,       setTab]       = useState('pytanie');
     const [sizeMM,    setSizeMM]    = useState(80);
-    const [dpi,       setDpi]       = useState(300);
     const [rendering, setRendering] = useState(false);
     const previewRef = useRef(null);
 
@@ -205,7 +206,7 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
     }, [onClose]);
 
     const handleDownload = useCallback(async () => {
-        const sizePx = Math.round((sizeMM / 25.4) * dpi);
+        const sizePx = Math.round((sizeMM / 25.4) * DPI);
         const exp    = document.createElement('canvas');
         const args   = { questionText, questionId, options, questionNum, sizePx };
         try {
@@ -213,11 +214,30 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
             else if (tab === 'qmark') await renderQMarkSticker(exp, args);
             else                      await renderBareQRSticker(exp, args);
             const suffix = tab === 'qmark' ? 'znak-zapytania' : `${String(questionNum).padStart(3,'0')}-${tab}`;
-            downloadCanvas(exp, `jakmyslisz-${suffix}-${sizeMM}mm-${dpi}dpi.png`);
+            downloadCanvas(exp, `jakmyslisz-${suffix}-${sizeMM}mm-300dpi.png`);
         } catch (e) { console.error('Download error:', e); }
-    }, [tab, questionText, questionId, options, questionNum, sizeMM, dpi]);
+    }, [tab, questionText, questionId, options, questionNum, sizeMM]);
 
-    const sizePx = Math.round((sizeMM / 25.4) * dpi);
+    const handleDownloadAll = useCallback(async () => {
+        setRendering(true);
+        try {
+            const sizePx = Math.round((sizeMM / 25.4) * DPI);
+            const args   = { questionText, questionId, options, questionNum, sizePx };
+            const num    = String(questionNum).padStart(3, '0');
+            const tasks  = [
+                { fn: renderQuestionSticker, suffix: `${num}-pytanie`  },
+                { fn: renderBareQRSticker,   suffix: `${num}-qr`       },
+                { fn: renderQMarkSticker,    suffix: 'znak-zapytania'   },
+            ];
+            for (const task of tasks) {
+                const c = document.createElement('canvas');
+                await task.fn(c, args);
+                downloadCanvas(c, `jakmyslisz-${task.suffix}-${sizeMM}mm-300dpi.png`);
+                await new Promise(r => setTimeout(r, 250));
+            }
+        } catch (e) { console.error('Download all error:', e); }
+        finally     { setRendering(false); }
+    }, [questionText, questionId, options, questionNum, sizeMM]);
 
     return (
         <div className='qr-overlay' onClick={onClose}>
@@ -255,24 +275,17 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
                     <div className='qr-control'>
                         <label className='qr-control-label'>rozmiar</label>
                         <select className='qr-select' value={sizeMM} onChange={e => setSizeMM(+e.target.value)}>
-                            <option value={60}>60 mm</option>
                             <option value={80}>80 mm</option>
-                            <option value={100}>100 mm</option>
                             <option value={120}>120 mm</option>
-                        </select>
-                    </div>
-                    <div className='qr-control'>
-                        <label className='qr-control-label'>jakość</label>
-                        <select className='qr-select' value={dpi} onChange={e => setDpi(+e.target.value)}>
-                            <option value={150}>150 DPI</option>
-                            <option value={300}>300 DPI</option>
-                            <option value={600}>600 DPI</option>
                         </select>
                     </div>
                 </div>
 
-                <button type='button' className='qr-download-btn' onClick={handleDownload}>
-                    ↓ pobierz PNG — {sizeMM}×{sizeMM} mm @ {dpi} DPI ({sizePx}px)
+                <button type='button' className='qr-download-btn' onClick={handleDownloadAll} disabled={rendering}>
+                    ↓ pobierz wszystkie 3 — {sizeMM}×{sizeMM} mm
+                </button>
+                <button type='button' className='qr-download-btn qr-download-btn--secondary' onClick={handleDownload} disabled={rendering}>
+                    ↓ pobierz tylko ten
                 </button>
 
             </div>
