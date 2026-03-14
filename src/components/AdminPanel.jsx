@@ -135,7 +135,7 @@ const AdminPanel = () => {
                     disabled={refreshing}
                 >
                     <FontAwesomeIcon icon={faRefresh} />
-                    {refreshing ? 'Odświeżam...' : 'Odśwież'}
+                    Odśwież
                 </button>
             </header>
 

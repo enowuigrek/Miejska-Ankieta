@@ -46,62 +46,12 @@ function drawNum(ctx, num, sizePx) {
     ctx.restore();
 }
 
-// ── Naklejka QR — pytanie + duży QR, treść pionowo wycentrowana ──────────────
-async function renderQRSticker(canvas, { questionText, questionId, questionNum, sizePx }) {
-    await waitForFonts();
-    canvas.width = canvas.height = sizePx;
-    const ctx = canvas.getContext('2d');
-    const pad = Math.round(sizePx * 0.08);
-    const cx  = sizePx / 2;
-
-    ctx.fillStyle = BG;
-    ctx.fillRect(0, 0, sizePx, sizePx);
-    ctx.textBaseline = 'top';
-
-    // — Mierzenie —
-    const qLen = questionText.length;
-    const fsQ  = Math.round(sizePx * (qLen > 40 ? 0.066 : qLen > 20 ? 0.084 : 0.102));
-    ctx.font    = `${fsQ}px ${F_HEAVY}`;
-    const lines = wrapText(ctx, questionText, sizePx - pad * 2);
-    const textH = lines.length * Math.round(fsQ * 1.15);
-    const gapQ  = Math.round(sizePx * 0.022);  // przerwa za tekstem
-    const gapL  = Math.round(sizePx * 0.038);  // przerwa za kreską
-    const qrSz  = Math.round(sizePx * 0.68);   // QR zajmuje ~68% boku
-
-    const totalH = textH + gapQ + gapL + qrSz;
-    let y = Math.max(pad, Math.round((sizePx - totalH) / 2));
-
-    // — Rysowanie —
-    ctx.font      = `${fsQ}px ${F_HEAVY}`;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'center';
-    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.15); });
-
-    y += gapQ;
-    ctx.strokeStyle = DARK;
-    ctx.lineWidth   = Math.max(2, Math.round(sizePx * 0.004));
-    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
-    y += gapL;
-
-    const qrCanvas = document.createElement('canvas');
-    await QRCode.toCanvas(qrCanvas, `https://jakmyslisz.com/${questionId}`, {
-        width: qrSz, margin: 1,
-        color: { dark: DARK, light: BG },
-        errorCorrectionLevel: 'M',
-    });
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(qrCanvas, Math.round((sizePx - qrSz) / 2), y, qrSz, qrSz);
-
-    drawNum(ctx, questionNum, sizePx);
-}
-
-// ── Naklejka z pytaniem — pytanie + opcje jako tekst, wycentrowane ────────────
+// ── Naklejka z pytaniem — pytanie (do lewej) + opcje jako tekst ───────────────
 async function renderQuestionSticker(canvas, { questionText, options, questionNum, sizePx }) {
     await waitForFonts();
     canvas.width = canvas.height = sizePx;
     const ctx  = canvas.getContext('2d');
     const pad  = Math.round(sizePx * 0.08);
-    const cx   = sizePx / 2;
 
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, sizePx, sizePx);
@@ -115,6 +65,7 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const fsCzy = Math.round(sizePx * 0.056 * scale);
     const lineH = Math.round(fsOpt * 1.38);
     const czyH  = Math.round(fsCzy * 1.28);
+    const czyX  = pad + Math.round(sizePx * 0.025);  // lekkie wcięcie dla "czy"
 
     // — Mierzenie —
     ctx.font    = `${fsQ}px ${F_HEAVY}`;
@@ -127,31 +78,25 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
         optsH += lineH;
     });
 
-    const gapQ = Math.round(sizePx * 0.022);
-    const gapL = Math.round(sizePx * 0.04);
-
-    const totalH = textH + gapQ + gapL + optsH;
+    const gapQ   = Math.round(sizePx * 0.06);
+    const totalH = textH + gapQ + optsH;
     let y = Math.max(pad, Math.round((sizePx - totalH) / 2));
 
     // — Rysowanie pytania —
     ctx.font      = `${fsQ}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
-    ctx.textAlign = 'center';
-    lines.forEach(line => { ctx.fillText(line, cx, y); y += Math.round(fsQ * 1.15); });
+    ctx.textAlign = 'left';
+    lines.forEach(line => { ctx.fillText(line, pad, y); y += Math.round(fsQ * 1.15); });
 
     y += gapQ;
-    ctx.strokeStyle = DARK;
-    ctx.lineWidth   = Math.max(2, Math.round(sizePx * 0.004));
-    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(sizePx - pad, y); ctx.stroke();
-    y += gapL;
 
-    // — Opcje (plain text, wyrównane do lewej z wcięciem) —
+    // — Opcje (plain text, wyrównane do lewej) —
     options.forEach((opt, i) => {
         if (i === options.length - 1 && options.length > 1) {
             ctx.font      = `${fsCzy}px ${F_HEAVY}`;
             ctx.fillStyle = DARK;
             ctx.textAlign = 'left';
-            ctx.fillText('czy', pad, y);
+            ctx.fillText('czy', czyX, y);
             y += czyH;
         }
         ctx.font      = `${fsOpt}px ${F_HEAVY}`;
@@ -187,14 +132,6 @@ async function renderBareQRSticker(canvas, { questionId, questionNum, sizePx }) 
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function slugify(str) {
-    return str.toLowerCase()
-        .replace(/ą/g,'a').replace(/ć/g,'c').replace(/ę/g,'e')
-        .replace(/ł/g,'l').replace(/ń/g,'n').replace(/ó/g,'o')
-        .replace(/ś/g,'s').replace(/ź/g,'z').replace(/ż/g,'z')
-        .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-}
-
 function downloadCanvas(canvas, filename) {
     const a = document.createElement('a');
     a.download = filename;
@@ -206,13 +143,12 @@ function downloadCanvas(canvas, filename) {
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const TABS = [
-    { id: 'qr',      label: 'QR z pytaniem' },
-    { id: 'pytanie', label: 'samo pytanie'   },
-    { id: 'goly',    label: 'goly QR'        },
+    { id: 'pytanie', label: 'samo pytanie' },
+    { id: 'goly',    label: 'goly QR'      },
 ];
 
 const QRStickerModal = ({ questionId, questionText, onClose }) => {
-    const [tab,       setTab]       = useState('qr');
+    const [tab,       setTab]       = useState('pytanie');
     const [sizeMM,    setSizeMM]    = useState(80);
     const [dpi,       setDpi]       = useState(300);
     const [rendering, setRendering] = useState(false);
@@ -226,9 +162,8 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
         setRendering(true);
         try {
             const args = { questionText, questionId, options, questionNum, sizePx: PREVIEW_PX };
-            if      (tab === 'qr')      await renderQRSticker(previewRef.current, args);
-            else if (tab === 'pytanie') await renderQuestionSticker(previewRef.current, args);
-            else                        await renderBareQRSticker(previewRef.current, args);
+            if (tab === 'pytanie') await renderQuestionSticker(previewRef.current, args);
+            else                   await renderBareQRSticker(previewRef.current, args);
         } catch (e) { console.error('Sticker render error:', e); }
         finally     { setRendering(false); }
     }, [tab, questionText, questionId, options, questionNum]);
@@ -246,9 +181,8 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
         const exp    = document.createElement('canvas');
         const args   = { questionText, questionId, options, questionNum, sizePx };
         try {
-            if      (tab === 'qr')      await renderQRSticker(exp, args);
-            else if (tab === 'pytanie') await renderQuestionSticker(exp, args);
-            else                        await renderBareQRSticker(exp, args);
+            if (tab === 'pytanie') await renderQuestionSticker(exp, args);
+            else                   await renderBareQRSticker(exp, args);
             downloadCanvas(exp, `jakmyslisz-${String(questionNum).padStart(3,'0')}-${tab}-${sizeMM}mm-${dpi}dpi.png`);
         } catch (e) { console.error('Download error:', e); }
     }, [tab, questionText, questionId, options, questionNum, sizeMM, dpi]);

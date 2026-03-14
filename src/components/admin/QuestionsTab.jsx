@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import QuestionDetail from './QuestionDetail';
+import QRStickerModal from './QRStickerModal';
 import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QuestionsTab.scss';
 
@@ -31,6 +32,7 @@ const QuestionsTab = ({ stats }) => {
     const [sort, setSort] = useState('answers');
     const [expanded, setExpanded] = useState(null);
     const [printed, setPrinted] = useState(getPrintedSet);
+    const [stickerQ, setStickerQ] = useState(null);
 
     const togglePrinted = (id, e) => {
         e.stopPropagation();
@@ -117,13 +119,22 @@ const QuestionsTab = ({ stats }) => {
                 {isOpen && q.answers === 0 && (
                     <div className='question-detail'>
                         <p style={{ opacity: 0.4, fontSize: '0.9rem' }}>Brak odpowiedzi na to pytanie.</p>
-                        <button
-                            type='button'
-                            className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
-                            onClick={(e) => togglePrinted(q.id, e)}
-                        >
-                            {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
-                        </button>
+                        <div className='detail-actions'>
+                            <button
+                                type='button'
+                                className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
+                                onClick={(e) => togglePrinted(q.id, e)}
+                            >
+                                {isPrinted ? '🖨 wydrukowane' : '🖨 oznacz jako wydrukowane'}
+                            </button>
+                            <button
+                                type='button'
+                                className='sticker-btn'
+                                onClick={() => setStickerQ(q)}
+                            >
+                                ⬛ naklejki
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
@@ -150,7 +161,7 @@ const QuestionsTab = ({ stats }) => {
                 </span>
             </div>
 
-            {/* Questions with answers */}
+            {/* Questions list */}
             <div className='questions-list'>
                 {withAnswers.map(q => renderRow(q, false))}
                 {withoutAnswers.length > 0 && (
@@ -160,6 +171,14 @@ const QuestionsTab = ({ stats }) => {
                     </>
                 )}
             </div>
+
+            {stickerQ && (
+                <QRStickerModal
+                    questionId={stickerQ.id}
+                    questionText={stickerQ.questionText}
+                    onClose={() => setStickerQ(null)}
+                />
+            )}
         </div>
     );
 };
