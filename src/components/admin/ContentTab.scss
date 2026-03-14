@@ -140,6 +140,79 @@
     }
 }
 
+.ct-delete-btn {
+    background: none;
+    border: 1.5px solid rgba(69, 69, 69, 0.2);
+    color: rgb(69, 69, 69);
+    opacity: 0.3;
+    cursor: pointer;
+    padding: 6px 9px;
+    font-size: 0.7rem;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    margin: 0;
+    width: auto;
+
+    &:hover {
+        opacity: 1;
+        border-color: #FF2323;
+        color: #FF2323;
+    }
+}
+
+/* ── CONFIRM ROW ─────────────────────────────────────────────────────────── */
+.ct-confirm-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+}
+
+.ct-confirm-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgb(69, 69, 69);
+    flex: 1;
+}
+
+.ct-confirm-yes {
+    background-color: #FF2323;
+    color: #fff;
+    border: none;
+    padding: 7px 16px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin: 0;
+    width: auto;
+
+    &:hover {
+        opacity: 0.85;
+    }
+}
+
+.ct-confirm-no {
+    background: none;
+    color: rgb(69, 69, 69);
+    border: 1.5px solid rgba(69, 69, 69, 0.4);
+    padding: 6px 14px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin: 0;
+    width: auto;
+
+    &:hover {
+        border-color: rgb(69, 69, 69);
+        opacity: 0.8;
+    }
+}
+
 /* ── FORM ───────────────────────────────────────────────────────────────── */
 .ct-form {
     padding: 16px 0 20px;

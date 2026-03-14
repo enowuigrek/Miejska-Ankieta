@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
-    collection, doc, setDoc, deleteField, writeBatch,
+    doc, setDoc, deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
@@ -160,9 +160,10 @@ const FactForm = ({ initial, onSave, onCancel }) => {
 // ── Główny komponent ──────────────────────────────────────────────────────────
 const ContentTab = () => {
     const { questions, facts, refresh } = useData();
-    const [section,   setSection]   = useState('pytania'); // 'pytania' | 'ciekawostki'
-    const [editingId, setEditingId] = useState(null);
-    const [addingNew, setAddingNew] = useState(false);
+    const [section,          setSection]          = useState('pytania'); // 'pytania' | 'ciekawostki'
+    const [editingId,        setEditingId]        = useState(null);
+    const [addingNew,        setAddingNew]        = useState(false);
+    const [confirmingDelete, setConfirmingDelete] = useState(null);
 
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
@@ -197,6 +198,21 @@ const ContentTab = () => {
         await refresh();
         setAddingNew(false);
     }, [facts, refresh]);
+
+    // ── Usuwanie ─────────────────────────────────────────────────────────────
+    const deleteQuestion = useCallback(async (id) => {
+        await deleteDoc(doc(db, 'questions', id));
+        await refresh();
+        setConfirmingDelete(null);
+        setEditingId(null);
+    }, [refresh]);
+
+    const deleteFact = useCallback(async (id) => {
+        await deleteDoc(doc(db, 'facts', id));
+        await refresh();
+        setConfirmingDelete(null);
+        setEditingId(null);
+    }, [refresh]);
 
     if (!questions || !facts) {
         return <div className='tab-empty'><p>Ładowanie...</p></div>;
@@ -242,6 +258,13 @@ const ContentTab = () => {
                                     maxNumber={maxQNumber}
                                 />
                             ) : (
+                                        {confirmingDelete === q.id ? (
+                                    <div className='ct-confirm-row'>
+                                        <span className='ct-confirm-text'>Usunąć pytanie?</span>
+                                        <button type='button' className='ct-confirm-yes' onClick={() => deleteQuestion(q.id)}>Usuń</button>
+                                        <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
+                                    </div>
+                                ) : (
                                 <div className='ct-item-row'>
                                     <span className='ct-item-num'>#{String(q.number || 0).padStart(3, '0')}</span>
                                     <div className='ct-item-body'>
@@ -253,9 +276,15 @@ const ContentTab = () => {
                                     <button
                                         type='button'
                                         className='ct-edit-btn'
-                                        onClick={() => { setEditingId(q.id); setAddingNew(false); }}
+                                        onClick={() => { setEditingId(q.id); setAddingNew(false); setConfirmingDelete(null); }}
                                     >✎</button>
+                                    <button
+                                        type='button'
+                                        className='ct-delete-btn'
+                                        onClick={() => { setConfirmingDelete(q.id); setEditingId(null); }}
+                                    >✕</button>
                                 </div>
+                                )}
                             )}
                         </div>
                     ))}
@@ -293,15 +322,28 @@ const ContentTab = () => {
                                     onCancel={() => setEditingId(null)}
                                 />
                             ) : (
+                                {confirmingDelete === fact.id ? (
+                                    <div className='ct-confirm-row'>
+                                        <span className='ct-confirm-text'>Usunąć ciekawostkę?</span>
+                                        <button type='button' className='ct-confirm-yes' onClick={() => deleteFact(fact.id)}>Usuń</button>
+                                        <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
+                                    </div>
+                                ) : (
                                 <div className='ct-item-row'>
                                     <span className='ct-item-num'>#{String(fact.number || 0).padStart(3, '0')}</span>
                                     <span className='ct-item-text ct-item-text--fact'>{fact.text}</span>
                                     <button
                                         type='button'
                                         className='ct-edit-btn'
-                                        onClick={() => { setEditingId(fact.id); setAddingNew(false); }}
+                                        onClick={() => { setEditingId(fact.id); setAddingNew(false); setConfirmingDelete(null); }}
                                     >✎</button>
+                                    <button
+                                        type='button'
+                                        className='ct-delete-btn'
+                                        onClick={() => { setConfirmingDelete(fact.id); setEditingId(null); }}
+                                    >✕</button>
                                 </div>
+                                )}
                             )}
                         </div>
                     ))}
