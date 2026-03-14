@@ -20,6 +20,12 @@
     margin-top: 0;
     width: auto;
 
+    &--content {
+        margin-left: auto;
+        border-left: 2px solid rgba(69, 69, 69, 0.15);
+        padding-left: 28px;
+    }
+
     &:hover {
         opacity: 0.7;
         background: transparent;

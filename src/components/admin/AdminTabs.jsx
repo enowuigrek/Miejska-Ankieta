@@ -5,7 +5,7 @@ const TABS = [
     { id: 'overview',   label: 'Przegląd'    },
     { id: 'locations',  label: 'Lokalizacje'  },
     { id: 'questions',  label: 'Pytania'      },
-    { id: 'content',    label: 'Treści'       },
+    { id: 'content',    label: 'Treści',  extra: 'admin-tab--content' },
 ];
 
 const AdminTabs = ({ activeTab, onTabChange }) => {
@@ -14,7 +14,7 @@ const AdminTabs = ({ activeTab, onTabChange }) => {
             {TABS.map(tab => (
                 <button
                     key={tab.id}
-                    className={`admin-tab${activeTab === tab.id ? ' active' : ''}`}
+                    className={`admin-tab${tab.extra ? ` ${tab.extra}` : ''}${activeTab === tab.id ? ' active' : ''}`}
                     onClick={() => onTabChange(tab.id)}
                     type='button'
                 >
