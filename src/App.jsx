@@ -58,7 +58,7 @@ function App() {
 
     useEffect(() => {
         const hour = new Date().getHours();
-        setIsNight(hour < 6 || hour >= 22);
+        setIsNight(hour < 6 || hour >= 19);
     }, []);
 
     useEffect(() => {
