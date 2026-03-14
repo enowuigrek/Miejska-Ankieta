@@ -231,14 +231,14 @@ const ContentTab = () => {
                 <button
                     type='button'
                     className={`ct-section-btn${section === 'pytania' ? ' active' : ''}`}
-                    onClick={() => { setSection('pytania'); setEditingId(null); setAddingNew(false); }}
+                    onClick={() => { setSection('pytania'); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
                 >
                     Pytania <span className='ct-count'>{sortedQuestions.length}</span>
                 </button>
                 <button
                     type='button'
                     className={`ct-section-btn${section === 'ciekawostki' ? ' active' : ''}`}
-                    onClick={() => { setSection('ciekawostki'); setEditingId(null); setAddingNew(false); }}
+                    onClick={() => { setSection('ciekawostki'); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
                 >
                     Ciekawostki <span className='ct-count'>{facts.length}</span>
                 </button>
@@ -257,14 +257,13 @@ const ContentTab = () => {
                                     onCancel={() => setEditingId(null)}
                                     maxNumber={maxQNumber}
                                 />
+                            ) : confirmingDelete === q.id ? (
+                                <div className='ct-confirm-row'>
+                                    <span className='ct-confirm-text'>Usunąć pytanie?</span>
+                                    <button type='button' className='ct-confirm-yes' onClick={() => deleteQuestion(q.id)}>Usuń</button>
+                                    <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
+                                </div>
                             ) : (
-                                        {confirmingDelete === q.id ? (
-                                    <div className='ct-confirm-row'>
-                                        <span className='ct-confirm-text'>Usunąć pytanie?</span>
-                                        <button type='button' className='ct-confirm-yes' onClick={() => deleteQuestion(q.id)}>Usuń</button>
-                                        <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
-                                    </div>
-                                ) : (
                                 <div className='ct-item-row'>
                                     <span className='ct-item-num'>#{String(q.number || 0).padStart(3, '0')}</span>
                                     <div className='ct-item-body'>
@@ -284,7 +283,6 @@ const ContentTab = () => {
                                         onClick={() => { setConfirmingDelete(q.id); setEditingId(null); }}
                                     >✕</button>
                                 </div>
-                                )}
                             )}
                         </div>
                     ))}
@@ -304,7 +302,7 @@ const ContentTab = () => {
                         <button
                             type='button'
                             className='ct-add-new-btn'
-                            onClick={() => { setAddingNew(true); setEditingId(null); }}
+                            onClick={() => { setAddingNew(true); setEditingId(null); setConfirmingDelete(null); }}
                         >+ Dodaj pytanie</button>
                     )}
                 </div>
@@ -321,14 +319,13 @@ const ContentTab = () => {
                                     onSave={(data) => saveFact(fact.id, data, fact.number)}
                                     onCancel={() => setEditingId(null)}
                                 />
+                            ) : confirmingDelete === fact.id ? (
+                                <div className='ct-confirm-row'>
+                                    <span className='ct-confirm-text'>Usunąć ciekawostkę?</span>
+                                    <button type='button' className='ct-confirm-yes' onClick={() => deleteFact(fact.id)}>Usuń</button>
+                                    <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
+                                </div>
                             ) : (
-                                {confirmingDelete === fact.id ? (
-                                    <div className='ct-confirm-row'>
-                                        <span className='ct-confirm-text'>Usunąć ciekawostkę?</span>
-                                        <button type='button' className='ct-confirm-yes' onClick={() => deleteFact(fact.id)}>Usuń</button>
-                                        <button type='button' className='ct-confirm-no'  onClick={() => setConfirmingDelete(null)}>Anuluj</button>
-                                    </div>
-                                ) : (
                                 <div className='ct-item-row'>
                                     <span className='ct-item-num'>#{String(fact.number || 0).padStart(3, '0')}</span>
                                     <span className='ct-item-text ct-item-text--fact'>{fact.text}</span>
@@ -343,7 +340,6 @@ const ContentTab = () => {
                                         onClick={() => { setConfirmingDelete(fact.id); setEditingId(null); }}
                                     >✕</button>
                                 </div>
-                                )}
                             )}
                         </div>
                     ))}
@@ -361,7 +357,7 @@ const ContentTab = () => {
                         <button
                             type='button'
                             className='ct-add-new-btn'
-                            onClick={() => { setAddingNew(true); setEditingId(null); }}
+                            onClick={() => { setAddingNew(true); setEditingId(null); setConfirmingDelete(null); }}
                         >+ Dodaj ciekawostkę</button>
                     )}
                 </div>
