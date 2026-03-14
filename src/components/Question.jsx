@@ -60,7 +60,7 @@ const Question = ({ isNight, onResultsView }) => {
             timestamp: new Date().toISOString(),
             ...(location && { location }),
         }).catch(err => console.error("Scan record error:", err));
-    }, [questionId]);
+    }, [questionId, questionData]);
 
     // Sprawdź czy już głosował — jeśli tak, pokaż wyniki od razu
     useEffect(() => {
