@@ -4,7 +4,7 @@ import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QRStickerModal.scss';
 
 const DARK = '#454545';
-const BG   = '#f3f2f2';
+const BG   = '#ffffff';
 const F_HEAVY = '"Archivo Black", "Arial Black", Impact, sans-serif';
 
 const PREVIEW_PX  = 560;
@@ -143,7 +143,7 @@ async function renderQMarkSticker(canvas, { sizePx }) {
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, sizePx, sizePx);
 
-    const fs = Math.round(sizePx * 0.82);
+    const fs = Math.round(sizePx * 0.92);
     ctx.font         = `${fs}px ${F_HEAVY}`;
     ctx.fillStyle    = '#FF2323';
     ctx.textAlign    = 'center';
