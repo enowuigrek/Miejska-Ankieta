@@ -23,7 +23,7 @@ const Fact = () => {
         <div className='fact-container'>
             <h1>Czy wiesz, że...</h1>
             <p className='fact-text'>{fact}</p>
-            <Link to='/social_media'>
+            <Link to='/social'>
                 <button>
                     <FontAwesomeIcon
                         icon={faArrowRight}

@@ -42,7 +42,7 @@ const AppContent = ({ isNight }) => {
                             <Route path='/' element={<Home isNight={isNight} />} />
                             <Route path='/:questionId' element={<Question isNight={isNight} onResultsView={setHideBrand} />} />
                             <Route path='/fact' element={<Fact isNight={isNight} />} />
-                            <Route path='/social_media' element={<SocialMediaPage isNight={isNight} />} />
+                            <Route path='/social' element={<SocialMediaPage isNight={isNight} />} />
                             <Route path='/404' element={<PageNotFound isNight={isNight} />} />
                             <Route path='*' element={<Navigate replace to='/404' />} />
                         </Routes>
