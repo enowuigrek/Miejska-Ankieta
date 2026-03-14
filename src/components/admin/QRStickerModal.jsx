@@ -82,7 +82,8 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
 
     const gapQ   = Math.round(sizePx * 0.06);
     const totalH = textH + gapQ + optsH;
-    let y = Math.max(pad, Math.round((sizePx - totalH) / 2));
+    const nudge = Math.round(sizePx * 0.03);   // lekki offset w dół — kompensuje #numer i optyczny ciężar
+    let y = Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
 
     // — Rysowanie pytania —
     ctx.font      = `${fsQ}px ${F_HEAVY}`;
@@ -93,9 +94,10 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     y += gapQ;
 
     // — Opcje: linie tej samej opcji ciasno, między opcjami większy odstęp —
-    ctx.font      = `${fsOpt}px ${F_HEAVY}`;
-    ctx.fillStyle = DARK;
-    ctx.textAlign = 'left';
+    ctx.font        = `${fsOpt}px ${F_HEAVY}`;
+    ctx.fillStyle   = DARK;
+    ctx.globalAlpha = 0.55;    // opcje cichsze — pytanie krzyczy, odpowiedzi szepczą
+    ctx.textAlign   = 'left';
     optLines.forEach((wrappedLines, optIdx) => {
         wrappedLines.forEach(line => {
             ctx.fillText(line, pad, y);
@@ -105,6 +107,7 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
             y += lineH_opt - lineH_cont;  // dodatkowy odstęp między opcjami
         }
     });
+    ctx.globalAlpha = 1;
 
     drawNum(ctx, questionNum, sizePx);
 }
