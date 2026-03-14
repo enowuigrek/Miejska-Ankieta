@@ -131,6 +131,29 @@ async function renderBareQRSticker(canvas, { questionId, questionNum, sizePx }) 
     drawNum(ctx, questionNum, sizePx);
 }
 
+// ── Naklejka ze znakiem zapytania — czerwony ? na całość ─────────────────────
+async function renderQMarkSticker(canvas, { sizePx }) {
+    await waitForFonts();
+    canvas.width = canvas.height = sizePx;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, sizePx, sizePx);
+
+    const fs = Math.round(sizePx * 0.82);
+    ctx.font         = `${fs}px ${F_HEAVY}`;
+    ctx.fillStyle    = '#FF2323';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    const m  = ctx.measureText('?');
+    const tH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    const y  = (sizePx + tH) / 2 - m.actualBoundingBoxDescent;
+
+    ctx.fillText('?', sizePx / 2, y);
+    // bez numeru — naklejka uniwersalna
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function downloadCanvas(canvas, filename) {
     const a = document.createElement('a');
@@ -145,6 +168,7 @@ function downloadCanvas(canvas, filename) {
 const TABS = [
     { id: 'pytanie', label: 'pytanie' },
     { id: 'goly',    label: 'QR'      },
+    { id: 'qmark',   label: '?'       },
 ];
 
 const QRStickerModal = ({ questionId, questionText, onClose }) => {
@@ -162,8 +186,9 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
         setRendering(true);
         try {
             const args = { questionText, questionId, options, questionNum, sizePx: PREVIEW_PX };
-            if (tab === 'pytanie') await renderQuestionSticker(previewRef.current, args);
-            else                   await renderBareQRSticker(previewRef.current, args);
+            if (tab === 'pytanie')    await renderQuestionSticker(previewRef.current, args);
+            else if (tab === 'qmark') await renderQMarkSticker(previewRef.current, args);
+            else                      await renderBareQRSticker(previewRef.current, args);
         } catch (e) { console.error('Sticker render error:', e); }
         finally     { setRendering(false); }
     }, [tab, questionText, questionId, options, questionNum]);
@@ -181,9 +206,11 @@ const QRStickerModal = ({ questionId, questionText, onClose }) => {
         const exp    = document.createElement('canvas');
         const args   = { questionText, questionId, options, questionNum, sizePx };
         try {
-            if (tab === 'pytanie') await renderQuestionSticker(exp, args);
-            else                   await renderBareQRSticker(exp, args);
-            downloadCanvas(exp, `jakmyslisz-${String(questionNum).padStart(3,'0')}-${tab}-${sizeMM}mm-${dpi}dpi.png`);
+            if (tab === 'pytanie')    await renderQuestionSticker(exp, args);
+            else if (tab === 'qmark') await renderQMarkSticker(exp, args);
+            else                      await renderBareQRSticker(exp, args);
+            const suffix = tab === 'qmark' ? 'znak-zapytania' : `${String(questionNum).padStart(3,'0')}-${tab}`;
+            downloadCanvas(exp, `jakmyslisz-${suffix}-${sizeMM}mm-${dpi}dpi.png`);
         } catch (e) { console.error('Download error:', e); }
     }, [tab, questionText, questionId, options, questionNum, sizeMM, dpi]);
 
