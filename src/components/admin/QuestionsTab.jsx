@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import QuestionDetail from './QuestionDetail';
+import { QUESTIONS_DATA } from '../../data/questionsData';
 import './QuestionsTab.scss';
+
+const Q_KEYS  = Object.keys(QUESTIONS_DATA);
+const getQNum = id => Q_KEYS.indexOf(id) + 1;
 
 const SORT_OPTIONS = [
     { id: 'answers', label: 'odpowiedzi' },
@@ -78,7 +82,10 @@ const QuestionsTab = ({ stats }) => {
                         onClick={() => toggleExpand(q.id)}
                     >
                         <div className='question-row-text'>
-                            <span className='question-row-title'>{q.questionText}</span>
+                            <span className='question-row-title'>
+                                <span className='question-row-num'>#{String(getQNum(q.id)).padStart(3,'0')}</span>
+                                {q.questionText}
+                            </span>
                             {q.dominant && (
                                 <span className='question-row-dominant'>{q.dominant.label} {q.dominant.percentage}%</span>
                             )}

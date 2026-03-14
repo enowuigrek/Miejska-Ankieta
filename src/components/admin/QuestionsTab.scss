@@ -141,6 +141,18 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+}
+
+.question-row-num {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    opacity: 0.35;
+    flex-shrink: 0;
 }
 
 .question-row-dominant {
