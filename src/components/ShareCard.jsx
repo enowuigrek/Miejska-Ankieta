@@ -26,8 +26,8 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
 
         {prevAnswerLabel && (
             <div className='sc-my-answer'>
-                <span className='sc-my-answer-label'>moja odpowiedź</span>
-                <span className='sc-my-answer-value'>{prevAnswerLabel}</span>
+                <h3 className='sc-my-answer-heading'>moja odpowiedź</h3>
+                <div className='sc-my-answer-value'>{prevAnswerLabel}</div>
             </div>
         )}
 

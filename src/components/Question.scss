@@ -231,30 +231,42 @@ h1.night::after {
     text-align: left;
 }
 
-// Moja odpowiedź — etykieta + wartość
+// Moja odpowiedź — nagłówek jak "jak myślą inni" + ramka jak opcja
 .prev-answer-block {
-    margin: 0 0 20px;
-
-    &.day { color: rgb(69, 69, 69); }
-    &.night { color: rgb(243, 242, 242); }
+    margin: 0 0 28px;
 }
 
-.prev-answer-label {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 600;
-    opacity: 0.4;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    margin-bottom: 3px;
+.prev-answer-heading {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2em;
+    letter-spacing: -2px;
+    margin: 0 0 16px;
+
+    &.day::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(69, 69, 69);
+    }
+
+    &.night::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(243, 242, 242);
+    }
 }
 
 .prev-answer-value {
-    display: block;
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.05rem;
-    letter-spacing: -0.5px;
-    color: #FF2323;
+    padding: 14px 16px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: 1em;
+
+    &.day { color: rgb(69, 69, 69); border-color: rgb(69, 69, 69); }
+    &.night { color: rgb(243, 242, 242); border-color: rgb(243, 242, 242); }
 }
 
 // Przycisk udostępniania

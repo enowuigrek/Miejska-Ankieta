@@ -99,25 +99,32 @@
 }
 
 .sc-my-answer {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
-.sc-my-answer-label {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 600;
-    opacity: 0.4;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    margin-bottom: 3px;
+.sc-my-answer-heading {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: -2px;
+    margin: 0 0 12px;
+    line-height: 1;
+
+    &::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(69, 69, 69);
+        margin-top: 8px;
+    }
 }
 
 .sc-my-answer-value {
-    display: block;
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 1.15rem;
-    letter-spacing: -0.5px;
-    color: #FF2323;
+    padding: 12px 14px;
+    border: 1.5px solid rgb(69, 69, 69);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: rgb(69, 69, 69);
 }
 
 .sc-location {
