@@ -123,47 +123,44 @@
     text-overflow: ellipsis;
 }
 
-.ct-edit-btn {
-    background: none;
-    border: 1.5px solid rgba(69, 69, 69, 0.3);
-    color: rgb(69, 69, 69);
-    opacity: 0.7;
-    cursor: pointer;
-    padding: 6px 10px;
-    font-size: 1rem;
-    line-height: 1;
-    flex-shrink: 0;
-    transition: all 0.15s;
-    margin: 0;
-    width: auto;
-
-    &:hover {
-        opacity: 1;
-        border-color: rgb(69, 69, 69);
-        background: transparent;
-    }
-}
-
+.ct-sticker-btn,
+.ct-edit-btn,
 .ct-delete-btn {
     background: none;
-    border: 1.5px solid rgba(69, 69, 69, 0.2);
+    border: 1.5px solid rgba(69, 69, 69, 0.25);
     color: rgb(69, 69, 69);
-    opacity: 0.55;
+    opacity: 0.6;
     cursor: pointer;
-    padding: 6px 9px;
-    font-size: 0.7rem;
+    padding: 7px 10px;
+    font-size: 0.85rem;
     line-height: 1;
     flex-shrink: 0;
     transition: all 0.15s;
     margin: 0;
     width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+}
 
-    &:hover {
-        opacity: 1;
-        border-color: #FF2323;
-        color: #FF2323;
-        background: transparent;
-    }
+.ct-sticker-btn:hover {
+    opacity: 1;
+    border-color: rgb(69, 69, 69);
+    background: transparent;
+}
+
+.ct-edit-btn:hover {
+    opacity: 1;
+    border-color: rgb(69, 69, 69);
+    background: transparent;
+}
+
+.ct-delete-btn:hover {
+    opacity: 1;
+    border-color: #FF2323;
+    color: #FF2323;
+    background: transparent;
 }
 
 /* ── CONFIRM ROW ─────────────────────────────────────────────────────────── */
@@ -421,6 +418,23 @@
         border-color: rgb(69, 69, 69);
         border-style: solid;
         background: transparent;
+    }
+}
+
+/* ── LOADING ────────────────────────────────────────────────────────────── */
+.tab-empty {
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .tab-spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid rgba(255, 35, 35, 0.2);
+        border-left-color: #FF2323;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
     }
 }
 

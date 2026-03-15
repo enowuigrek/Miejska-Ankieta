@@ -51,7 +51,21 @@ const useAdminStats = (answers, scans, questions) => {
     return useMemo(() => {
         if (!questions) return null;
         if (!answers.length && !scans.length) {
-            return { overview: null, locations: null, questions: null };
+            const questionStats = Object.keys(questions).map(qid => ({
+                id: qid,
+                questionText: questions[qid].questionText,
+                options: questions[qid].options || [],
+                number: questions[qid].number,
+                scans: 0, answers: 0, conversion: 0,
+                responses: {}, responsesWithPct: [],
+                dominant: null, timelineData: [], locationEntries: [],
+                latestActivity: null,
+            })).sort((a, b) => (a.number || 0) - (b.number || 0));
+            return {
+                overview: null,
+                locations: null,
+                questions: { stats: questionStats, totalQuestions: questionStats.length, withAnswers: 0 },
+            };
         }
 
         const now = new Date();

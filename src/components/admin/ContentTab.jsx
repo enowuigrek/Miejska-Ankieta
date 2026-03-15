@@ -4,6 +4,9 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQrcode } from '@fortawesome/free-solid-svg-icons';
+import QRStickerModal from './QRStickerModal';
 import './ContentTab.scss';
 
 // Generuje slug z tekstu pytania: "Lepszy kompan?" → "lepszy_kompan"
@@ -164,6 +167,7 @@ const ContentTab = () => {
     const [editingId,        setEditingId]        = useState(null);
     const [addingNew,        setAddingNew]        = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(null);
+    const [stickerQ,         setStickerQ]         = useState(null);
 
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
@@ -215,7 +219,7 @@ const ContentTab = () => {
     }, [refresh]);
 
     if (!questions || !facts) {
-        return <div className='tab-empty'><p>Ładowanie...</p></div>;
+        return <div className='tab-empty'><div className='tab-spinner' /></div>;
     }
 
     const sortedQuestions = Object.entries(questions)
@@ -272,6 +276,12 @@ const ContentTab = () => {
                                             {q.options?.map(o => o.label).join(' / ')}
                                         </span>
                                     </div>
+                                    <button
+                                        type='button'
+                                        className='ct-sticker-btn'
+                                        onClick={() => { setStickerQ(q); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
+                                        title='Generuj naklejki'
+                                    ><FontAwesomeIcon icon={faQrcode} /></button>
                                     <button
                                         type='button'
                                         className='ct-edit-btn'
@@ -363,6 +373,17 @@ const ContentTab = () => {
                 </div>
             )}
         </div>
+
+        {stickerQ && (
+            <QRStickerModal
+                questionId={stickerQ.id}
+                questionText={stickerQ.questionText}
+                options={stickerQ.options || []}
+                questionNum={stickerQ.number || 0}
+                onClose={() => setStickerQ(null)}
+            />
+        )}
+    </div>
     );
 };
 

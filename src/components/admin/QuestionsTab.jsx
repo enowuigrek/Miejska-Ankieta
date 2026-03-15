@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrint, faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import QuestionDetail from './QuestionDetail';
-import QRStickerModal from './QRStickerModal';
 import './QuestionsTab.scss';
 
 const SORT_OPTIONS = [
@@ -30,7 +29,6 @@ const QuestionsTab = ({ stats }) => {
     const [sort, setSort] = useState('answers');
     const [expanded, setExpanded] = useState(null);
     const [printed, setPrinted] = useState(getPrintedSet);
-    const [stickerQ, setStickerQ] = useState(null);
 
     const togglePrinted = (id, e) => {
         e.stopPropagation();
@@ -128,14 +126,6 @@ const QuestionsTab = ({ stats }) => {
                             >
                                 <FontAwesomeIcon icon={faPrint} />
                             </button>
-                            <button
-                                type='button'
-                                className='sticker-btn'
-                                onClick={() => setStickerQ(q)}
-                                title='Naklejki do druku'
-                            >
-                                <FontAwesomeIcon icon={faQrcode} />
-                            </button>
                         </div>
                     </div>
                 )}
@@ -174,15 +164,6 @@ const QuestionsTab = ({ stats }) => {
                 )}
             </div>
 
-            {stickerQ && (
-                <QRStickerModal
-                    questionId={stickerQ.id}
-                    questionText={stickerQ.questionText}
-                    options={stickerQ.options || []}
-                    questionNum={stickerQ.number || 0}
-                    onClose={() => setStickerQ(null)}
-                />
-            )}
         </div>
     );
 };
