@@ -4,20 +4,13 @@ import {
     XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Legend,
 } from 'recharts';
+import { useData } from '../../contexts/DataContext';
 import TrendIndicator from './TrendIndicator';
 import './OverviewTab.scss';
 
 const DARK = 'rgb(69, 69, 69)';
 const ACCENT = '#FF2323';
 const FONT = "'Urbanist', sans-serif";
-
-const PRINTED_KEY = 'admin_printed_questions';
-const getPrintedCount = () => {
-    try {
-        const stored = localStorage.getItem(PRINTED_KEY);
-        return stored ? JSON.parse(stored).length : 0;
-    } catch { return 0; }
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -41,8 +34,11 @@ const PERIODS = [
 ];
 
 const OverviewTab = ({ stats, onGoToPrinted }) => {
+    const { questions } = useData();
     const [period, setPeriod] = useState('30d');
-    const printedCount = getPrintedCount();
+    const printedCount = questions
+        ? Object.values(questions).filter(q => q.printed).length
+        : 0;
 
     if (!stats) {
         return (

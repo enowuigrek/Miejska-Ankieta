@@ -9,14 +9,6 @@ import { faQrcode, faPrint, faToggleOn, faToggleOff } from '@fortawesome/free-so
 import QRStickerModal from './QRStickerModal';
 import './ContentTab.scss';
 
-const STORAGE_KEY = 'admin_printed_questions';
-const getPrintedSet = () => {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? new Set(JSON.parse(stored)) : new Set();
-    } catch { return new Set(); }
-};
-const savePrintedSet = (set) => localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
 
 // Generuje slug z tekstu pytania: "Lepszy kompan?" → "lepszy_kompan"
 const slugify = (text) =>
@@ -177,7 +169,6 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     const [addingNew,        setAddingNew]        = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [stickerQ,         setStickerQ]         = useState(null);
-    const [printed,          setPrinted]          = useState(getPrintedSet);
     const [showOnlyPrinted,  setShowOnlyPrinted]  = useState(filterPrinted);
 
     useEffect(() => { setShowOnlyPrinted(filterPrinted); }, [filterPrinted]);
@@ -188,14 +179,11 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         if (!next && onClearFilter) onClearFilter();
     };
 
-    const togglePrinted = (id) => {
-        setPrinted(prev => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id); else next.add(id);
-            savePrintedSet(next);
-            return next;
-        });
-    };
+    const togglePrinted = useCallback(async (id) => {
+        const q = questions[id];
+        await updateDoc(doc(db, 'questions', id), { printed: !q?.printed });
+        await refresh();
+    }, [questions, refresh]);
 
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
@@ -263,7 +251,8 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         .sort((a, b) => (a.number || 0) - (b.number || 0));
 
     const maxQNumber = sortedQuestions.length > 0 ? Math.max(...sortedQuestions.map(q => q.number || 0)) : 0;
-    const visibleQuestions = showOnlyPrinted ? sortedQuestions.filter(q => printed.has(q.id)) : sortedQuestions;
+    const printedCount = sortedQuestions.filter(q => q.printed).length;
+    const visibleQuestions = showOnlyPrinted ? sortedQuestions.filter(q => q.printed) : sortedQuestions;
 
     return (
         <div className='content-tab'>
@@ -295,7 +284,7 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                             onClick={togglePrintedFilter}
                         >
                             <FontAwesomeIcon icon={faPrint} />
-                            {showOnlyPrinted ? `wydrukowane (${visibleQuestions.length})` : 'tylko wydrukowane'}
+                            {showOnlyPrinted ? `wydrukowane (${printedCount})` : `tylko wydrukowane (${printedCount})`}
                         </button>
                     </div>
                     {visibleQuestions.map(q => (
@@ -325,9 +314,9 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                                     </div>
                                     <button
                                         type='button'
-                                        className={`ct-print-btn${printed.has(q.id) ? ' active' : ''}`}
+                                        className={`ct-print-btn${q.printed ? ' active' : ''}`}
                                         onClick={() => togglePrinted(q.id)}
-                                        title={printed.has(q.id) ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
+                                        title={q.printed ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
                                     ><FontAwesomeIcon icon={faPrint} /></button>
                                     <button
                                         type='button'

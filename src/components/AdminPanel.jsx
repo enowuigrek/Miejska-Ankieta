@@ -134,6 +134,7 @@ const AdminPanel = () => {
                         </div>
                         <span className='admin-label'>admin</span>
                     </div>
+                    <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
                     <button
                         onClick={fetchData}
                         className={`refresh-btn ${refreshing ? 'spinning' : ''}`}
@@ -143,8 +144,6 @@ const AdminPanel = () => {
                         Odśwież
                     </button>
                 </header>
-
-                <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
             </div>
 
             <div className='admin-content'>
