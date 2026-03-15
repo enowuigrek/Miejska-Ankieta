@@ -144,6 +144,12 @@
     min-width: 34px;
 }
 
+.ct-print-btn.active {
+    opacity: 1;
+    color: #FF2323;
+    border-color: #FF2323;
+}
+
 .ct-sticker-btn:hover {
     opacity: 1;
     border-color: rgb(69, 69, 69);

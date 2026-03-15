@@ -5,9 +5,18 @@ import {
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { faQrcode, faPrint } from '@fortawesome/free-solid-svg-icons';
 import QRStickerModal from './QRStickerModal';
 import './ContentTab.scss';
+
+const STORAGE_KEY = 'admin_printed_questions';
+const getPrintedSet = () => {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch { return new Set(); }
+};
+const savePrintedSet = (set) => localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
 
 // Generuje slug z tekstu pytania: "Lepszy kompan?" → "lepszy_kompan"
 const slugify = (text) =>
@@ -168,6 +177,16 @@ const ContentTab = () => {
     const [addingNew,        setAddingNew]        = useState(false);
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [stickerQ,         setStickerQ]         = useState(null);
+    const [printed,          setPrinted]          = useState(getPrintedSet);
+
+    const togglePrinted = (id) => {
+        setPrinted(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id); else next.add(id);
+            savePrintedSet(next);
+            return next;
+        });
+    };
 
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
@@ -276,6 +295,12 @@ const ContentTab = () => {
                                             {q.options?.map(o => o.label).join(' / ')}
                                         </span>
                                     </div>
+                                    <button
+                                        type='button'
+                                        className={`ct-print-btn${printed.has(q.id) ? ' active' : ''}`}
+                                        onClick={() => togglePrinted(q.id)}
+                                        title={printed.has(q.id) ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
+                                    ><FontAwesomeIcon icon={faPrint} /></button>
                                     <button
                                         type='button'
                                         className='ct-sticker-btn'

@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
     AreaChart, Area, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrint, faQrcode } from '@fortawesome/free-solid-svg-icons';
-import QRStickerModal from './QRStickerModal';
 import './QuestionDetail.scss';
 
 const DARK = 'rgb(69, 69, 69)';
@@ -22,8 +19,7 @@ const PieTooltip = ({ active, payload }) => {
     );
 };
 
-const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
-    const [showQR, setShowQR] = useState(false);
+const QuestionDetail = ({ question }) => {
     const { responsesWithPct, locationEntries, timelineData } = question;
     const axisStyle = { fontFamily: FONT, fontSize: 10, fill: DARK, opacity: 0.5 };
 
@@ -120,35 +116,6 @@ const QuestionDetail = ({ question, isPrinted, onTogglePrinted }) => {
                 </div>
             )}
 
-            {/* Akcje: printed + naklejki */}
-            <div className='detail-actions'>
-                <button
-                    type='button'
-                    className={`printed-toggle-btn${isPrinted ? ' active' : ''}`}
-                    onClick={onTogglePrinted}
-                    title={isPrinted ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
-                >
-                    <FontAwesomeIcon icon={faPrint} />
-                </button>
-                <button
-                    type='button'
-                    className='sticker-btn'
-                    onClick={() => setShowQR(true)}
-                    title='Naklejki do druku'
-                >
-                    <FontAwesomeIcon icon={faQrcode} />
-                </button>
-            </div>
-
-            {showQR && (
-                <QRStickerModal
-                    questionId={question.id}
-                    questionText={question.questionText}
-                    options={question.options || []}
-                    questionNum={question.number || 0}
-                    onClose={() => setShowQR(false)}
-                />
-            )}
         </div>
     );
 };
