@@ -43,7 +43,7 @@ const QuestionsTab = ({ stats }) => {
         });
     };
 
-    if (!stats) return <div className='tab-empty'><p>Ładowanie...</p></div>;
+    if (!stats) return <div className='tab-empty'><div className='tab-spinner' /></div>;
 
     const { stats: questions } = stats;
 
