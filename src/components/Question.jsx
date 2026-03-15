@@ -202,9 +202,10 @@ const Question = ({ isNight, onResultsView }) => {
             <div className='question-container view-results'>
                 {/* Poprzednia odpowiedź */}
                 {prevAnswerLabel && (
-                    <p className={`prev-answer-line ${isNight ? 'night' : 'day'}`}>
-                        twoja odpowiedź: <strong>{prevAnswerLabel}</strong>
-                    </p>
+                    <div className={`prev-answer-block ${isNight ? 'night' : 'day'}`}>
+                        <span className='prev-answer-label'>moja odpowiedź</span>
+                        <span className='prev-answer-value'>{prevAnswerLabel}</span>
+                    </div>
                 )}
 
                 <h1 className={`question-title ${isNight ? 'night' : 'day'}`}>

@@ -99,15 +99,25 @@
 }
 
 .sc-my-answer {
-    font-size: 0.85rem;
-    opacity: 0.5;
     margin-bottom: 10px;
+}
 
-    strong {
-        font-family: 'Archivo Black', sans-serif;
-        letter-spacing: -0.5px;
-        color: #FF2323;
-    }
+.sc-my-answer-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    opacity: 0.4;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 3px;
+}
+
+.sc-my-answer-value {
+    display: block;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: -0.5px;
+    color: #FF2323;
 }
 
 .sc-location {
@@ -128,8 +138,14 @@
     font-weight: 600;
     line-height: 1.5;
     color: rgb(69, 69, 69);
-    opacity: 0.7;
+    opacity: 0.8;
     margin-bottom: 4px;
+}
+
+.sc-cta-q {
+    font-family: 'Archivo Black', sans-serif;
+    color: #FF2323;
+    opacity: 1;
 }
 
 .sc-handle {

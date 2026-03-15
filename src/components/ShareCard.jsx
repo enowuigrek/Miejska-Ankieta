@@ -25,7 +25,10 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
         </div>
 
         {prevAnswerLabel && (
-            <div className='sc-my-answer'>twoja odpowiedź: <strong>{prevAnswerLabel}</strong></div>
+            <div className='sc-my-answer'>
+                <span className='sc-my-answer-label'>moja odpowiedź</span>
+                <span className='sc-my-answer-value'>{prevAnswerLabel}</span>
+            </div>
         )}
 
         {location && (
@@ -34,7 +37,9 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
 
         <div className='sc-spacer' />
 
-        <div className='sc-cta'>Znalazłem vlepę na mieście — oddaj swój głos!</div>
+        <div className='sc-cta'>
+            <span className='sc-cta-q'>?</span> szukaj pytajników na ulicy <span className='sc-cta-q'>?</span>
+        </div>
 
         <div className='sc-divider' />
 
