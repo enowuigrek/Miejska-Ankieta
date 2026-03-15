@@ -27,7 +27,6 @@
         cursor: pointer;
         background: none;
         text-align: left;
-        border-color: rgba(69, 69, 69, 0.35);
         transition: border-color 0.15s;
 
         &:hover {
@@ -35,8 +34,6 @@
 
             .kpi-label { opacity: 0.8; }
         }
-
-        .kpi-number { color: rgb(69, 69, 69); }
     }
 }
 

@@ -236,7 +236,7 @@ const Question = ({ isNight, onResultsView }) => {
 
                 <button
                     type='button'
-                    className={`share-btn${isNight ? ' night' : ' day'}`}
+                    className='share-btn'
                     onClick={handleShare}
                     disabled={sharing}
                 >

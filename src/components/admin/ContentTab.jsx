@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
     doc, setDoc, deleteDoc, updateDoc,
 } from 'firebase/firestore';
@@ -170,8 +170,23 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [stickerQ,         setStickerQ]         = useState(null);
     const [showOnlyPrinted,  setShowOnlyPrinted]  = useState(filterPrinted);
+    const [sectionIndicator, setSectionIndicator] = useState(null);
+    const sectionNavRef = useRef(null);
+    const sectionRefs = useRef({});
 
     useEffect(() => { setShowOnlyPrinted(filterPrinted); }, [filterPrinted]);
+
+    useEffect(() => {
+        const el = sectionRefs.current[section];
+        const nav = sectionNavRef.current;
+        if (!el || !nav) return;
+        const navRect = nav.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        setSectionIndicator({
+            left: elRect.left - navRect.left,
+            width: elRect.width,
+        });
+    }, [section]);
 
     const togglePrintedFilter = () => {
         const next = !showOnlyPrinted;
@@ -257,9 +272,10 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     return (
         <div className='content-tab'>
             {/* Przełącznik sekcji */}
-            <div className='ct-section-toggle'>
+            <div className='ct-section-toggle' ref={sectionNavRef}>
                 <button
                     type='button'
+                    ref={el => { sectionRefs.current['pytania'] = el; }}
                     className={`ct-section-btn${section === 'pytania' ? ' active' : ''}`}
                     onClick={() => { setSection('pytania'); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
                 >
@@ -267,11 +283,18 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                 </button>
                 <button
                     type='button'
+                    ref={el => { sectionRefs.current['ciekawostki'] = el; }}
                     className={`ct-section-btn${section === 'ciekawostki' ? ' active' : ''}`}
                     onClick={() => { setSection('ciekawostki'); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
                 >
                     Ciekawostki <span className='ct-count'>{facts.length}</span>
                 </button>
+                {sectionIndicator && (
+                    <div
+                        className='ct-section-indicator'
+                        style={{ left: sectionIndicator.left, width: sectionIndicator.width }}
+                    />
+                )}
             </div>
 
             {/* ── PYTANIA ── */}
@@ -314,25 +337,27 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                                     </div>
                                     <button
                                         type='button'
-                                        className={`ct-print-btn${q.printed ? ' active' : ''}`}
+                                        className={`ct-print-btn ct-has-tooltip${q.printed ? ' active' : ''}`}
                                         onClick={() => togglePrinted(q.id)}
-                                        title={q.printed ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
+                                        data-tooltip={q.printed ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
                                     ><FontAwesomeIcon icon={faPrint} /></button>
                                     <button
                                         type='button'
-                                        className='ct-sticker-btn'
+                                        className='ct-sticker-btn ct-has-tooltip'
                                         onClick={() => { setStickerQ(q); setEditingId(null); setAddingNew(false); setConfirmingDelete(null); }}
-                                        title='Generuj naklejki'
+                                        data-tooltip='Generuj naklejki'
                                     ><FontAwesomeIcon icon={faQrcode} /></button>
                                     <button
                                         type='button'
-                                        className='ct-edit-btn'
+                                        className='ct-edit-btn ct-has-tooltip'
                                         onClick={() => { setEditingId(q.id); setAddingNew(false); setConfirmingDelete(null); }}
+                                        data-tooltip='Edytuj'
                                     >✎</button>
                                     <button
                                         type='button'
-                                        className='ct-delete-btn'
+                                        className='ct-delete-btn ct-has-tooltip'
                                         onClick={() => { setConfirmingDelete(q.id); setEditingId(null); }}
+                                        data-tooltip='Usuń'
                                     >✕</button>
                                 </div>
                             )}
@@ -383,19 +408,21 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                                     <span className='ct-item-text ct-item-text--fact'>{fact.text}</span>
                                     <button
                                         type='button'
-                                        className={`ct-active-btn${fact.active === false ? '' : ' active'}`}
+                                        className={`ct-active-btn ct-has-tooltip${fact.active === false ? '' : ' active'}`}
                                         onClick={() => toggleFactActive(fact)}
-                                        title={fact.active === false ? 'Nieaktywna — kliknij aby dodać do puli' : 'Aktywna w puli losowania'}
+                                        data-tooltip={fact.active === false ? 'Nieaktywna — kliknij aby dodać do puli' : 'Aktywna w puli losowania'}
                                     ><FontAwesomeIcon icon={fact.active === false ? faToggleOff : faToggleOn} /></button>
                                     <button
                                         type='button'
-                                        className='ct-edit-btn'
+                                        className='ct-edit-btn ct-has-tooltip'
                                         onClick={() => { setEditingId(fact.id); setAddingNew(false); setConfirmingDelete(null); }}
+                                        data-tooltip='Edytuj'
                                     >✎</button>
                                     <button
                                         type='button'
-                                        className='ct-delete-btn'
+                                        className='ct-delete-btn ct-has-tooltip'
                                         onClick={() => { setConfirmingDelete(fact.id); setEditingId(null); }}
+                                        data-tooltip='Usuń'
                                     >✕</button>
                                 </div>
                             )}

@@ -5,16 +5,17 @@
     align-items: stretch;
     padding: 0;
     margin-left: 24px;
+    position: relative;
 }
 
 .admin-tab {
     background: none;
     border: none;
     padding: 16px 24px;
-    font-family: 'Urbanist', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-size: 0.95rem;
-    font-weight: 600;
-    color: rgba(69, 69, 69, 0.4);
+    letter-spacing: -0.5px;
+    color: rgba(69, 69, 69, 0.3);
     cursor: pointer;
     position: relative;
     transition: color 0.2s;
@@ -39,25 +40,22 @@
     }
 
     &:hover {
-        color: rgba(69, 69, 69, 0.7);
+        color: rgba(69, 69, 69, 0.6);
         background: transparent;
     }
 
     &.active {
-        font-family: 'Archivo Black', sans-serif;
-        letter-spacing: -0.5px;
         color: rgb(69, 69, 69);
-
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background-color: #FF2323;
-        }
     }
+}
+
+.admin-tab-indicator {
+    position: absolute;
+    bottom: -2px;
+    height: 3px;
+    background-color: #FF2323;
+    transition: left 0.3s ease, width 0.3s ease;
+    pointer-events: none;
 }
 
 @media (max-width: 900px) {
