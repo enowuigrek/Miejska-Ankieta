@@ -81,8 +81,8 @@ const AdminPanel = () => {
                         <div className='admin-brand-stacked'>
                             <div className='admin-brand-line1'>jak</div>
                             <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+                            <div className='admin-label'>admin</div>
                         </div>
-                        <span className='admin-label'>admin</span>
                     </div>
                     <form onSubmit={handlePinSubmit} className='pin-form'>
                         <input
@@ -131,8 +131,8 @@ const AdminPanel = () => {
                         <div className='admin-brand-stacked'>
                             <div className='admin-brand-line1'>jak</div>
                             <div className='admin-brand-line2'>myślisz<span className='brand-q'>?</span></div>
+                            <div className='admin-label'>admin</div>
                         </div>
-                        <span className='admin-label'>admin</span>
                     </div>
                     <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
                     <button
