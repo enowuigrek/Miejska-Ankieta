@@ -1,0 +1,130 @@
+// Karta do udostępniania — renderowana off-screen, przechwytywana przez html2canvas
+.share-card {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 540px;
+    background: rgb(243, 242, 242);
+    color: rgb(69, 69, 69);
+    font-family: 'Urbanist', sans-serif;
+    padding: 40px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.sc-logo {
+    font-family: 'Archivo Black', sans-serif;
+    letter-spacing: -4px;
+    line-height: 0.85;
+    text-align: left;
+    margin-bottom: 28px;
+}
+
+.sc-logo-jak {
+    display: block;
+    font-size: 1.4rem;
+    margin-bottom: -0.1em;
+}
+
+.sc-logo-myslisz {
+    display: block;
+    font-size: 2.1rem;
+}
+
+.sc-logo-q {
+    color: #FF2323;
+}
+
+.sc-divider {
+    height: 2px;
+    background: rgb(69, 69, 69);
+    margin: 24px 0;
+}
+
+.sc-question {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 28px;
+    color: rgb(69, 69, 69);
+}
+
+.sc-results {
+    margin-bottom: 20px;
+}
+
+.sc-result-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.sc-bar-wrap {
+    flex: 1;
+    position: relative;
+    padding: 12px 14px;
+    background: rgba(69, 69, 69, 0.1);
+    overflow: hidden;
+}
+
+.sc-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #FF2323;
+}
+
+.sc-bar-label {
+    position: relative;
+    z-index: 1;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: rgb(69, 69, 69);
+}
+
+.sc-percent {
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-width: 44px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.sc-my-answer {
+    font-size: 0.82rem;
+    opacity: 0.5;
+    margin-bottom: 10px;
+
+    strong {
+        font-family: 'Archivo Black', sans-serif;
+        letter-spacing: -0.5px;
+        color: #FF2323;
+    }
+}
+
+.sc-location {
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0.4;
+    margin-bottom: 20px;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+}
+
+.sc-cta {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: rgb(69, 69, 69);
+    opacity: 0.7;
+}
+
+.sc-handle {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1rem;
+    letter-spacing: -1px;
+    color: #FF2323;
+}

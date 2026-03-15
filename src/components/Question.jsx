@@ -7,6 +7,7 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
+import ShareCard from './ShareCard';
 
 const GREETINGS = [
     'Dzięki za głos! Udanej niedzieli.',
@@ -29,8 +30,10 @@ const Question = ({ isNight, onResultsView }) => {
     const [loading, setLoading] = useState(false);
     const [prevAnswer, setPrevAnswer] = useState(null);
     const [barsVisible, setBarsVisible] = useState(false);
+    const [sharing, setSharing] = useState(false);
     const timerRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
+    const shareRef = React.useRef(null);
     const { questionId } = useParams();
     const [searchParams] = useSearchParams();
     const location = searchParams.get('loc') || null;
@@ -155,6 +158,39 @@ const Question = ({ isNight, onResultsView }) => {
         }, AUTO_SUBMIT_DELAY);
     };
 
+    const handleShare = async () => {
+        if (sharing || !shareRef.current) return;
+        setSharing(true);
+        try {
+            await document.fonts.ready;
+            const { default: html2canvas } = await import('html2canvas');
+            const canvas = await html2canvas(shareRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#F3F2F2',
+                logging: false,
+            });
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const file = new File([blob], 'jakmyslisz.png', { type: 'image/png' });
+            if (navigator.share && navigator.canShare?.({ files: [file] })) {
+                await navigator.share({ files: [file], url: window.location.href });
+            } else {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'jakmyslisz.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error('Share error:', err);
+        } finally {
+            setSharing(false);
+        }
+    };
+
     if (view === 'results') {
         const greeting = GREETINGS[new Date().getDay()];
         const prevAnswerLabel = prevAnswer
@@ -192,6 +228,24 @@ const Question = ({ isNight, onResultsView }) => {
                 <p className='fact-text'>{fact}</p>
 
                 <p className='greeting'>{greeting}</p>
+
+                <button
+                    type='button'
+                    className={`share-btn${isNight ? ' night' : ' day'}`}
+                    onClick={handleShare}
+                    disabled={sharing}
+                >
+                    {sharing ? 'Generuję...' : 'Udostępnij wyniki'}
+                </button>
+
+                {/* Karta off-screen do html2canvas */}
+                <ShareCard
+                    ref={shareRef}
+                    question={questionData.questionText}
+                    results={results}
+                    prevAnswerLabel={prevAnswerLabel}
+                    location={location}
+                />
 
                 {/* Social — fixed na dole */}
                 <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
