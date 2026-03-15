@@ -1,23 +1,27 @@
 // Karta do udostępniania — renderowana off-screen, przechwytywana przez html2canvas
+// Format 9:16 (540×960) — Stories
 .share-card {
     position: fixed;
     left: -9999px;
     top: 0;
     width: 540px;
+    height: 960px;
     background: rgb(243, 242, 242);
     color: rgb(69, 69, 69);
     font-family: 'Urbanist', sans-serif;
-    padding: 40px;
+    padding: 48px 44px;
     box-sizing: border-box;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .sc-logo {
     font-family: 'Archivo Black', sans-serif;
     letter-spacing: -4px;
     line-height: 0.85;
-    text-align: left;
-    margin-bottom: 28px;
+    text-align: center;
+    margin-bottom: 32px;
 }
 
 .sc-logo-jak {
@@ -39,32 +43,33 @@
     height: 2px;
     background: rgb(69, 69, 69);
     margin: 24px 0;
+    flex-shrink: 0;
 }
 
 .sc-question {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 1.7rem;
+    font-size: 2rem;
     letter-spacing: -2px;
     line-height: 1.1;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     color: rgb(69, 69, 69);
 }
 
 .sc-results {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .sc-result-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .sc-bar-wrap {
     flex: 1;
     position: relative;
-    padding: 12px 14px;
+    padding: 14px 16px;
     background: rgba(69, 69, 69, 0.1);
     overflow: hidden;
 }
@@ -80,21 +85,21 @@
 .sc-bar-label {
     position: relative;
     z-index: 1;
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 700;
     color: rgb(69, 69, 69);
 }
 
 .sc-percent {
     font-weight: 700;
-    font-size: 0.95rem;
-    min-width: 44px;
+    font-size: 1rem;
+    min-width: 48px;
     text-align: right;
     flex-shrink: 0;
 }
 
 .sc-my-answer {
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     opacity: 0.5;
     margin-bottom: 10px;
 
@@ -106,25 +111,30 @@
 }
 
 .sc-location {
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     font-weight: 600;
     opacity: 0.4;
-    margin-bottom: 20px;
     text-transform: lowercase;
     letter-spacing: 0.03em;
 }
 
+// Rozciąga przestrzeń między lokalizacją a CTA
+.sc-spacer {
+    flex: 1;
+}
+
 .sc-cta {
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 600;
     line-height: 1.5;
     color: rgb(69, 69, 69);
     opacity: 0.7;
+    margin-bottom: 4px;
 }
 
 .sc-handle {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 1rem;
+    font-size: 1.1rem;
     letter-spacing: -1px;
     color: #FF2323;
 }

@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 import ShareCard from './ShareCard';
 
@@ -235,7 +236,8 @@ const Question = ({ isNight, onResultsView }) => {
                     onClick={handleShare}
                     disabled={sharing}
                 >
-                    {sharing ? 'Generuję...' : 'Udostępnij wyniki'}
+                    <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                    {sharing ? 'Generuję...' : 'Udostępnij'}
                 </button>
 
                 {/* Karta off-screen do html2canvas */}

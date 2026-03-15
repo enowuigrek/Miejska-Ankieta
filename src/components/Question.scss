@@ -250,34 +250,34 @@ h1.night::after {
 
 // Przycisk udostępniania
 .share-btn {
-    display: block;
-    width: 100%;
-    padding: 14px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
     background: transparent;
     border: 1.5px solid;
     font-family: 'Urbanist', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    text-align: center;
     margin: 0 0 48px;
     transition: background-color 0.2s, color 0.2s;
     animation: fadeUp 0.3s ease-out 1.05s both;
 
     &.day {
         color: rgb(69, 69, 69);
-        border-color: rgb(69, 69, 69);
-        &:hover { background-color: rgb(69, 69, 69); color: rgb(243, 242, 242); }
+        border-color: rgba(69, 69, 69, 0.4);
+        &:hover { background-color: rgb(69, 69, 69); color: rgb(243, 242, 242); border-color: rgb(69, 69, 69); }
     }
 
     &.night {
         color: rgb(243, 242, 242);
-        border-color: rgb(243, 242, 242);
-        &:hover { background-color: rgb(243, 242, 242); color: rgb(69, 69, 69); }
+        border-color: rgba(243, 242, 242, 0.4);
+        &:hover { background-color: rgb(243, 242, 242); color: rgb(69, 69, 69); border-color: rgb(243, 242, 242); }
     }
 
     &:disabled {
-        opacity: 0.5;
+        opacity: 0.4;
         cursor: not-allowed;
     }
 

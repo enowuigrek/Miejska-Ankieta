@@ -32,6 +32,8 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
             <div className='sc-location'>{location.replace(/_/g, ' ')}</div>
         )}
 
+        <div className='sc-spacer' />
+
         <div className='sc-cta'>Znalazłem vlepę na mieście — oddaj swój głos!</div>
 
         <div className='sc-divider' />
