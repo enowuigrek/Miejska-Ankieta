@@ -308,8 +308,10 @@ h1.night::after {
 // Social — fixed na dole, pojawia się na końcu
 .social-fixed {
     position: fixed;
-    bottom: 24px;
-    left: 36px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 36px 24px;
     display: flex;
     gap: 14px;
     z-index: 50;
@@ -323,8 +325,15 @@ h1.night::after {
         }
     }
 
-    &.day a { color: rgb(69, 69, 69); }
-    &.night a { color: rgb(243, 242, 242); }
+    &.day {
+        background-color: rgb(243, 242, 242);
+        a { color: rgb(69, 69, 69); }
+    }
+
+    &.night {
+        background-color: rgb(69, 69, 69);
+        a { color: rgb(243, 242, 242); }
+    }
 }
 
 .social-icon {

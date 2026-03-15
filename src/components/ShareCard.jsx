@@ -38,7 +38,7 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
         <div className='sc-spacer' />
 
         <div className='sc-cta'>
-            <span className='sc-cta-q'>?</span> szukaj pytajników na ulicy <span className='sc-cta-q'>?</span>
+            znajdź <span className='sc-cta-q'>?</span> na ulicy i odpowiedz
         </div>
 
         <div className='sc-divider' />
