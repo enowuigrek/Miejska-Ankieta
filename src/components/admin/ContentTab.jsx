@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
     doc, setDoc, deleteDoc, updateDoc,
 } from 'firebase/firestore';
@@ -170,7 +170,7 @@ const FactForm = ({ initial, onSave, onCancel }) => {
 };
 
 // ── Główny komponent ──────────────────────────────────────────────────────────
-const ContentTab = () => {
+const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     const { questions, facts, refresh } = useData();
     const [section,          setSection]          = useState('pytania'); // 'pytania' | 'ciekawostki'
     const [editingId,        setEditingId]        = useState(null);
@@ -178,6 +178,15 @@ const ContentTab = () => {
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [stickerQ,         setStickerQ]         = useState(null);
     const [printed,          setPrinted]          = useState(getPrintedSet);
+    const [showOnlyPrinted,  setShowOnlyPrinted]  = useState(filterPrinted);
+
+    useEffect(() => { setShowOnlyPrinted(filterPrinted); }, [filterPrinted]);
+
+    const togglePrintedFilter = () => {
+        const next = !showOnlyPrinted;
+        setShowOnlyPrinted(next);
+        if (!next && onClearFilter) onClearFilter();
+    };
 
     const togglePrinted = (id) => {
         setPrinted(prev => {
@@ -254,6 +263,7 @@ const ContentTab = () => {
         .sort((a, b) => (a.number || 0) - (b.number || 0));
 
     const maxQNumber = sortedQuestions.length > 0 ? Math.max(...sortedQuestions.map(q => q.number || 0)) : 0;
+    const visibleQuestions = showOnlyPrinted ? sortedQuestions.filter(q => printed.has(q.id)) : sortedQuestions;
 
     return (
         <div className='content-tab'>
@@ -278,7 +288,17 @@ const ContentTab = () => {
             {/* ── PYTANIA ── */}
             {section === 'pytania' && (
                 <div className='ct-list'>
-                    {sortedQuestions.map(q => (
+                    <div className='ct-filter-bar'>
+                        <button
+                            type='button'
+                            className={`ct-filter-btn${showOnlyPrinted ? ' active' : ''}`}
+                            onClick={togglePrintedFilter}
+                        >
+                            <FontAwesomeIcon icon={faPrint} />
+                            {showOnlyPrinted ? `wydrukowane (${visibleQuestions.length})` : 'tylko wydrukowane'}
+                        </button>
+                    </div>
+                    {visibleQuestions.map(q => (
                         <div key={q.id} className='ct-item'>
                             {editingId === q.id ? (
                                 <QuestionForm

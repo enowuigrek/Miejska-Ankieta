@@ -56,6 +56,50 @@
     margin-left: 4px;
 }
 
+/* ── FILTER BAR ─────────────────────────────────────────────────────────── */
+.ct-filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(69, 69, 69, 0.12);
+    margin-bottom: 0;
+}
+
+.ct-filter-btn {
+    background: none;
+    border: 1.5px solid rgba(69, 69, 69, 0.25);
+    color: rgb(69, 69, 69);
+    opacity: 0.55;
+    cursor: pointer;
+    padding: 5px 12px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    margin: 0;
+    width: auto;
+
+    &.active {
+        opacity: 1;
+        color: #FF2323;
+        border-color: #FF2323;
+    }
+
+    &:hover {
+        opacity: 0.8;
+        border-color: rgb(69, 69, 69);
+        background: transparent;
+    }
+
+    &.active:hover {
+        border-color: #FF2323;
+        background: transparent;
+    }
+}
+
 /* ── LIST ───────────────────────────────────────────────────────────────── */
 .ct-list {
     display: flex;

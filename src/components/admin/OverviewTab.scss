@@ -8,7 +8,7 @@
 // KPI
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 16px;
 }
 
@@ -21,6 +21,22 @@
 
     &.accent .kpi-number {
         color: #FF2323;
+    }
+
+    &--link {
+        cursor: pointer;
+        background: none;
+        text-align: left;
+        border-color: rgba(69, 69, 69, 0.35);
+        transition: border-color 0.15s;
+
+        &:hover {
+            border-color: #FF2323;
+
+            .kpi-label { opacity: 0.8; }
+        }
+
+        .kpi-number { color: rgb(69, 69, 69); }
     }
 }
 
@@ -128,7 +144,7 @@
     }
 
     .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .trend-grid {

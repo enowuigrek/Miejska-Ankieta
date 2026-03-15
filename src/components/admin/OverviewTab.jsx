@@ -11,6 +11,14 @@ const DARK = 'rgb(69, 69, 69)';
 const ACCENT = '#FF2323';
 const FONT = "'Urbanist', sans-serif";
 
+const PRINTED_KEY = 'admin_printed_questions';
+const getPrintedCount = () => {
+    try {
+        const stored = localStorage.getItem(PRINTED_KEY);
+        return stored ? JSON.parse(stored).length : 0;
+    } catch { return 0; }
+};
+
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
     return (
@@ -32,8 +40,9 @@ const PERIODS = [
     { id: 'all', label: 'wszystko',  key: 'dailyActivityAll' },
 ];
 
-const OverviewTab = ({ stats }) => {
+const OverviewTab = ({ stats, onGoToPrinted }) => {
     const [period, setPeriod] = useState('30d');
+    const printedCount = getPrintedCount();
 
     if (!stats) {
         return (
@@ -69,6 +78,10 @@ const OverviewTab = ({ stats }) => {
                     <div className='kpi-number'>{activeLocations}</div>
                     <div className='kpi-label'>aktywnych lokalizacji</div>
                 </div>
+                <button type='button' className='kpi-card kpi-card--link' onClick={onGoToPrinted}>
+                    <div className='kpi-number'>{printedCount}</div>
+                    <div className='kpi-label'>wydrukowanych pytań →</div>
+                </button>
             </div>
 
             {/* Week trend */}

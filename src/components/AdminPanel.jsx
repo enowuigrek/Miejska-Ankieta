@@ -26,7 +26,8 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab,     setActiveTab]     = useState('overview');
+    const [contentFilter, setContentFilter] = useState(null);
 
     const { questions } = useData();
     const stats = useAdminStats(answers, scans, questions);
@@ -147,10 +148,10 @@ const AdminPanel = () => {
             </div>
 
             <div className='admin-content'>
-                {activeTab === 'overview'   && <OverviewTab   stats={stats?.overview}   />}
+                {activeTab === 'overview'   && <OverviewTab   stats={stats?.overview}  onGoToPrinted={() => { setActiveTab('content'); setContentFilter('printed'); }} />}
                 {activeTab === 'locations'  && <LocationsTab  stats={stats?.locations}  />}
                 {activeTab === 'questions'  && <QuestionsTab  stats={stats?.questions}  />}
-                {activeTab === 'content'    && <ContentTab />}
+                {activeTab === 'content'    && <ContentTab filterPrinted={contentFilter === 'printed'} onClearFilter={() => setContentFilter(null)} />}
             </div>
         </div>
     );

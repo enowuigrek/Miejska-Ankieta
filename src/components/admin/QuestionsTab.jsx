@@ -28,7 +28,9 @@ const QuestionsTab = ({ stats }) => {
     });
 
     const withAnswers = sorted.filter(q => q.answers > 0);
-    const withoutAnswers = sorted.filter(q => q.answers === 0);
+    // Only show "bez odpowiedzi" for questions that had scans but no answers
+    // (questions with 0 scans + 0 answers are not deployed yet — no point showing them here)
+    const withoutAnswers = sorted.filter(q => q.answers === 0 && q.scans > 0);
 
     const toggleExpand = (id) => {
         setExpanded(prev => prev === id ? null : id);
