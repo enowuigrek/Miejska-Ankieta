@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const LocationsTab = ({ stats }) => {
-    if (!stats) return <div className='tab-empty'><p>Ładowanie...</p></div>;
+    if (!stats) return <div className='tab-empty'><div className='tab-spinner' /></div>;
 
     if (!stats.hasData) {
         return (

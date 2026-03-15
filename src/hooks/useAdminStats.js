@@ -50,29 +50,47 @@ const fillDays = (scansByDay, answersByDay, since, until) => {
 const useAdminStats = (answers, scans, questions) => {
     return useMemo(() => {
         if (!questions) return null;
+
+        const now    = new Date();
+        const today  = startOfDay(now);
+        const last7  = subDays(today, 7);
+        const prev7  = subDays(today, 14);
+        const last30 = subDays(today, 30);
+        const last1  = subDays(today, 1);
+
         if (!answers.length && !scans.length) {
             const questionStats = Object.keys(questions).map(qid => ({
                 id: qid,
                 questionText: questions[qid].questionText,
-                options: questions[qid].options || [],
-                number: questions[qid].number,
+                options:      questions[qid].options || [],
+                number:       questions[qid].number,
                 scans: 0, answers: 0, conversion: 0,
                 responses: {}, responsesWithPct: [],
                 dominant: null, timelineData: [], locationEntries: [],
                 latestActivity: null,
             })).sort((a, b) => (a.number || 0) - (b.number || 0));
             return {
-                overview: null,
-                locations: null,
+                overview: {
+                    totalScans: 0, totalAnswers: 0, conversion: 0, activeLocations: 0,
+                    weekTrend: {
+                        scans:      { current: 0, previous: 0, change: 0 },
+                        answers:    { current: 0, previous: 0, change: 0 },
+                        conversion: { current: 0, previous: 0, change: 0 },
+                    },
+                    dailyActivity:    fillDays({}, {}, last30, today),
+                    dailyActivity1d:  fillDays({}, {}, last1,  today),
+                    dailyActivity7d:  fillDays({}, {}, last7,  today),
+                    dailyActivity30d: fillDays({}, {}, last30, today),
+                    dailyActivityAll: fillDays({}, {}, last30, today),
+                    hourlyActivity: [],
+                },
+                locations: {
+                    stats: [], hasData: false, totalLocations: 0,
+                    topLocation: null, bestConversionLoc: null,
+                },
                 questions: { stats: questionStats, totalQuestions: questionStats.length, withAnswers: 0 },
             };
         }
-
-        const now = new Date();
-        const today = startOfDay(now);
-        const last7 = subDays(today, 7);
-        const prev7 = subDays(today, 14);
-        const last30 = subDays(today, 30);
 
         // ============ OVERVIEW ============
 
@@ -114,7 +132,6 @@ const useAdminStats = (answers, scans, questions) => {
 
         // Daily activity — różne okna czasu
         const epoch = new Date(0);
-        const last1 = subDays(today, 1);
 
         const scansByDayAll   = groupByDay(scans,   epoch);
         const answersByDayAll = groupByDay(answers, epoch);

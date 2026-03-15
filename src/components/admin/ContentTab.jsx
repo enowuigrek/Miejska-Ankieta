@@ -372,18 +372,16 @@ const ContentTab = () => {
                     )}
                 </div>
             )}
+            {stickerQ && (
+                <QRStickerModal
+                    questionId={stickerQ.id}
+                    questionText={stickerQ.questionText}
+                    options={stickerQ.options || []}
+                    questionNum={stickerQ.number || 0}
+                    onClose={() => setStickerQ(null)}
+                />
+            )}
         </div>
-
-        {stickerQ && (
-            <QRStickerModal
-                questionId={stickerQ.id}
-                questionText={stickerQ.questionText}
-                options={stickerQ.options || []}
-                questionNum={stickerQ.number || 0}
-                onClose={() => setStickerQ(null)}
-            />
-        )}
-    </div>
     );
 };
 
