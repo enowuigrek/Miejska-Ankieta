@@ -126,6 +126,7 @@ h1.night::after {
 
 // Widok wyników — staggered animacje
 .view-results {
+    padding-top: 20px;
     .prev-answer-block {
         animation: fadeUp 0.3s ease-out 0s both;
     }
