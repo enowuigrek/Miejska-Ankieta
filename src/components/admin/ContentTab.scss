@@ -123,6 +123,8 @@
     text-overflow: ellipsis;
 }
 
+.ct-print-btn,
+.ct-active-btn,
 .ct-sticker-btn,
 .ct-edit-btn,
 .ct-delete-btn {
@@ -144,10 +146,24 @@
     min-width: 34px;
 }
 
-.ct-print-btn.active {
+.ct-print-btn.active,
+.ct-active-btn.active {
     opacity: 1;
     color: #FF2323;
     border-color: #FF2323;
+}
+
+.ct-print-btn:hover,
+.ct-active-btn:hover {
+    opacity: 1;
+    border-color: rgb(69, 69, 69);
+    background: transparent;
+}
+
+.ct-print-btn.active:hover,
+.ct-active-btn.active:hover {
+    border-color: #FF2323;
+    background: transparent;
 }
 
 .ct-sticker-btn:hover {

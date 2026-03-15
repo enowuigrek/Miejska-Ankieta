@@ -80,7 +80,7 @@ html, body {
     color: #FF2323;
 }
 
-button {
+.question-container button {
     font-family: 'Urbanist', sans-serif;
     background-color: #FF2323;
     color: rgb(243, 242, 242);
@@ -93,7 +93,7 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.question-container button:hover {
     background-color: #8b2121;
 }
 

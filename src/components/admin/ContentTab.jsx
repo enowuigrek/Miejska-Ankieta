@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import {
-    doc, setDoc, deleteDoc,
+    doc, setDoc, deleteDoc, updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode, faPrint } from '@fortawesome/free-solid-svg-icons';
+import { faQrcode, faPrint, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import QRStickerModal from './QRStickerModal';
 import './ContentTab.scss';
 
@@ -201,10 +201,11 @@ const ContentTab = () => {
     }, [refresh]);
 
     // ── Ciekawostki — zapis ──────────────────────────────────────────────────
-    const saveFact = useCallback(async (factId, data, number) => {
+    const saveFact = useCallback(async (factId, data, number, active) => {
         await setDoc(doc(db, 'facts', factId), {
             text:   data.text,
             number: number,
+            active: active !== false,
         });
         await refresh();
         setEditingId(null);
@@ -217,10 +218,17 @@ const ContentTab = () => {
         await setDoc(doc(db, 'facts', newId), {
             text:   data.text,
             number: maxNum + 1,
+            active: true,
         });
         await refresh();
         setAddingNew(false);
     }, [facts, refresh]);
+
+    const toggleFactActive = useCallback(async (fact) => {
+        const newActive = fact.active === false ? true : false;
+        await updateDoc(doc(db, 'facts', fact.id), { active: newActive });
+        await refresh();
+    }, [refresh]);
 
     // ── Usuwanie ─────────────────────────────────────────────────────────────
     const deleteQuestion = useCallback(async (id) => {
@@ -351,7 +359,7 @@ const ContentTab = () => {
                             {editingId === fact.id ? (
                                 <FactForm
                                     initial={fact}
-                                    onSave={(data) => saveFact(fact.id, data, fact.number)}
+                                    onSave={(data) => saveFact(fact.id, data, fact.number, fact.active)}
                                     onCancel={() => setEditingId(null)}
                                 />
                             ) : confirmingDelete === fact.id ? (
@@ -364,6 +372,12 @@ const ContentTab = () => {
                                 <div className='ct-item-row'>
                                     <span className='ct-item-num'>#{String(fact.number || 0).padStart(3, '0')}</span>
                                     <span className='ct-item-text ct-item-text--fact'>{fact.text}</span>
+                                    <button
+                                        type='button'
+                                        className={`ct-active-btn${fact.active === false ? '' : ' active'}`}
+                                        onClick={() => toggleFactActive(fact)}
+                                        title={fact.active === false ? 'Nieaktywna — kliknij aby dodać do puli' : 'Aktywna w puli losowania'}
+                                    ><FontAwesomeIcon icon={fact.active === false ? faToggleOff : faToggleOn} /></button>
                                     <button
                                         type='button'
                                         className='ct-edit-btn'

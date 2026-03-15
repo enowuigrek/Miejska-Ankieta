@@ -110,14 +110,17 @@ const Question = ({ isNight, onResultsView }) => {
                 label: opt.label,
                 percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
             }));
-            const factsArr = facts || [];
+            const allFacts = facts || [];
+            const activeFacts = allFacts.filter(f => f.active !== false);
+            const factsPool = activeFacts.length > 0 ? activeFacts : allFacts;
             const factKey = `fact_${questionId}`;
             const storedFactIdx = localStorage.getItem(factKey);
-            const factIdx = storedFactIdx !== null
-                ? parseInt(storedFactIdx)
-                : Math.floor(Math.random() * (factsArr.length || 1));
+            const storedIdx = storedFactIdx !== null ? parseInt(storedFactIdx) : null;
+            const factIdx = storedIdx !== null && storedIdx < factsPool.length
+                ? storedIdx
+                : Math.floor(Math.random() * (factsPool.length || 1));
             if (storedFactIdx === null) localStorage.setItem(factKey, factIdx);
-            const randomFact = factsArr[factIdx]?.text || '';
+            const randomFact = factsPool[factIdx]?.text || '';
             setResults(computed);
             setFact(randomFact);
             setView('results');
