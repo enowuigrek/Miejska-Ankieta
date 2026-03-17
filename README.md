@@ -22,13 +22,17 @@ The goal is to spark reflection, conversation, and curiosity about everyday topi
 **Status:** Live
 **Live URL:** https://jakmyslisz.com/
 
-> The full experience requires scanning a physical QR sticker in the city.
-> Questions are also accessible directly via URL.
+### 👉 [Live Demo — jakmyslisz.com/demo](https://jakmyslisz.com/demo)
 
-### Example questions
+The demo gives full access to the admin panel with realistic mock data — no login required.
+From the demo you can also preview the full voting flow:
 
-- https://jakmyslisz.com/kawa
-- https://jakmyslisz.com/pomidorowa
+- **Admin panel:** https://jakmyslisz.com/demo
+- **Example question (voting flow):** https://jakmyslisz.com/demo/pytanie/pomidorowa
+- **Another one:** https://jakmyslisz.com/demo/pytanie/symulacja
+
+> The real experience starts with scanning a physical QR sticker placed in the city.
+> Demo data is example-only — nothing is saved.
 
 ---
 
