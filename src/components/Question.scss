@@ -124,10 +124,24 @@ h1.night::after {
     pointer-events: none;
 }
 
-// Opcja "inne — wpisz"
+// Opcja "+ dodaj"
 .text-option-btn {
     font-style: italic;
     opacity: 0.7;
+}
+
+.text-option-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.text-option-error {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.85rem;
+    color: #FF2323;
+    margin: 0;
+    padding: 0 2px;
 }
 
 .text-option-input {

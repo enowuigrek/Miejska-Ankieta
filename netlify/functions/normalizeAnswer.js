@@ -1,5 +1,5 @@
-// Netlify Function — normalizacja tekstu wpisanego przez użytkownika
-// Wywołuje Claude Haiku, żeby dopasować wpisaną kawiarnię do znanych opcji
+// Netlify Function — normalizacja i moderacja tekstu wpisanego przez użytkownika
+// Zwraca JSON: { canonical, address } lub { error: "not_a_place" }
 
 exports.handler = async (event) => {
     if (event.httpMethod !== 'POST') {
@@ -18,15 +18,23 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ error: 'Nieprawidłowy JSON' }) };
     }
 
-    const prompt = `Użytkownik wpisał nazwę kawiarni: "${rawAnswer}"
-Znane kawiarnie w Częstochowie: ${knownOptions.join(', ')}
+    const prompt = `Jesteś asystentem projektu ankietowego "jakmyślisz" działającego w Częstochowie.
+Użytkownik wpisał: "${rawAnswer}"
+Znane lokale z listy: ${knownOptions.join(', ')}
 
-Twoim zadaniem jest dopasowanie odpowiedzi użytkownika do jednej ze znanych kawiarni.
-Zasady:
-- Jeśli odpowiedź pasuje do jednej z kawiarni (nawet z literówkami, skrótem, opisem lokalizacji lub nieformalną nazwą) — zwróć DOKŁADNIE jej nazwę z listy.
-- Jeśli odpowiedź to inna kawiarnia, której nie ma na liście — zwróć jej poprawną, oficjalną nazwę (np. "Czarna Magia", "Cafe Verde").
-- Jeśli nie wiesz co to za miejsce — zwróć "inne".
-Odpowiedz TYLKO nazwą, bez żadnych wyjaśnień ani dodatkowych słów.`;
+Twoje zadanie:
+1. Sprawdź czy to jest nazwa prawdziwego lokalu gastronomicznego (kawiarnia, restauracja, bar, itp.) w Częstochowie.
+2. Jeśli tak — zwróć jego oficjalną nazwę i ulicę.
+3. Jeśli to nie jest lokal gastronomiczny (np. "u mamy", "w domu", przekleństwo, bzdura, losowy tekst) — zwróć error.
+
+Zasady dopasowania do listy:
+- Jeśli pasuje do pozycji z listy (literówka, skrót, opis) — użyj DOKŁADNIE nazwy z listy.
+- Jeśli to inny prawdziwy lokal — podaj jego oficjalną nazwę i adres.
+
+Odpowiedz WYŁĄCZNIE w formacie JSON, bez żadnego dodatkowego tekstu:
+{ "canonical": "Nazwa Lokalu", "address": "ul. Przykładowa 1" }
+lub jeśli to nie lokal:
+{ "error": "not_a_place" }`;
 
     try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -38,26 +46,34 @@ Odpowiedz TYLKO nazwą, bez żadnych wyjaśnień ani dodatkowych słów.`;
             },
             body: JSON.stringify({
                 model: 'claude-haiku-4-5-20251001',
-                max_tokens: 50,
+                max_tokens: 100,
                 messages: [{ role: 'user', content: prompt }],
             }),
         });
 
         const data = await response.json();
-        const canonical = data.content?.[0]?.text?.trim() || rawAnswer;
+        const text = data.content?.[0]?.text?.trim() || '{}';
+
+        let parsed;
+        try {
+            parsed = JSON.parse(text);
+        } catch {
+            // Claude nie zwrócił JSON — traktuj jako nierozpoznane
+            parsed = { error: 'not_a_place' };
+        }
 
         return {
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ canonical }),
+            body: JSON.stringify(parsed),
         };
     } catch (err) {
         console.error('Claude API error:', err);
-        // fallback: użyj surowego tekstu
+        // fallback: nie blokuj użytkownika, zapisz surowy tekst
         return {
             statusCode: 200,
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ canonical: rawAnswer }),
+            body: JSON.stringify({ canonical: rawAnswer, address: null }),
         };
     }
 };

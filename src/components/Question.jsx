@@ -142,9 +142,10 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                 body: JSON.stringify({ rawAnswer: rawText, knownOptions }),
             });
             const data = await res.json();
-            return data.canonical || rawText;
+            if (data.error === 'not_a_place') return null; // moderacja
+            return { canonical: data.canonical || rawText, address: data.address || null };
         } catch {
-            return rawText;
+            return { canonical: rawText, address: null };
         }
     };
 
@@ -204,7 +205,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         }
     };
 
-    const submitAnswer = async (answerId, rawText = null) => {
+    const submitAnswer = async (answerId, rawText = null, address = null) => {
         if (loading) return;
 
         setLoading(true);
@@ -216,6 +217,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                     questionId,
                     answer: answerId,
                     ...(rawText && { raw: rawText }),
+                    ...(address && { address }),
                     timestamp: new Date().toISOString(),
                     ...(location && { location }),
                 });
@@ -230,12 +232,31 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         }
     };
 
+    const [textError, setTextError] = useState('');
+
     const handleTextSubmit = async () => {
         const raw = textValue.trim();
         if (!raw || loading) return;
+        setTextError('');
+        setLoading(true);
+
+        if (demoMode) {
+            setLoading(false);
+            setTextInputActive(false);
+            await submitAnswer(raw, raw);
+            return;
+        }
+
+        const result = await normalizeAnswer(raw);
+        setLoading(false);
+
+        if (result === null) {
+            setTextError('wpisz nazwę prawdziwego lokalu');
+            return;
+        }
+
         setTextInputActive(false);
-        const canonical = demoMode ? raw : await normalizeAnswer(raw);
-        await submitAnswer(canonical, raw);
+        await submitAnswer(result.canonical, raw, result.address);
     };
 
     const handleOptionClick = (optionId) => {
@@ -380,27 +401,30 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                         )}
                         {option.type === 'text' ? (
                             textInputActive ? (
-                                <div className={`text-option-input ${isNight ? 'night' : 'day'}`}>
-                                    <input
-                                        ref={textInputRef}
-                                        type='text'
-                                        className='text-option-field'
-                                        placeholder='wpisz nazwę miejsca...'
-                                        value={textValue}
-                                        onChange={e => setTextValue(e.target.value)}
-                                        onKeyDown={e => e.key === 'Enter' && handleTextSubmit()}
-                                        autoFocus
-                                        maxLength={80}
-                                        disabled={loading}
-                                    />
-                                    <button
-                                        type='button'
-                                        className='text-option-submit'
-                                        onClick={handleTextSubmit}
-                                        disabled={!textValue.trim() || loading}
-                                    >
-                                        {loading ? '...' : 'OK'}
-                                    </button>
+                                <div className='text-option-wrapper'>
+                                    <div className={`text-option-input ${isNight ? 'night' : 'day'}`}>
+                                        <input
+                                            ref={textInputRef}
+                                            type='text'
+                                            className='text-option-field'
+                                            placeholder='wpisz nazwę miejsca...'
+                                            value={textValue}
+                                            onChange={e => { setTextValue(e.target.value); setTextError(''); }}
+                                            onKeyDown={e => e.key === 'Enter' && handleTextSubmit()}
+                                            autoFocus
+                                            maxLength={80}
+                                            disabled={loading}
+                                        />
+                                        <button
+                                            type='button'
+                                            className='text-option-submit'
+                                            onClick={handleTextSubmit}
+                                            disabled={!textValue.trim() || loading}
+                                        >
+                                            {loading ? '...' : 'OK'}
+                                        </button>
+                                    </div>
+                                    {textError && <p className='text-option-error'>{textError}</p>}
                                 </div>
                             ) : (
                                 <button
