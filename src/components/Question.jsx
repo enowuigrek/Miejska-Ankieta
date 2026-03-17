@@ -35,6 +35,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const [sharing, setSharing] = useState(false);
     const [textValue, setTextValue] = useState('');
     const [textInputActive, setTextInputActive] = useState(false);
+    const [textError, setTextError] = useState('');
     const [dynamicOptions, setDynamicOptions] = useState([]);
     const timerRef = React.useRef(null);
     const textInputRef = React.useRef(null);
@@ -231,8 +232,6 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             setLoading(false);
         }
     };
-
-    const [textError, setTextError] = useState('');
 
     const handleTextSubmit = async () => {
         const raw = textValue.trim();
