@@ -156,6 +156,85 @@
     }
 }
 
+// ── Sheet ─────────────────────────────────────────────────────────────────────
+.qr-sheet-divider {
+    border: none;
+    border-top: 1.5px solid rgba(69, 69, 69, 0.15);
+    margin: 0;
+}
+
+.qr-sheet-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.qr-sheet-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.4;
+}
+
+.qr-sheet-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.qr-sheet-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.qr-sheet-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.4;
+}
+
+.qr-sheet-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid rgba(69, 69, 69, 0.25);
+    background: transparent;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: -1px;
+    color: rgb(69, 69, 69);
+    text-align: center;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus { border-color: rgb(69, 69, 69); }
+
+    // ukryj strzałki
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    -moz-appearance: textfield;
+}
+
+.qr-sheet-total {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: -1px;
+    padding-bottom: 9px;
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    &.ok  { color: rgb(69, 69, 69); opacity: 0.5; }
+    &.err { color: #FF2323; }
+}
+
+.qr-sheet-btn {
+    margin-top: 2px;
+}
+
 // ── Download buttons ──────────────────────────────────────────────────────────
 .qr-download-btn {
     background: rgb(69, 69, 69);
