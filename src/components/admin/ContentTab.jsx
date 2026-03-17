@@ -28,10 +28,14 @@ const optionSlug = (label) =>
 
 // ── Formularz pytania ─────────────────────────────────────────────────────────
 const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
-    const [text,    setText]    = useState(initial?.questionText ?? '');
-    const [qId,     setQId]     = useState(initial?.id ?? '');
+    const [text,      setText]      = useState(initial?.questionText ?? '');
+    const [qId,       setQId]       = useState(initial?.id ?? '');
+    const [allowText, setAllowText] = useState(initial?.allowText ?? false);
+    // Edytujemy tylko stałe opcje — opcja type:text jest auto-dodawana
     const [options, setOptions] = useState(
-        initial?.options ? initial.options.map(o => ({ ...o })) : [{ id: '', label: '' }, { id: '', label: '' }]
+        initial?.options
+            ? initial.options.filter(o => o.type !== 'text').map(o => ({ ...o }))
+            : [{ id: '', label: '' }, { id: '', label: '' }]
     );
     const [saving, setSaving] = useState(false);
     const [err,    setErr]    = useState('');
@@ -55,13 +59,18 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
         setSaving(true);
         setErr('');
         try {
+            const fixedOptions = options.map(o => ({
+                id: o.id || optionSlug(o.label),
+                label: o.label.trim(),
+            }));
+            const allOptions = allowText
+                ? [...fixedOptions, { id: 'inne', label: '+ dodaj', type: 'text' }]
+                : fixedOptions;
             await onSave({
                 id: qId.trim(),
                 questionText: text.trim(),
-                options: options.map(o => ({
-                    id: o.id || optionSlug(o.label),
-                    label: o.label.trim(),
-                })),
+                options: allOptions,
+                allowText: allowText || false,
                 number: initial?.number ?? maxNumber + 1,
             });
         } catch (e) {
@@ -112,6 +121,14 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
                     <button type='button' className='ct-add-btn' onClick={addOption}>+ dodaj odpowiedź</button>
                 </div>
             </div>
+            <label className='ct-allowtext-row'>
+                <input
+                    type='checkbox'
+                    checked={allowText}
+                    onChange={e => setAllowText(e.target.checked)}
+                />
+                <span>Pytanie otwarte — dodaj opcję <em>"+ dodaj"</em> (użytkownicy mogą wpisać własną odpowiedź)</span>
+            </label>
             {err && <p className='ct-error'>{err}</p>}
             <div className='ct-form-actions'>
                 <button type='button' className='ct-save-btn' onClick={handleSave} disabled={saving}>
@@ -218,6 +235,7 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
             questionText: data.questionText,
             options:      data.options,
             number:       data.number,
+            ...(data.allowText && { allowText: true }),
         });
         await refresh();
         setEditingId(null);
