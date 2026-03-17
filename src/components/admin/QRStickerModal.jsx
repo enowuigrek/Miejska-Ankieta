@@ -52,7 +52,7 @@ function drawNum(ctx, num, sizePx) {
 
 function drawBorder(ctx, sizePx) {
     ctx.save();
-    ctx.strokeStyle = 'rgba(120, 120, 120, 0.25)';
+    ctx.strokeStyle = 'rgba(80, 80, 80, 0.65)';
     ctx.lineWidth   = Math.max(1, Math.round(sizePx * 0.004));
     ctx.strokeRect(1, 1, sizePx - 2, sizePx - 2);
     ctx.restore();
@@ -211,7 +211,7 @@ async function renderA3Sheet(canvas, { questionText, questionId, options, questi
 
     // Linie cięcia — przerywane między kolumnami i wierszami
     ctx.save();
-    ctx.strokeStyle = 'rgba(100, 100, 100, 0.3)';
+    ctx.strokeStyle = 'rgba(80, 80, 80, 0.65)';
     ctx.lineWidth   = 1;
     ctx.setLineDash([mm(3), mm(3)]);
 
