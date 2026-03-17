@@ -75,6 +75,17 @@ export const SEED_QUESTIONS = {
         ],
     },
 
+    najlepsza_kawa: {
+        questionText: 'Najlepsza kawa w Częstochowie?',
+        allowText: true,
+        options: [
+            { id: 'Strzykawa', label: 'Strzykawa' },
+            { id: 'Fusy', label: 'Fusy' },
+            { id: 'Sacre', label: 'Sacre' },
+            { id: 'inne', label: 'inne — wpisz', type: 'text' },
+        ],
+    },
+
     mleko: {
         questionText: 'Mleko lepsze',
         options: [

@@ -33,7 +33,10 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const [prevAnswer, setPrevAnswer] = useState(null);
     const [barsVisible, setBarsVisible] = useState(false);
     const [sharing, setSharing] = useState(false);
+    const [textValue, setTextValue] = useState('');
+    const [textInputActive, setTextInputActive] = useState(false);
     const timerRef = React.useRef(null);
+    const textInputRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
     const shareRef = React.useRef(null);
     const { questionId } = useParams();
@@ -101,6 +104,23 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     if (questions === null) return null;
     if (!questionData)      return null;
 
+    const normalizeAnswer = async (rawText) => {
+        const knownOptions = questionData.options
+            .filter(o => o.type !== 'text')
+            .map(o => o.id);
+        try {
+            const res = await fetch('/.netlify/functions/normalizeAnswer', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ rawAnswer: rawText, knownOptions }),
+            });
+            const data = await res.json();
+            return data.canonical || rawText;
+        } catch {
+            return rawText;
+        }
+    };
+
     const fetchResults = async () => {
         // Demo: gotowe wyniki bez Firestore
         if (demoMode) {
@@ -123,10 +143,20 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                 counts[ans] = (counts[ans] || 0) + 1;
             });
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
-            const computed = questionData.options.map(opt => ({
-                label: opt.label,
-                percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
-            }));
+
+            // Dla pytań z allowText: pokaż wszystkie zgrupowane canonical values
+            const computed = questionData.allowText
+                ? Object.entries(counts)
+                    .map(([key, count]) => ({
+                        label: key,
+                        percent: total > 0 ? Math.round((count / total) * 100) : 0,
+                    }))
+                    .sort((a, b) => b.percent - a.percent)
+                : questionData.options.map(opt => ({
+                    label: opt.label,
+                    percent: total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0,
+                }));
+
             const allFacts = facts || [];
             const activeFacts = allFacts.filter(f => f.active !== false);
             const factsPool = activeFacts.length > 0 ? activeFacts : allFacts;
@@ -147,18 +177,18 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         }
     };
 
-    const submitAnswer = async (answerId) => {
+    const submitAnswer = async (answerId, rawText = null) => {
         if (loading) return;
 
         setLoading(true);
         try {
             if (demoMode) {
-                // demo: zapisz do sessionStorage, nie do Firebase
                 sessionStorage.setItem(`demo_voted_${questionId}`, answerId);
             } else {
                 await addDoc(collection(db, "answers"), {
                     questionId,
                     answer: answerId,
+                    ...(rawText && { raw: rawText }),
                     timestamp: new Date().toISOString(),
                     ...(location && { location }),
                 });
@@ -171,6 +201,14 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleTextSubmit = async () => {
+        const raw = textValue.trim();
+        if (!raw || loading) return;
+        setTextInputActive(false);
+        const canonical = demoMode ? raw : await normalizeAnswer(raw);
+        await submitAnswer(canonical, raw);
     };
 
     const handleOptionClick = (optionId) => {
@@ -219,7 +257,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     if (view === 'results') {
         const greeting = GREETINGS[new Date().getDay()];
         const prevAnswerLabel = prevAnswer
-            ? questionData.options.find(o => o.id === prevAnswer)?.label
+            ? (questionData.options.find(o => o.id === prevAnswer)?.label || prevAnswer)
             : null;
 
         return (
@@ -287,6 +325,11 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         );
     }
 
+    // Indeks ostatniej opcji bez type:text (dla separatora "czy")
+    const lastNonTextIdx = questionData.options.reduce(
+        (acc, o, i) => (o.type !== 'text' ? i : acc), -1
+    );
+
     return (
         <div className='question-container'>
 
@@ -296,18 +339,57 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             <div className='options'>
                 {questionData.options.map((option, index) => (
                     <React.Fragment key={option.id}>
-                        {index === questionData.options.length - 1 && (
+                        {index === lastNonTextIdx && (
                             <div className={`czy-separator ${isNight ? 'night' : 'day'}`}>czy</div>
                         )}
-                        <button
-                            type='button'
-                            className={`option-btn ${isNight ? 'night' : 'day'}${selectedOption === option.id ? ' selected' : ''}${loading ? ' disabled' : ''}`}
-                            onClick={() => handleOptionClick(option.id)}
-                            disabled={loading}
-                        >
-                            <span className='option-label'>{option.label}</span>
-                            <div className='countdown-bar' key={selectedOption === option.id ? 'active' : 'idle'} />
-                        </button>
+                        {option.type === 'text' ? (
+                            textInputActive ? (
+                                <div className={`text-option-input ${isNight ? 'night' : 'day'}`}>
+                                    <input
+                                        ref={textInputRef}
+                                        type='text'
+                                        className='text-option-field'
+                                        placeholder='wpisz nazwę miejsca...'
+                                        value={textValue}
+                                        onChange={e => setTextValue(e.target.value)}
+                                        onKeyDown={e => e.key === 'Enter' && handleTextSubmit()}
+                                        autoFocus
+                                        maxLength={80}
+                                        disabled={loading}
+                                    />
+                                    <button
+                                        type='button'
+                                        className='text-option-submit'
+                                        onClick={handleTextSubmit}
+                                        disabled={!textValue.trim() || loading}
+                                    >
+                                        {loading ? '...' : 'OK'}
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    type='button'
+                                    className={`option-btn ${isNight ? 'night' : 'day'} text-option-btn${loading ? ' disabled' : ''}`}
+                                    onClick={() => {
+                                        setSelectedOption(option.id);
+                                        setTextInputActive(true);
+                                    }}
+                                    disabled={loading}
+                                >
+                                    <span className='option-label'>{option.label}</span>
+                                </button>
+                            )
+                        ) : (
+                            <button
+                                type='button'
+                                className={`option-btn ${isNight ? 'night' : 'day'}${selectedOption === option.id ? ' selected' : ''}${loading ? ' disabled' : ''}`}
+                                onClick={() => handleOptionClick(option.id)}
+                                disabled={loading}
+                            >
+                                <span className='option-label'>{option.label}</span>
+                                <div className='countdown-bar' key={selectedOption === option.id ? 'active' : 'idle'} />
+                            </button>
+                        )}
                     </React.Fragment>
                 ))}
             </div>
