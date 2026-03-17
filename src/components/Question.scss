@@ -138,6 +138,52 @@ h1.night::after {
     margin-top: 4px;
 }
 
+.places-dropdown {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 2px solid rgb(69, 69, 69);
+    border-top: none;
+    background: rgb(243, 242, 242);
+
+    .night & {
+        border-color: rgb(210, 210, 210);
+        background: rgb(55, 55, 55);
+    }
+}
+
+.places-dropdown-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(69, 69, 69, 0.12);
+
+    &:last-child { border-bottom: none; }
+
+    &:hover, &:active {
+        background: rgba(255, 35, 35, 0.08);
+    }
+}
+
+.places-name {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgb(69, 69, 69);
+
+    .night & { color: rgb(220, 220, 220); }
+}
+
+.places-address {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.78rem;
+    color: rgba(69, 69, 69, 0.55);
+    margin-top: 1px;
+
+    .night & { color: rgba(220, 220, 220, 0.55); }
+}
+
 .text-option-error {
     font-family: 'Urbanist', sans-serif;
     font-size: 0.85rem;

@@ -36,7 +36,9 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const [textValue, setTextValue] = useState('');
     const [textInputActive, setTextInputActive] = useState(false);
     const [textError, setTextError] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
     const [dynamicOptions, setDynamicOptions] = useState([]);
+    const debounceRef = React.useRef(null);
     const timerRef = React.useRef(null);
     const textInputRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
@@ -131,6 +133,31 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     // Ładowanie danych z Firestore
     if (questions === null) return null;
     if (!questionData)      return null;
+
+    const fetchSuggestions = (value) => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        if (!value || value.trim().length < 2) { setSuggestions([]); return; }
+        debounceRef.current = setTimeout(async () => {
+            try {
+                const res = await fetch('/.netlify/functions/placesAutocomplete', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ input: value }),
+                });
+                const data = await res.json();
+                setSuggestions(data.suggestions || []);
+            } catch {
+                setSuggestions([]);
+            }
+        }, 300);
+    };
+
+    const handleSuggestionSelect = async (suggestion) => {
+        setSuggestions([]);
+        setTextInputActive(false);
+        setTextError('');
+        await submitAnswer(suggestion.name, suggestion.name, suggestion.address || null);
+    };
 
     const normalizeAnswer = async (rawText) => {
         const knownOptions = questionData.options
@@ -408,7 +435,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                                             className='text-option-field'
                                             placeholder='wpisz nazwę miejsca...'
                                             value={textValue}
-                                            onChange={e => { setTextValue(e.target.value); setTextError(''); }}
+                                            onChange={e => { setTextValue(e.target.value); setTextError(''); fetchSuggestions(e.target.value); }}
                                             onKeyDown={e => e.key === 'Enter' && handleTextSubmit()}
                                             autoFocus
                                             maxLength={80}
@@ -423,6 +450,20 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                                             {loading ? '...' : 'OK'}
                                         </button>
                                     </div>
+                                    {suggestions.length > 0 && (
+                                        <ul className='places-dropdown'>
+                                            {suggestions.map((s, i) => (
+                                                <li
+                                                    key={i}
+                                                    className='places-dropdown-item'
+                                                    onMouseDown={() => handleSuggestionSelect(s)}
+                                                >
+                                                    <span className='places-name'>{s.name}</span>
+                                                    {s.address && <span className='places-address'>{s.address}</span>}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                     {textError && <p className='text-option-error'>{textError}</p>}
                                 </div>
                             ) : (
