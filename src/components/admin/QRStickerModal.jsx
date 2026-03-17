@@ -9,9 +9,9 @@ const F_SEMI  = '"Urbanist", "Arial", sans-serif';
 
 const PREVIEW_PX  = 560;
 const DPI         = 300;
-const A3_TOTAL    = 16;
+const A3_TOTAL    = 24;
 const A3_COLS     = 4;
-const A3_ROWS     = 4;
+const A3_ROWS     = 6;
 
 async function waitForFonts() {
     if (document.fonts) {
@@ -259,7 +259,7 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
     const [tab,         setTab]         = useState('pytanie');
     const [sizeMM,      setSizeMM]      = useState(80);
     const [rendering,   setRendering]   = useState(false);
-    const [sheetCounts, setSheetCounts] = useState({ pytanie: 6, qr: 6, qmark: 4 });
+    const [sheetCounts, setSheetCounts] = useState({ pytanie: 9, qr: 9, qmark: 6 });
     const previewRef = useRef(null);
 
     const sheetTotal = sheetCounts.pytanie + sheetCounts.qr + sheetCounts.qmark;
@@ -389,7 +389,7 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
                 <div className='qr-sheet-divider' />
 
                 <div className='qr-sheet-section'>
-                    <div className='qr-sheet-title'>arkusz A3 — {A3_TOTAL} naklejek</div>
+                    <div className='qr-sheet-title'>arkusz A3 — {A3_TOTAL} naklejek (4×6)</div>
                     <div className='qr-sheet-row'>
                         <div className='qr-sheet-field'>
                             <label className='qr-sheet-label'>pytania</label>
