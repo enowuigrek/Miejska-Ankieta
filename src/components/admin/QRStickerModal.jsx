@@ -52,7 +52,7 @@ function drawNum(ctx, num, sizePx) {
 
 function drawBorder(ctx, sizePx) {
     ctx.save();
-    ctx.strokeStyle = 'rgba(80, 80, 80, 0.65)';
+    ctx.strokeStyle = 'rgba(50, 50, 50, 0.9)';
     ctx.lineWidth   = Math.max(1, Math.round(sizePx * 0.004));
     ctx.strokeRect(1, 1, sizePx - 2, sizePx - 2);
     ctx.restore();
@@ -170,7 +170,7 @@ async function renderA3Sheet(canvas, { questionText, questionId, options, questi
     const W       = mm(297);
     const H       = mm(420);
     const MARGIN  = mm(10);
-    const GAP     = mm(5);
+    const GAP     = 0;
 
     const stickerSize = Math.floor((W - 2 * MARGIN - (A3_COLS - 1) * GAP) / A3_COLS);
     const gridW  = A3_COLS * stickerSize + (A3_COLS - 1) * GAP;
@@ -209,33 +209,6 @@ async function renderA3Sheet(canvas, { questionText, questionId, options, questi
         ctx.drawImage(sc, x, y);
     }
 
-    // Linie cięcia — przerywane między kolumnami i wierszami
-    ctx.save();
-    ctx.strokeStyle = 'rgba(80, 80, 80, 0.65)';
-    ctx.lineWidth   = 1;
-    ctx.setLineDash([mm(3), mm(3)]);
-
-    for (let col = 1; col < A3_COLS; col++) {
-        const lx = startX + col * (stickerSize + GAP) - Math.round(GAP / 2);
-        ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
-    }
-    for (let row = 1; row < A3_ROWS; row++) {
-        const ly = startY + row * (stickerSize + GAP) - Math.round(GAP / 2);
-        ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(W, ly); ctx.stroke();
-    }
-
-    // Linia krawędzi arkusza (górna/dolna/lewa/prawa)
-    const edgeLines = [
-        [startX, 0, startX, H],
-        [startX + gridW, 0, startX + gridW, H],
-        [0, startY, W, startY],
-        [0, startY + gridH, W, startY + gridH],
-    ];
-    edgeLines.forEach(([x1, y1, x2, y2]) => {
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    });
-
-    ctx.restore();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
