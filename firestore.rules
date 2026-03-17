@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Odpowiedzi użytkowników — zapis publiczny (głosowanie przez QR)
+    match /answers/{doc} {
+      allow read, write: if true;
+    }
+
+    // Skany lokalizacji — zapis publiczny
+    match /scans/{doc} {
+      allow read, write: if true;
+    }
+
+    // Pytania — odczyt publiczny, zapis otwarty (panel admina chroniony PINem)
+    match /questions/{doc} {
+      allow read, write: if true;
+    }
+
+    // Ciekawostki — odczyt publiczny, zapis otwarty
+    match /facts/{doc} {
+      allow read, write: if true;
+    }
+
+  }
+}

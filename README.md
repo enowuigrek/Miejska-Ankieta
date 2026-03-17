@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/badge/Firebase-yellow" />
   <img src="https://img.shields.io/badge/Sass-pink" />
   <img src="https://img.shields.io/badge/Hosted-Netlify-teal" />
+  <img src="https://img.shields.io/badge/AI-Claude_Haiku-FF2323" />
 </p>
 
 # jakmyślisz?
@@ -47,12 +48,16 @@ From the demo you can also preview the full voting flow:
 ## ✨ Features
 
 - Anonymous voting via QR codes
+- **Open-ended questions** — users can type their own answer; AI normalizes it in real-time (typos, informal names, descriptions all mapped to canonical values)
+- **AI moderation** — nonsense inputs are rejected before saving
+- Dynamically growing option list — answers added by previous users appear as clickable choices for the next
 - Location tracking per scan (`?loc=rynek`)
 - Duplicate vote prevention (localStorage)
 - Bar chart results shown after voting
 - Random fun fact after each vote
 - Automatic night mode (10 PM – 6 AM)
 - Admin panel with live stats and scan→vote conversion rate
+- QR sticker generator — individual stickers + A3 print sheets (configurable layout)
 - Mobile-first, no registration required
 
 ---
@@ -63,7 +68,8 @@ From the demo you can also preview the full voting flow:
 - Firebase Firestore
 - SCSS
 - React Router DOM
-- Netlify (auto-deploy from GitHub)
+- Netlify (auto-deploy from GitHub) + Netlify Functions (serverless)
+- **Claude Haiku (Anthropic API)** — real-time answer normalization and moderation for open-ended questions
 
 ---
 
