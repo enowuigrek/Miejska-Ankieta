@@ -38,12 +38,12 @@ function wrapText(ctx, text, maxWidth) {
 
 function drawNum(ctx, num, sizePx) {
     if (!num) return;
-    const pad = Math.round(sizePx * 0.05);
-    const fs  = Math.round(sizePx * 0.03);
+    const pad = Math.round(sizePx * 0.03);
+    const fs  = Math.round(sizePx * 0.038);
     ctx.save();
-    ctx.font         = `${fs}px ${F_HEAVY}`;
+    ctx.font         = `700 ${fs}px ${F_SEMI}`;
     ctx.fillStyle    = DARK;
-    ctx.globalAlpha  = 0.28;
+    ctx.globalAlpha  = 0.6;
     ctx.textAlign    = 'right';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`#${String(num).padStart(3, '0')}`, sizePx - pad, sizePx - pad);
