@@ -323,6 +323,17 @@ h1.night::after {
     flex-shrink: 0;
 }
 
+// Ikonka mapy przy wyniku — link do Google Maps
+.result-maps-link {
+    color: #FF2323;
+    font-size: 1.1em;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+    line-height: 1;
+
+    &:active { opacity: 0.6; }
+}
+
 // Ciekawostka — nagłówek z podkreśleniem jak h1
 .fact-header {
     font-family: 'Archivo Black', sans-serif;

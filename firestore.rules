@@ -1,26 +1,38 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Odpowiedzi użytkowników — zapis publiczny (głosowanie przez QR)
-    match /answers/{doc} {
+    // Collection: answers
+    match /answers/{document} {
+      allow create: if
+        request.resource.data.keys().hasAll(['questionId', 'answer', 'timestamp']) &&
+        request.resource.data.keys().hasOnly(['questionId', 'answer', 'timestamp', 'location', 'raw', 'address', 'placeId']) &&
+        request.resource.data.questionId is string &&
+        request.resource.data.answer is string &&
+        request.resource.data.timestamp is string;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+    // Collection: scans
+    match /scans/{document} {
+      allow create: if
+        request.resource.data.keys().hasAll(['questionId', 'timestamp']) &&
+        request.resource.data.keys().hasOnly(['questionId', 'timestamp', 'location']) &&
+        request.resource.data.questionId is string &&
+        request.resource.data.timestamp is string;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+    // Collection: questions (edycja przez panel admina)
+    match /questions/{document} {
       allow read, write: if true;
     }
-
-    // Skany lokalizacji — zapis publiczny
-    match /scans/{doc} {
+    // Collection: facts (edycja przez panel admina)
+    match /facts/{document} {
       allow read, write: if true;
     }
-
-    // Pytania — odczyt publiczny, zapis otwarty (panel admina chroniony PINem)
-    match /questions/{doc} {
-      allow read, write: if true;
+    // Zablokuj dostęp do innych kolekcji
+    match /{document=**} {
+      allow read, write: if false;
     }
-
-    // Ciekawostki — odczyt publiczny, zapis otwarty
-    match /facts/{doc} {
-      allow read, write: if true;
-    }
-
   }
 }

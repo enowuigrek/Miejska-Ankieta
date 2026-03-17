@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpFromBracket, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 import ShareCard from './ShareCard';
 import { DEMO_RESULTS } from '../demo/mockData';
@@ -156,7 +156,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         setSuggestions([]);
         setTextInputActive(false);
         setTextError('');
-        await submitAnswer(suggestion.name, suggestion.name, suggestion.address || null);
+        await submitAnswer(suggestion.name, suggestion.name, suggestion.address || null, suggestion.placeId || null);
     };
 
     const normalizeAnswer = async (rawText) => {
@@ -194,9 +194,11 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             const q = query(collection(db, "answers"), where("questionId", "==", questionId));
             const snapshot = await getDocs(q);
             const counts = {};
+            const placeIds = {};
             snapshot.forEach(doc => {
-                const ans = doc.data().answer;
+                const { answer: ans, placeId } = doc.data();
                 counts[ans] = (counts[ans] || 0) + 1;
+                if (placeId && !placeIds[ans]) placeIds[ans] = placeId;
             });
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
@@ -206,6 +208,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                     .map(([key, count]) => ({
                         label: key,
                         percent: total > 0 ? Math.round((count / total) * 100) : 0,
+                        ...(placeIds[key] && { placeId: placeIds[key] }),
                     }))
                     .sort((a, b) => b.percent - a.percent)
                 : questionData.options.map(opt => ({
@@ -233,7 +236,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         }
     };
 
-    const submitAnswer = async (answerId, rawText = null, address = null) => {
+    const submitAnswer = async (answerId, rawText = null, address = null, placeId = null) => {
         if (loading) return;
 
         setLoading(true);
@@ -246,6 +249,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                     answer: answerId,
                     ...(rawText && { raw: rawText }),
                     ...(address && { address }),
+                    ...(placeId && { placeId }),
                     timestamp: new Date().toISOString(),
                     ...(location && { location }),
                 });
@@ -358,6 +362,17 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                                 <span className='result-label'>{r.label}</span>
                             </div>
                             <span className='result-percent'>{r.percent}%</span>
+                            {r.placeId && (
+                                <a
+                                    className='result-maps-link'
+                                    href={`https://www.google.com/maps/place/?q=place_id:${r.placeId}`}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    title='Nawiguj do tego miejsca'
+                                >
+                                    <FontAwesomeIcon icon={faLocationDot} />
+                                </a>
+                            )}
                         </div>
                     ))}
                 </div>

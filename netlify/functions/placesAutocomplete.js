@@ -45,6 +45,7 @@ exports.handler = async (event) => {
         const suggestions = (data.predictions || []).slice(0, 5).map(p => ({
             name:    p.structured_formatting?.main_text    || p.description,
             address: p.structured_formatting?.secondary_text || '',
+            placeId: p.place_id || null,
         }));
 
         return {

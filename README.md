@@ -48,8 +48,9 @@ From the demo you can also preview the full voting flow:
 ## ✨ Features
 
 - Anonymous voting via QR codes
-- **Open-ended questions** — users can type their own answer; AI normalizes it in real-time (typos, informal names, descriptions all mapped to canonical values)
-- **AI moderation** — nonsense inputs are rejected before saving
+- **Open-ended questions** — users type their own answer (e.g. *"Best coffee in town?"*); previous answers appear as clickable options for the next person, growing the list organically
+- **Google Places autocomplete** — as the user types, real-time place suggestions appear (server-side proxy, API key never exposed to browser)
+- **AI normalization** (Claude Haiku) — typos, informal names and descriptions are mapped to canonical values; obvious nonsense is rejected before saving
 - Dynamically growing option list — answers added by previous users appear as clickable choices for the next
 - Location tracking per scan (`?loc=rynek`)
 - Duplicate vote prevention (localStorage)
@@ -70,6 +71,7 @@ From the demo you can also preview the full voting flow:
 - React Router DOM
 - Netlify (auto-deploy from GitHub) + Netlify Functions (serverless)
 - **Claude Haiku (Anthropic API)** — real-time answer normalization and moderation for open-ended questions
+- **Google Places API** — location autocomplete for place-based questions (server-side, via Netlify Function)
 
 ---
 
