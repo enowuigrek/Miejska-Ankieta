@@ -61,7 +61,8 @@ h1.night::after {
 }
 
 // Opcje odpowiedzi
-.option-btn {
+// Wyższa specyficzność (0,2,0) żeby pokonać App.scss .question-container button (0,1,1)
+.question-container .option-btn {
     position: relative;
     overflow: hidden;
     background: transparent;
@@ -119,7 +120,7 @@ h1.night::after {
     background-color: #FF2323;
 }
 
-.option-btn.disabled {
+.question-container .option-btn.disabled {
     opacity: 0.5;
     pointer-events: none;
 }
@@ -151,6 +152,7 @@ h1.night::after {
     border: 2px solid rgb(69, 69, 69);
     padding: 10px 14px;
     margin: 4px 0;
+    background: transparent;
 
     &.night {
         border-color: rgb(210, 210, 210);
@@ -173,10 +175,10 @@ h1.night::after {
     }
 
     &.night .text-option-field {
-        color: rgb(210, 210, 210);
+        color: rgb(243, 242, 242);
 
         &::placeholder {
-            color: rgba(210, 210, 210, 0.4);
+            color: rgba(243, 242, 242, 0.4);
         }
     }
 
