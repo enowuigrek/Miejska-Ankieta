@@ -259,7 +259,7 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
     const [tab,         setTab]         = useState('pytanie');
     const [sizeMM,      setSizeMM]      = useState(80);
     const [rendering,   setRendering]   = useState(false);
-    const [sheetCounts, setSheetCounts] = useState({ pytanie: 9, qr: 9, qmark: 6 });
+    const [sheetCounts, setSheetCounts] = useState({ pytanie: 8, qr: 8, qmark: 8 });
     const previewRef = useRef(null);
 
     const sheetTotal = sheetCounts.pytanie + sheetCounts.qr + sheetCounts.qmark;
