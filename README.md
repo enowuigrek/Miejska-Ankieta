@@ -36,6 +36,14 @@ From the demo you can also preview the full voting flow:
 
 ---
 
+<p align="center">
+  <img src="public/photo_1.jpeg" alt="jakmyślisz stickers in the wild" width="420" />
+  <br/>
+  <em>Stickers on a bridge railing in Częstochowa</em>
+</p>
+
+---
+
 ## ✨ Features
 
 - Anonymous voting via QR codes
