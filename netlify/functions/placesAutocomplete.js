@@ -37,6 +37,7 @@ exports.handler = async (event) => {
         url.searchParams.set('radius', RADIUS_M);
         url.searchParams.set('types', 'establishment');
         url.searchParams.set('language', 'pl');
+        url.searchParams.set('strictbounds', 'true');
         url.searchParams.set('key', apiKey);
 
         const res  = await fetch(url.toString());
