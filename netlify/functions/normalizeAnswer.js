@@ -18,22 +18,19 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ error: 'Nieprawidłowy JSON' }) };
     }
 
-    const prompt = `Jesteś asystentem projektu ankietowego "jakmyślisz" działającego w Częstochowie, Polska.
-Użytkownik wpisał: "${rawAnswer}"
-Znane lokale z listy: ${knownOptions.join(', ')}
+    const prompt = `Użytkownik wpisał nazwę miejsca: "${rawAnswer}"
+Znane miejsca z listy: ${knownOptions.join(', ')}
 
-Twoje zadanie:
-1. Oceń czy odpowiedź to próba wpisania nazwy lokalu (kawiarni, restauracji, baru, itp.) — nawet z literówkami, po angielsku, niepełna nazwa lub opis.
-2. Jeśli tak — zwróć oficjalną nazwę i ulicę. Użyj swojej wiedzy o lokalach w Częstochowie. Jeśli nie znasz adresu, pomiń pole address.
-3. Odrzuć TYLKO oczywiste nonsensowne odpowiedzi: "u mamy", "w domu", przekleństwa, losowe litery, itp.
+Zasady:
+1. Jeśli pasuje do pozycji z listy (literówka, skrót, opis lokalizacji) — użyj DOKŁADNIE tej nazwy z listy.
+2. Jeśli to inna nazwa (np. "Caffe del Corso", "Black Bear", "u Zosi") — znormalizuj do poprawnej pisowni z wielkimi literami.
+3. Odrzuć TYLKO oczywisty nonsens: losowe litery (np. "asdfjkl"), przekleństwa, "u mamy", "w domu" itp.
 
-Zasady dopasowania do listy:
-- Jeśli pasuje do pozycji z listy (literówka, skrót, opis) — użyj DOKŁADNIE nazwy z listy.
-- Jeśli to inny lokal — podaj jego oficjalną nazwę.
+NIE weryfikuj czy miejsce istnieje — to nie Twoja rola. Jeśli wygląda jak nazwa miejsca, zaakceptuj.
 
-Odpowiedz WYŁĄCZNIE w formacie JSON, bez żadnego dodatkowego tekstu:
-{ "canonical": "Nazwa Lokalu", "address": "ul. Przykładowa 1" }
-lub jeśli to oczywisty nonsens:
+Odpowiedz WYŁĄCZNIE w formacie JSON:
+{ "canonical": "Nazwa Miejsca" }
+lub tylko dla oczywistego nonsensu:
 { "error": "not_a_place" }`;
 
     try {
