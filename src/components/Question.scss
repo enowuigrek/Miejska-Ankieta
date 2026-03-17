@@ -323,13 +323,21 @@ h1.night::after {
     flex-shrink: 0;
 }
 
-// Ikonka mapy przy wyniku — link do Google Maps
+// Przycisk "idę tam" przy wyniku — link do Google Maps
 .result-maps-link {
-    color: #FF2323;
-    font-size: 1.1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     flex-shrink: 0;
+    padding: 6px 10px;
+    border: 1.5px solid #FF2323;
+    color: #FF2323;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
     transition: opacity 0.15s;
-    line-height: 1;
 
     &:active { opacity: 0.6; }
 }

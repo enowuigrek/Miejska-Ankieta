@@ -202,13 +202,17 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             });
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
+            // Fallback placeId z definicji opcji (gdy opcja ma placeId ale stare answery go nie mają)
+            const optionPlaceIds = {};
+            questionData.options.forEach(o => { if (o.placeId) optionPlaceIds[o.id] = o.placeId; });
+
             // Dla pytań z allowText: pokaż wszystkie zgrupowane canonical values
             const computed = questionData.allowText
                 ? Object.entries(counts)
                     .map(([key, count]) => ({
                         label: key,
                         percent: total > 0 ? Math.round((count / total) * 100) : 0,
-                        ...(placeIds[key] && { placeId: placeIds[key] }),
+                        ...((placeIds[key] || optionPlaceIds[key]) && { placeId: placeIds[key] || optionPlaceIds[key] }),
                     }))
                     .sort((a, b) => b.percent - a.percent)
                 : questionData.options.map(opt => ({
@@ -295,7 +299,8 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
 
         if (timerRef.current) clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
-            submitAnswer(optionId);
+            const opt = questionData.options.find(o => o.id === optionId);
+            submitAnswer(optionId, null, opt?.address || null, opt?.placeId || null);
         }, AUTO_SUBMIT_DELAY);
     };
 
@@ -368,9 +373,9 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                                     href={`https://www.google.com/maps/place/?q=place_id:${r.placeId}`}
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    title='Nawiguj do tego miejsca'
                                 >
                                     <FontAwesomeIcon icon={faLocationDot} />
+                                    idę tam
                                 </a>
                             )}
                         </div>

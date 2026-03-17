@@ -28,9 +28,12 @@ const optionSlug = (label) =>
 
 // ── Formularz pytania ─────────────────────────────────────────────────────────
 const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
-    const [text,      setText]      = useState(initial?.questionText ?? '');
-    const [qId,       setQId]       = useState(initial?.id ?? '');
-    const [allowText, setAllowText] = useState(initial?.allowText ?? false);
+    const [text,          setText]          = useState(initial?.questionText ?? '');
+    const [qId,           setQId]           = useState(initial?.id ?? '');
+    const [allowText,     setAllowText]     = useState(initial?.allowText ?? false);
+    const [suggestions,   setSuggestions]   = useState([]);
+    const [suggestionsFor,setSuggestionsFor]= useState(null);
+    const placesDebounce = useRef(null);
     // Edytujemy tylko stałe opcje — opcja type:text jest auto-dodawana
     const [options, setOptions] = useState(
         initial?.options
@@ -45,8 +48,40 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
         if (isNew) setQId(slugify(val));
     };
 
+    const fetchPlacesSuggestions = (idx, val) => {
+        if (placesDebounce.current) clearTimeout(placesDebounce.current);
+        if (!val || val.trim().length < 2) { setSuggestions([]); setSuggestionsFor(null); return; }
+        placesDebounce.current = setTimeout(async () => {
+            try {
+                const res = await fetch('/.netlify/functions/placesAutocomplete', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ input: val }),
+                });
+                const data = await res.json();
+                setSuggestions(data.suggestions || []);
+                setSuggestionsFor(idx);
+            } catch {
+                setSuggestions([]);
+            }
+        }, 300);
+    };
+
     const handleOptLabel = (idx, val) => {
-        setOptions(prev => prev.map((o, i) => i === idx ? { ...o, label: val, id: isNew ? optionSlug(val) : o.id } : o));
+        setOptions(prev => prev.map((o, i) => i === idx
+            ? { ...o, label: val, id: isNew ? optionSlug(val) : o.id, placeId: null, address: null }
+            : o
+        ));
+        if (allowText) fetchPlacesSuggestions(idx, val);
+    };
+
+    const handleOptSuggestionSelect = (idx, suggestion) => {
+        setOptions(prev => prev.map((o, i) => i === idx
+            ? { ...o, label: suggestion.name, id: isNew ? optionSlug(suggestion.name) : o.id, placeId: suggestion.placeId || null, address: suggestion.address || null }
+            : o
+        ));
+        setSuggestions([]);
+        setSuggestionsFor(null);
     };
 
     const addOption = () => setOptions(prev => [...prev, { id: '', label: '' }]);
@@ -62,6 +97,8 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
             const fixedOptions = options.map(o => ({
                 id: o.id || optionSlug(o.label),
                 label: o.label.trim(),
+                ...(o.placeId  && { placeId:  o.placeId }),
+                ...(o.address  && { address:  o.address }),
             }));
             const allOptions = allowText
                 ? [...fixedOptions, { id: 'inne', label: '+ dodaj', type: 'text' }]
@@ -103,16 +140,35 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
                 </div>
             )}
             <div className='ct-form-field'>
-                <label className='ct-label'>Odpowiedzi</label>
+                <label className='ct-label'>
+                    Odpowiedzi
+                    {allowText && <span className='ct-label-hint'> — wpisz nazwę, wybierz z podpowiedzi żeby przypiąć do Map</span>}
+                </label>
                 <div className='ct-options'>
                     {options.map((opt, idx) => (
                         <div key={idx} className='ct-option-row'>
-                            <input
-                                className='ct-input'
-                                value={opt.label}
-                                onChange={e => handleOptLabel(idx, e.target.value)}
-                                placeholder={`opcja ${idx + 1}`}
-                            />
+                            <div className='ct-option-input-wrap'>
+                                <input
+                                    className={`ct-input${opt.placeId ? ' ct-input--linked' : ''}`}
+                                    value={opt.label}
+                                    onChange={e => handleOptLabel(idx, e.target.value)}
+                                    onBlur={() => setTimeout(() => { setSuggestions([]); setSuggestionsFor(null); }, 200)}
+                                    placeholder={`opcja ${idx + 1}`}
+                                />
+                                {opt.placeId && (
+                                    <span className='ct-option-pin' title={opt.address || 'Przypięte do Map'}>📍</span>
+                                )}
+                                {suggestionsFor === idx && suggestions.length > 0 && (
+                                    <ul className='ct-places-dropdown'>
+                                        {suggestions.map((s, i) => (
+                                            <li key={i} className='ct-places-item' onMouseDown={() => handleOptSuggestionSelect(idx, s)}>
+                                                <span className='ct-places-name'>{s.name}</span>
+                                                {s.address && <span className='ct-places-addr'>{s.address}</span>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                             {options.length > 2 && (
                                 <button type='button' className='ct-remove-btn' onClick={() => removeOption(idx)}>✕</button>
                             )}
