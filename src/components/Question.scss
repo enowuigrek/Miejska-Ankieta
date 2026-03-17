@@ -135,6 +135,7 @@ h1.night::after {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    margin-top: 4px;
 }
 
 .text-option-error {
@@ -168,6 +169,8 @@ h1.night::after {
         font-weight: 500;
         color: rgb(69, 69, 69);
         min-width: 0;
+        // zapobiega autouzupełnieniu przeglądarki nadpisującemu tło
+        -webkit-text-fill-color: rgb(69, 69, 69);
 
         &::placeholder {
             color: rgba(69, 69, 69, 0.4);
@@ -176,6 +179,7 @@ h1.night::after {
 
     &.night .text-option-field {
         color: rgb(243, 242, 242);
+        -webkit-text-fill-color: rgb(243, 242, 242);
 
         &::placeholder {
             color: rgba(243, 242, 242, 0.4);
@@ -191,6 +195,9 @@ h1.night::after {
         padding: 6px 14px;
         cursor: pointer;
         flex-shrink: 0;
+        // override App.scss globals
+        width: auto !important;
+        margin-top: 0 !important;
 
         &:disabled {
             opacity: 0.35;
