@@ -12,12 +12,59 @@ import Fact from './components/Fact';
 import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
 import AdminPanel from './components/AdminPanel';
+import DemoAdminPanel from './components/DemoAdminPanel';
+import { DemoProvider } from './contexts/DemoContext';
 import './App.scss';
 
 const AppContent = ({ isNight }) => {
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
-    const [hideBrand, setHideBrand] = React.useState(false);
+    const isDemoAdmin  = location.pathname === '/demo';
+    const isDemoRoute  = location.pathname.startsWith('/demo');
+    const [hideBrand,     setHideBrand]     = React.useState(false);
+    const [hideBrandDemo, setHideBrandDemo] = React.useState(false);
+
+    // Demo — osobny layout opakowany w DemoProvider
+    if (isDemoRoute) {
+        return (
+            <DemoProvider>
+                <div className={`App ${isNight ? 'night' : 'day'}`}>
+                    {isDemoAdmin ? (
+                        <div className='admin-content'>
+                            <Routes>
+                                <Route path='/demo' element={<DemoAdminPanel />} />
+                            </Routes>
+                        </div>
+                    ) : (
+                        <div className='main-content'>
+                            {!hideBrandDemo && (
+                                <div className='brand-zone'>
+                                    <div className='app-brand-header'>
+                                        <div className='app-brand-line1'>jak</div>
+                                        <div className='app-brand-line2'>myślisz<span className='app-brand-q'>?</span></div>
+                                    </div>
+                                </div>
+                            )}
+                            <div className={`question-zone${hideBrandDemo ? ' full' : ''}`}>
+                                <Routes>
+                                    <Route
+                                        path='/demo/pytanie/:questionId'
+                                        element={
+                                            <Question
+                                                isNight={isNight}
+                                                onResultsView={setHideBrandDemo}
+                                                demoMode={true}
+                                            />
+                                        }
+                                    />
+                                </Routes>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </DemoProvider>
+        );
+    }
 
     return (
         <div className={`App ${isNight ? 'night' : 'day'}`}>

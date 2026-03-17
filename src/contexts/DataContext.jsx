@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import { SEED_QUESTIONS } from '../data/questionsData';
 import { SEED_FACTS } from '../data/factsData';
 
-const DataContext = createContext(null);
+export const DataContext = createContext(null);
 
 export const useData = () => useContext(DataContext);
 

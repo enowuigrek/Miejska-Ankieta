@@ -9,6 +9,7 @@ import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-sv
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 import ShareCard from './ShareCard';
+import { DEMO_RESULTS } from '../demo/mockData';
 
 const GREETINGS = [
     'Dzięki za głos! Udanej niedzieli.',
@@ -22,7 +23,7 @@ const GREETINGS = [
 
 const AUTO_SUBMIT_DELAY = 2000;
 
-const Question = ({ isNight, onResultsView }) => {
+const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const [view, setView] = useState('question');
@@ -51,9 +52,10 @@ const Question = ({ isNight, onResultsView }) => {
         return () => { document.title = 'jakmyślisz'; };
     }, [navigate, questions, questionData]);
 
-    // Zapis skanu (raz na sesję — nie nabijaj przy odświeżeniu)
+    // Zapis skanu (raz na sesję — nie nabijaj przy odświeżeniu; w demo pomijamy)
     useEffect(() => {
         if (!questionData) return;
+        if (demoMode) return;
         if (scanRecorded.current) return;
         const sessionKey = `scan_${questionId}`;
         if (sessionStorage.getItem(sessionKey)) return; // już zeskanowano w tej sesji
@@ -67,9 +69,12 @@ const Question = ({ isNight, onResultsView }) => {
     }, [questionId, questionData]);
 
     // Sprawdź czy już głosował — jeśli tak, pokaż wyniki od razu
+    // W demo: sessionStorage, żeby każda sesja startowała od nowa
     useEffect(() => {
         if (!questionData) return;
-        const voted = localStorage.getItem(`voted_${questionId}`);
+        const voted = demoMode
+            ? sessionStorage.getItem(`demo_voted_${questionId}`)
+            : localStorage.getItem(`voted_${questionId}`);
         if (voted) {
             setPrevAnswer(voted);
             fetchResults();
@@ -97,6 +102,18 @@ const Question = ({ isNight, onResultsView }) => {
     if (!questionData)      return null;
 
     const fetchResults = async () => {
+        // Demo: gotowe wyniki bez Firestore
+        if (demoMode) {
+            const mockResults = DEMO_RESULTS[questionId] || questionData.options.map(o => ({ label: o.label, percent: 0 }));
+            const factsPool   = (facts || []).filter(f => f.active !== false);
+            const factIdx     = questionId.charCodeAt(0) % (factsPool.length || 1);
+            setResults(mockResults);
+            setFact(factsPool[factIdx]?.text || '');
+            setView('results');
+            if (onResultsView) onResultsView(true);
+            return;
+        }
+
         try {
             const q = query(collection(db, "answers"), where("questionId", "==", questionId));
             const snapshot = await getDocs(q);
@@ -135,14 +152,18 @@ const Question = ({ isNight, onResultsView }) => {
 
         setLoading(true);
         try {
-            await addDoc(collection(db, "answers"), {
-                questionId,
-                answer: answerId,
-                timestamp: new Date().toISOString(),
-                ...(location && { location }),
-            });
-
-            localStorage.setItem(`voted_${questionId}`, answerId);
+            if (demoMode) {
+                // demo: zapisz do sessionStorage, nie do Firebase
+                sessionStorage.setItem(`demo_voted_${questionId}`, answerId);
+            } else {
+                await addDoc(collection(db, "answers"), {
+                    questionId,
+                    answer: answerId,
+                    timestamp: new Date().toISOString(),
+                    ...(location && { location }),
+                });
+                localStorage.setItem(`voted_${questionId}`, answerId);
+            }
             setPrevAnswer(answerId);
             await fetchResults();
         } catch (err) {

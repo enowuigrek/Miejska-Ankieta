@@ -4,6 +4,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
+import { useDemoMode } from '../../contexts/DemoContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode, faPrint, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import QRStickerModal from './QRStickerModal';
@@ -164,6 +165,7 @@ const FactForm = ({ initial, onSave, onCancel }) => {
 // ── Główny komponent ──────────────────────────────────────────────────────────
 const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     const { questions, facts, refresh } = useData();
+    const isDemoMode = useDemoMode();
     const [section,          setSection]          = useState('pytania'); // 'pytania' | 'ciekawostki'
     const [editingId,        setEditingId]        = useState(null);
     const [addingNew,        setAddingNew]        = useState(false);
@@ -171,6 +173,7 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
     const [stickerQ,         setStickerQ]         = useState(null);
     const [showOnlyPrinted,  setShowOnlyPrinted]  = useState(filterPrinted);
     const [sectionIndicator, setSectionIndicator] = useState(null);
+    const [demoToast,        setDemoToast]        = useState(false);
     const sectionNavRef = useRef(null);
     const sectionRefs = useRef({});
 
@@ -194,14 +197,23 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         if (!next && onClearFilter) onClearFilter();
     };
 
+    const demoGuard = () => {
+        if (!isDemoMode) return false;
+        setDemoToast(true);
+        setTimeout(() => setDemoToast(false), 2500);
+        return true;
+    };
+
     const togglePrinted = useCallback(async (id) => {
+        if (demoGuard()) return;
         const q = questions[id];
         await updateDoc(doc(db, 'questions', id), { printed: !q?.printed });
         await refresh();
-    }, [questions, refresh]);
+    }, [questions, refresh, isDemoMode]);
 
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
+        if (demoGuard()) return;
         await setDoc(doc(db, 'questions', data.id), {
             questionText: data.questionText,
             options:      data.options,
@@ -210,10 +222,11 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         await refresh();
         setEditingId(null);
         setAddingNew(false);
-    }, [refresh]);
+    }, [refresh, isDemoMode]);
 
     // ── Ciekawostki — zapis ──────────────────────────────────────────────────
     const saveFact = useCallback(async (factId, data, number, active) => {
+        if (demoGuard()) return;
         await setDoc(doc(db, 'facts', factId), {
             text:   data.text,
             number: number,
@@ -222,9 +235,10 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         await refresh();
         setEditingId(null);
         setAddingNew(false);
-    }, [refresh]);
+    }, [refresh, isDemoMode]);
 
     const addFact = useCallback(async (data) => {
+        if (demoGuard()) return;
         const maxNum = facts ? Math.max(0, ...facts.map(f => f.number || 0)) : 0;
         const newId  = String(maxNum + 1).padStart(4, '0');
         await setDoc(doc(db, 'facts', newId), {
@@ -234,28 +248,31 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         });
         await refresh();
         setAddingNew(false);
-    }, [facts, refresh]);
+    }, [facts, refresh, isDemoMode]);
 
     const toggleFactActive = useCallback(async (fact) => {
+        if (demoGuard()) return;
         const newActive = fact.active === false ? true : false;
         await updateDoc(doc(db, 'facts', fact.id), { active: newActive });
         await refresh();
-    }, [refresh]);
+    }, [refresh, isDemoMode]);
 
     // ── Usuwanie ─────────────────────────────────────────────────────────────
     const deleteQuestion = useCallback(async (id) => {
+        if (demoGuard()) return;
         await deleteDoc(doc(db, 'questions', id));
         await refresh();
         setConfirmingDelete(null);
         setEditingId(null);
-    }, [refresh]);
+    }, [refresh, isDemoMode]);
 
     const deleteFact = useCallback(async (id) => {
+        if (demoGuard()) return;
         await deleteDoc(doc(db, 'facts', id));
         await refresh();
         setConfirmingDelete(null);
         setEditingId(null);
-    }, [refresh]);
+    }, [refresh, isDemoMode]);
 
     if (!questions || !facts) {
         return <div className='tab-empty'><div className='tab-spinner' /></div>;
@@ -271,6 +288,9 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
 
     return (
         <div className='content-tab'>
+            {demoToast && (
+                <div className='ct-demo-toast'>tryb demo — zmiany nie są zapisywane</div>
+            )}
             {/* Przełącznik sekcji */}
             <div className='ct-section-toggle' ref={sectionNavRef}>
                 <button

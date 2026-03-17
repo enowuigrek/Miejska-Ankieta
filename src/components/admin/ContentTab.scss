@@ -2,6 +2,25 @@
     padding: 0 40px 40px;
 }
 
+.ct-demo-toast {
+    background-color: #FF2323;
+    color: #fff;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 16px 0 8px;
+    animation: ct-toast-fade 2.5s ease forwards;
+}
+
+@keyframes ct-toast-fade {
+    0%   { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 /* ── SECTION TOGGLE ─────────────────────────────────────────────────────── */
 .ct-section-toggle {
     display: flex;
