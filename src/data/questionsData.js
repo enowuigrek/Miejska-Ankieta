@@ -82,7 +82,7 @@ export const SEED_QUESTIONS = {
             { id: 'Strzykawa', label: 'Strzykawa' },
             { id: 'Fusy', label: 'Fusy' },
             { id: 'Sacre', label: 'Sacre' },
-            { id: 'inne', label: 'inne — wpisz', type: 'text' },
+            { id: 'inne', label: '+ dodaj', type: 'text' },
         ],
     },
 

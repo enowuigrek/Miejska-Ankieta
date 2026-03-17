@@ -35,6 +35,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const [sharing, setSharing] = useState(false);
     const [textValue, setTextValue] = useState('');
     const [textInputActive, setTextInputActive] = useState(false);
+    const [dynamicOptions, setDynamicOptions] = useState([]);
     const timerRef = React.useRef(null);
     const textInputRef = React.useRef(null);
     const scanRecorded = React.useRef(false);
@@ -92,6 +93,32 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             setBarsVisible(false);
         }
     }, [view]);
+
+    // Pobierz dynamiczne opcje z bazy dla pytań allowText
+    useEffect(() => {
+        if (!questionData?.allowText || demoMode) return;
+        const fetchDynamic = async () => {
+            try {
+                const q = query(collection(db, "answers"), where("questionId", "==", questionId));
+                const snapshot = await getDocs(q);
+                const counts = {};
+                snapshot.forEach(doc => {
+                    const ans = doc.data().answer;
+                    if (ans && ans !== 'inne') counts[ans] = (counts[ans] || 0) + 1;
+                });
+                const knownIds = new Set(questionData.options.map(o => o.id));
+                const extras = Object.entries(counts)
+                    .filter(([key]) => !knownIds.has(key))
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 8)
+                    .map(([key]) => ({ id: key, label: key }));
+                setDynamicOptions(extras);
+            } catch (err) {
+                console.error('Error fetching dynamic options:', err);
+            }
+        };
+        fetchDynamic();
+    }, [questionId, questionData]);
 
     useEffect(() => {
         return () => {
@@ -325,10 +352,19 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         );
     }
 
-    // Indeks ostatniej opcji bez type:text (dla separatora "czy")
-    const lastNonTextIdx = questionData.options.reduce(
-        (acc, o, i) => (o.type !== 'text' ? i : acc), -1
-    );
+    // Dla allowText: stałe opcje + dynamiczne z bazy + "dodaj" na końcu
+    const allOptions = questionData.allowText
+        ? [
+            ...questionData.options.filter(o => o.type !== 'text'),
+            ...dynamicOptions.filter(d => !questionData.options.some(o => o.id === d.id)),
+            questionData.options.find(o => o.type === 'text'),
+          ].filter(Boolean)
+        : questionData.options;
+
+    // Indeks ostatniej opcji bez type:text (dla separatora "czy"); brak dla allowText
+    const lastNonTextIdx = questionData.allowText
+        ? -1
+        : allOptions.reduce((acc, o, i) => (o.type !== 'text' ? i : acc), -1);
 
     return (
         <div className='question-container'>
@@ -337,7 +373,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                 {questionData.questionText}
             </h1>
             <div className='options'>
-                {questionData.options.map((option, index) => (
+                {allOptions.map((option, index) => (
                     <React.Fragment key={option.id}>
                         {index === lastNonTextIdx && (
                             <div className={`czy-separator ${isNight ? 'night' : 'day'}`}>czy</div>

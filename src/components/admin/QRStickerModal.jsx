@@ -69,9 +69,13 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     ctx.fillRect(0, 0, sizePx, sizePx);
     ctx.textBaseline = 'top';
 
+    // Pytania allowText (z opcją type:text) — samo pytanie, bez opcji
+    const isOpenQuestion = options.some(o => o.type === 'text');
+    const visibleOptions = isOpenQuestion ? [] : options;
+
     const qLen  = questionText.length;
     const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.076 : qLen > 20 ? 0.096 : 0.115));
-    const scale      = options.length >= 5 ? 0.78 : options.length >= 4 ? 0.88 : 1;
+    const scale      = visibleOptions.length >= 5 ? 0.78 : visibleOptions.length >= 4 ? 0.88 : 1;
     const fsOpt      = Math.round(sizePx * 0.072 * scale);
     const lineH_cont = Math.round(fsOpt * 1.1);
     const lineH_opt  = Math.round(fsOpt * 1.85);
@@ -82,13 +86,13 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const textH = lines.length * Math.round(fsQ * 1.15);
 
     ctx.font = `600 ${fsOpt}px ${F_SEMI}`;
-    const optLines = options.map(opt => wrapText(ctx, opt.label, maxW));
+    const optLines = visibleOptions.map(opt => wrapText(ctx, opt.label, maxW));
 
     let optsH = 0;
     optLines.forEach(wrappedLines => { optsH += wrappedLines.length * lineH_cont; });
-    optsH += (optLines.length - 1) * (lineH_opt - lineH_cont);
+    if (optLines.length > 1) optsH += (optLines.length - 1) * (lineH_opt - lineH_cont);
 
-    const gapQ   = Math.round(sizePx * 0.06);
+    const gapQ   = visibleOptions.length > 0 ? Math.round(sizePx * 0.06) : 0;
     const totalH = textH + gapQ + optsH;
     const nudge  = Math.round(sizePx * 0.03);
     let y = Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
@@ -99,18 +103,19 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     ctx.textAlign = 'left';
     lines.forEach(line => { ctx.fillText(line, pad, y); y += Math.round(fsQ * 1.15); });
 
-    y += gapQ;
-
-    // Opcje — Urbanist 600, ciemne ale nie bold
-    ctx.font        = `600 ${fsOpt}px ${F_SEMI}`;
-    ctx.fillStyle   = DARK;
-    ctx.globalAlpha = 0.82;
-    ctx.textAlign   = 'left';
-    optLines.forEach((wrappedLines, optIdx) => {
-        wrappedLines.forEach(line => { ctx.fillText(line, pad, y); y += lineH_cont; });
-        if (optIdx < optLines.length - 1) y += lineH_opt - lineH_cont;
-    });
-    ctx.globalAlpha = 1;
+    if (visibleOptions.length > 0) {
+        y += gapQ;
+        // Opcje — Urbanist 600, ciemne ale nie bold
+        ctx.font        = `600 ${fsOpt}px ${F_SEMI}`;
+        ctx.fillStyle   = DARK;
+        ctx.globalAlpha = 0.82;
+        ctx.textAlign   = 'left';
+        optLines.forEach((wrappedLines, optIdx) => {
+            wrappedLines.forEach(line => { ctx.fillText(line, pad, y); y += lineH_cont; });
+            if (optIdx < optLines.length - 1) y += lineH_opt - lineH_cont;
+        });
+        ctx.globalAlpha = 1;
+    }
 
     drawNum(ctx, questionNum, sizePx);
     drawBorder(ctx, sizePx);
