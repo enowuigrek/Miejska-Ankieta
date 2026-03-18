@@ -2,13 +2,11 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faInstagram,
-    faFacebook,
 } from '@fortawesome/free-brands-svg-icons';
 import './SocialMediaPage.scss';
 
 const SocialMediaPage = ({ isNight }) => {
     const instagramLink = 'https://www.instagram.com/_jakmyslisz_/';
-    const facebookLink = 'https://www.facebook.com/miejska.ankieta';
 
     const greetings = [
         'Dzięki za głos! Udanej niedzieli.',
@@ -37,18 +35,6 @@ const SocialMediaPage = ({ isNight }) => {
                     <FontAwesomeIcon
                         icon={faInstagram}
                         className={`fa-icon icon-insta ${
-                            isNight ? 'night' : 'day'
-                        }`}
-                    />
-                </a>
-                <a
-                    href={facebookLink}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    <FontAwesomeIcon
-                        icon={faFacebook}
-                        className={`fa-icon icon-fb ${
                             isNight ? 'night' : 'day'
                         }`}
                     />
