@@ -7,7 +7,7 @@ import {
 import './SocialMediaPage.scss';
 
 const SocialMediaPage = ({ isNight }) => {
-    const instagramLink = 'https://www.instagram.com/miejska_ankieta/';
+    const instagramLink = 'https://www.instagram.com/_jakmyslisz_/';
     const facebookLink = 'https://www.facebook.com/miejska.ankieta';
 
     const greetings = [

@@ -43,7 +43,7 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
 
         <div className='sc-divider' />
 
-        <div className='sc-handle'>@jakmyslisz</div>
+        <div className='sc-handle'>@_jakmyslisz_</div>
     </div>
 ));
 
