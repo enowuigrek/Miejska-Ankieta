@@ -240,6 +240,16 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         }
     };
 
+    const trackSocialClick = (type) => {
+        if (demoMode) return;
+        addDoc(collection(db, "socialClicks"), {
+            type,
+            questionId,
+            timestamp: new Date().toISOString(),
+            ...(location && { location }),
+        }).catch(() => {});
+    };
+
     const submitAnswer = async (answerId, rawText = null, address = null, placeId = null) => {
         if (loading) return;
 
@@ -408,10 +418,12 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
 
                 {/* Social — fixed na dole */}
                 <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
-                    <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'>
+                    <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'
+                        onClick={() => trackSocialClick('instagram')}>
                         <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
                     </a>
-                    <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'>
+                    <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'
+                        onClick={() => trackSocialClick('facebook')}>
                         <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                     </a>
                 </div>
