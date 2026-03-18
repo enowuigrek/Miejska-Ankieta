@@ -35,7 +35,7 @@ const PERIODS = [
 
 const PAIR_TIMEOUT = 60000; // 60s
 
-const pairScansWithAnswers = (scans, answers, questions) => {
+const pairScansWithAnswers = (scans, answers, questions, socialClicks = []) => {
     const usedAnswerIds = new Set();
     const sortedScans = [...scans].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const sortedAnswers = [...answers].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
@@ -49,6 +49,13 @@ const pairScansWithAnswers = (scans, answers, questions) => {
         );
 
         if (match) usedAnswerIds.add(match.id);
+
+        // Find social clicks within 2 min of scan (scan → answer → social)
+        const socialWindow = 120000;
+        const matchedSocials = socialClicks.filter(sc =>
+            sc.questionId === scan.questionId &&
+            Math.abs(new Date(sc.timestamp).getTime() - scanTime) < socialWindow
+        ).map(sc => sc.type);
 
         const q = questions?.[scan.questionId];
         const answerLabel = match
@@ -64,6 +71,7 @@ const pairScansWithAnswers = (scans, answers, questions) => {
             answered: !!match,
             answerLabel,
             answerTimestamp: match?.timestamp || null,
+            socials: [...new Set(matchedSocials)],
         };
     });
 };
@@ -82,7 +90,7 @@ const formatDateTime = (ts) => {
     return `${d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })} ${time}`;
 };
 
-const OverviewTab = ({ stats, scans = [], answers = [], onGoToPrinted }) => {
+const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoToPrinted }) => {
     const { questions } = useData();
     const [period, setPeriod] = useState('30d');
     const [detailView, setDetailView] = useState(null); // null | 'scans' | 'answers'
@@ -137,15 +145,13 @@ const OverviewTab = ({ stats, scans = [], answers = [], onGoToPrinted }) => {
                         <div className='kpi-label'>naklejka→skan</div>
                     </div>
                 )}
-                {totalSocialClicks > 0 && (
-                    <div className='kpi-card'>
-                        <div className='kpi-number'>{totalSocialClicks}</div>
-                        <div className='kpi-label'>
-                            kliknięć social
-                            <span className='kpi-sub'>IG {instagramClicks} · FB {facebookClicks}</span>
-                        </div>
+                <div className='kpi-card'>
+                    <div className='kpi-number'>{totalSocialClicks || 0}</div>
+                    <div className='kpi-label'>
+                        kliknięć social
+                        <span className='kpi-sub'>IG {instagramClicks || 0} · FB {facebookClicks || 0}</span>
                     </div>
-                )}
+                </div>
                 <button type='button' className='kpi-card kpi-card--link' onClick={onGoToPrinted}>
                     <div className='kpi-number'>{printedCount}</div>
                     <div className='kpi-label'>wydrukowanych pytań →</div>
@@ -154,7 +160,7 @@ const OverviewTab = ({ stats, scans = [], answers = [], onGoToPrinted }) => {
 
             {/* Scan detail list */}
             {detailView && (() => {
-                const paired = pairScansWithAnswers(scans, answers, questions);
+                const paired = pairScansWithAnswers(scans, answers, questions, socialClicks);
                 const effectiveFilter = detailView === 'answers' ? 'answered' : scanFilter;
                 const filtered = effectiveFilter === 'all'
                     ? paired
@@ -203,6 +209,12 @@ const OverviewTab = ({ stats, scans = [], answers = [], onGoToPrinted }) => {
                                             </div>
                                             {s.answered && (
                                                 <div className='scan-detail-answer'>→ {s.answerLabel}</div>
+                                            )}
+                                            {s.socials.length > 0 && (
+                                                <div className='scan-detail-social'>
+                                                    {s.socials.includes('instagram') && <span>📸 IG</span>}
+                                                    {s.socials.includes('facebook') && <span>👤 FB</span>}
+                                                </div>
                                             )}
                                         </div>
                                     </div>

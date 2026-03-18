@@ -208,7 +208,7 @@ const AdminPanel = () => {
             </div>
 
             <div className='admin-content'>
-                {activeTab === 'overview'   && <OverviewTab   stats={stats?.overview} scans={scans} answers={answers} onGoToPrinted={() => { setActiveTab('content'); setContentFilter('printed'); }} />}
+                {activeTab === 'overview'   && <OverviewTab   stats={stats?.overview} scans={scans} answers={answers} socialClicks={socialClicks} onGoToPrinted={() => { setActiveTab('content'); setContentFilter('printed'); }} />}
                 {activeTab === 'locations'  && <LocationsTab  stats={stats?.locations}  />}
                 {activeTab === 'questions'  && <QuestionsTab  stats={stats?.questions}  />}
                 {activeTab === 'content'    && <ContentTab filterPrinted={contentFilter === 'printed'} onClearFilter={() => setContentFilter(null)} />}
