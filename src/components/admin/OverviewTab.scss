@@ -28,6 +28,9 @@
         background: none;
         text-align: left;
         transition: border-color 0.15s;
+        color: inherit;
+        font: inherit;
+        padding: 20px 24px;
 
         &:hover {
             border-color: #FF2323;

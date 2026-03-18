@@ -197,12 +197,13 @@
 @media (max-width: 900px) {
     .notif-dropdown {
         position: fixed;
-        top: 70px;
-        bottom: auto;
-        left: 16px;
-        right: 16px;
-        width: auto;
+        top: 60px;
+        left: 0;
+        right: 0;
+        width: 100%;
         max-width: none;
         max-height: 60vh;
+        border-left: none;
+        border-right: none;
     }
 }
