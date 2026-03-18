@@ -5,7 +5,7 @@ import './Question.scss';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faSquareInstagram, faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faArrowUpFromBracket, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
 import ShareCard from './ShareCard';
@@ -410,6 +410,9 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                 <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
                     <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'>
                         <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
+                    </a>
+                    <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'>
+                        <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                     </a>
                 </div>
             </div>
