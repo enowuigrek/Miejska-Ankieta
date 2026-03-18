@@ -194,9 +194,13 @@
 }
 
 /* ── RESPONSIVE ────────────────────────────────────────────────────────── */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
     .notif-dropdown {
-        width: calc(100vw - 40px);
-        right: -10px;
+        position: fixed;
+        top: auto;
+        left: 16px;
+        right: 16px;
+        width: auto;
+        max-height: 60vh;
     }
 }
