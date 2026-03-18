@@ -93,7 +93,7 @@ const formatDateTime = (ts) => {
 const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoToPrinted }) => {
     const { questions } = useData();
     const [period, setPeriod] = useState('30d');
-    const [detailView, setDetailView] = useState(null); // null | 'scans' | 'answers'
+    const [detailView, setDetailView] = useState(null); // null | 'scans' | 'answers' | 'social'
     const [scanFilter, setScanFilter] = useState('all'); // 'all' | 'answered' | 'unanswered'
     const printedCount = questions
         ? Object.values(questions).filter(q => q.printed).length
@@ -145,21 +145,22 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                         <div className='kpi-label'>naklejka→skan</div>
                     </div>
                 )}
-                <div className='kpi-card'>
+                <button type='button' className={`kpi-card kpi-card--link${detailView === 'social' ? ' kpi-card--active' : ''}`}
+                    onClick={() => setDetailView(detailView === 'social' ? null : 'social')}>
                     <div className='kpi-number'>{totalSocialClicks || 0}</div>
                     <div className='kpi-label'>
                         kliknięć social
                         <span className='kpi-sub'>IG {instagramClicks || 0} · FB {facebookClicks || 0}</span>
                     </div>
-                </div>
+                </button>
                 <button type='button' className='kpi-card kpi-card--link' onClick={onGoToPrinted}>
                     <div className='kpi-number'>{printedCount}</div>
                     <div className='kpi-label'>wydrukowanych pytań →</div>
                 </button>
             </div>
 
-            {/* Scan detail list */}
-            {detailView && (() => {
+            {/* Scan/Answer detail list */}
+            {(detailView === 'scans' || detailView === 'answers') && (() => {
                 const paired = pairScansWithAnswers(scans, answers, questions, socialClicks);
                 const effectiveFilter = detailView === 'answers' ? 'answered' : scanFilter;
                 const filtered = effectiveFilter === 'all'
@@ -216,6 +217,59 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                                                     {s.socials.includes('facebook') && <span>👤 FB</span>}
                                                 </div>
                                             )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                );
+            })()}
+
+            {/* Social clicks detail list */}
+            {detailView === 'social' && (() => {
+                const sortedClicks = [...socialClicks].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+                // Pair each social click with its scan (within 2 min)
+                const enriched = sortedClicks.map(click => {
+                    const clickTime = new Date(click.timestamp).getTime();
+                    const matchedScan = scans.find(s =>
+                        s.questionId === click.questionId &&
+                        Math.abs(new Date(s.timestamp).getTime() - clickTime) < 120000
+                    );
+                    const q = questions?.[click.questionId];
+                    return {
+                        ...click,
+                        questionText: q?.questionText || click.questionId,
+                        scanLocation: matchedScan?.location || null,
+                    };
+                });
+
+                return (
+                    <section className='overview-section scan-detail'>
+                        <div className='section-title-row'>
+                            <h3 className='section-title'>kliknięcia social</h3>
+                            <button type='button' className='scan-detail-close' onClick={() => setDetailView(null)}>✕</button>
+                        </div>
+
+                        {enriched.length === 0 ? (
+                            <div className='scan-detail-empty'>Brak kliknięć</div>
+                        ) : (
+                            <div className='scan-detail-list'>
+                                {enriched.map(c => (
+                                    <div key={c.id} className='scan-detail-item answered'>
+                                        <div className='scan-detail-icon'>
+                                            {c.type === 'instagram' ? '📸' : '👤'}
+                                        </div>
+                                        <div className='scan-detail-body'>
+                                            <div className='scan-detail-question'>{c.questionText}</div>
+                                            <div className='scan-detail-meta'>
+                                                {formatDateTime(c.timestamp)}
+                                                {c.scanLocation && <> · 📍 {c.scanLocation}</>}
+                                            </div>
+                                            <div className='scan-detail-answer'>
+                                                {c.type === 'instagram' ? 'Instagram' : 'Facebook'}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
