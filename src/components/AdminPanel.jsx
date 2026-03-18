@@ -141,6 +141,8 @@ const AdminPanel = () => {
                     <form onSubmit={handlePinSubmit} className='pin-form'>
                         <input
                             type='password'
+                            inputMode='numeric'
+                            pattern='[0-9]*'
                             className={`pin-input${pinError ? ' error' : ''}`}
                             value={pinInput}
                             onChange={e => setPinInput(e.target.value)}
