@@ -48,7 +48,7 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
         );
     }
 
-    const { totalScans, totalAnswers, conversion, activeLocations, totalStickers, weekTrend, hourlyActivity } = stats;
+    const { totalScans, totalAnswers, conversion, activeLocations, totalStickers, totalSocialClicks, instagramClicks, facebookClicks, weekTrend, hourlyActivity } = stats;
     const activePeriod = PERIODS.find(p => p.id === period);
     const dailyActivity = stats[activePeriod.key] || [];
 
@@ -84,6 +84,15 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
                         <div className='kpi-label'>naklejka→skan</div>
                     </div>
                 )}
+                {totalSocialClicks > 0 && (
+                    <div className='kpi-card'>
+                        <div className='kpi-number'>{totalSocialClicks}</div>
+                        <div className='kpi-label'>
+                            kliknięć social
+                            <span className='kpi-sub'>IG {instagramClicks} · FB {facebookClicks}</span>
+                        </div>
+                    </div>
+                )}
                 <button type='button' className='kpi-card kpi-card--link' onClick={onGoToPrinted}>
                     <div className='kpi-number'>{printedCount}</div>
                     <div className='kpi-label'>wydrukowanych pytań →</div>
@@ -113,6 +122,13 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
                         isPercent
                         rawChange
                     />
+                    {weekTrend.social && weekTrend.social.current > 0 && (
+                        <TrendIndicator
+                            label='social'
+                            current={weekTrend.social.current}
+                            change={weekTrend.social.change}
+                        />
+                    )}
                 </div>
             </section>
 

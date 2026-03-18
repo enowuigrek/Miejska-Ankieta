@@ -47,7 +47,7 @@ const fillDays = (scansByDay, answersByDay, since, until) => {
     return result;
 };
 
-const useAdminStats = (answers, scans, questions) => {
+const useAdminStats = (answers, scans, questions, socialClicks = []) => {
     return useMemo(() => {
         if (!questions) return null;
 
@@ -162,13 +162,29 @@ const useAdminStats = (answers, scans, questions) => {
         // Total stickers
         const totalStickers = Object.values(questions).reduce((sum, q) => sum + (q.stickersCount || 0), 0);
 
+        // Social clicks
+        const totalSocialClicks = socialClicks.length;
+        const instagramClicks = socialClicks.filter(c => c.type === 'instagram').length;
+        const facebookClicks = socialClicks.filter(c => c.type === 'facebook').length;
+        const thisWeekSocial = socialClicks.filter(c => new Date(c.timestamp) >= last7).length;
+        const prevWeekSocial = socialClicks.filter(c => {
+            const d = new Date(c.timestamp);
+            return d >= prev7 && d < last7;
+        }).length;
+
         const overview = {
             totalScans,
             totalAnswers,
             conversion,
             activeLocations,
             totalStickers,
-            weekTrend,
+            totalSocialClicks,
+            instagramClicks,
+            facebookClicks,
+            weekTrend: {
+                ...weekTrend,
+                social: { current: thisWeekSocial, previous: prevWeekSocial, change: calcTrend(thisWeekSocial, prevWeekSocial) },
+            },
             dailyActivity,
             dailyActivity1d,
             dailyActivity7d,
@@ -311,7 +327,7 @@ const useAdminStats = (answers, scans, questions) => {
         };
 
         return { overview, locations, questions: questionsResult };
-    }, [answers, scans, questions]);
+    }, [answers, scans, questions, socialClicks]);
 };
 
 export default useAdminStats;

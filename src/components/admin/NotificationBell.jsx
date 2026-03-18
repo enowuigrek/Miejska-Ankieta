@@ -230,6 +230,31 @@ const NotificationBell = () => {
             });
         });
 
+        const unsubSocial = onSnapshot(collection(db, 'socialClicks'), (snapshot) => {
+            if (!listenersReady.current) {
+                // Skip initial load — social clicks are informational, no historical pairing needed
+                return;
+            }
+
+            snapshot.docChanges().forEach(change => {
+                if (change.type !== 'added') return;
+                const data = change.doc.data();
+                if (!data.timestamp) return;
+
+                addNotification({
+                    id: `social_${change.doc.id}`,
+                    type: 'social_click',
+                    socialType: data.type,
+                    questionId: data.questionId,
+                    questionText: getQuestionText(data.questionId),
+                    location: data.location || null,
+                    timestamp: data.timestamp,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                });
+            });
+        });
+
         const unsubAnswers = onSnapshot(collection(db, 'answers'), (snapshot) => {
             if (isFirstAnswers) {
                 isFirstAnswers = false;
@@ -268,6 +293,7 @@ const NotificationBell = () => {
 
         return () => {
             unsubScans();
+            unsubSocial();
             unsubAnswers();
             for (const p of pendingScans.current.values()) clearTimeout(p.timeout);
             pendingScans.current.clear();
@@ -306,6 +332,7 @@ const NotificationBell = () => {
             case 'scan_answered': return '✅';
             case 'scan_no_answer': return '👀';
             case 'answer_only': return '✅';
+            case 'social_click': return '📱';
             default: return '•';
         }
     };
@@ -318,6 +345,8 @@ const NotificationBell = () => {
                 return <>skan bez odpowiedzi</>;
             case 'answer_only':
                 return <>odpowiedź → <strong>{n.answer}</strong></>;
+            case 'social_click':
+                return <>klik <strong>{n.socialType === 'instagram' ? 'Instagram' : 'Facebook'}</strong></>;
             default:
                 return <>zdarzenie</>;
         }

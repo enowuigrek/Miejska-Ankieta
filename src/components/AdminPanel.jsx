@@ -24,6 +24,7 @@ const AdminPanel = () => {
 
     const [answers, setAnswers] = useState([]);
     const [scans, setScans] = useState([]);
+    const [socialClicks, setSocialClicks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
@@ -31,7 +32,7 @@ const AdminPanel = () => {
     const [contentFilter, setContentFilter] = useState(null);
 
     const { questions } = useData();
-    const stats = useAdminStats(answers, scans, questions);
+    const stats = useAdminStats(answers, scans, questions, socialClicks);
 
     // Dynamic admin favicon (dark bg + red ?) for iPhone home screen shortcut
     useEffect(() => {
@@ -91,16 +92,19 @@ const AdminPanel = () => {
             setRefreshing(true);
             setLoading(answers.length === 0 && scans.length === 0);
 
-            const [answersSnap, scansSnap] = await Promise.all([
+            const [answersSnap, scansSnap, socialSnap] = await Promise.all([
                 getDocs(collection(db, "answers")),
                 getDocs(collection(db, "scans")).catch(() => null),
+                getDocs(collection(db, "socialClicks")).catch(() => null),
             ]);
 
             const answersData = answersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             const scansData = scansSnap ? scansSnap.docs.map(d => ({ id: d.id, ...d.data() })) : [];
+            const socialData = socialSnap ? socialSnap.docs.map(d => ({ id: d.id, ...d.data() })) : [];
 
             setAnswers(answersData);
             setScans(scansData);
+            setSocialClicks(socialData);
             setError(null);
         } catch (err) {
             setError('Błąd połączenia: ' + err.message);
