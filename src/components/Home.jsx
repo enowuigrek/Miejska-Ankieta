@@ -2,7 +2,6 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSquareInstagram,
-    faSquareFacebook,
 } from '@fortawesome/free-brands-svg-icons';
 import './Home.scss';
 import { SOCIAL_MEDIA_LINKS } from '../constants/socialMedia';
@@ -20,9 +19,6 @@ const Home = ({ isNight }) => {
             <div className='social-links'>
                 <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'>
                     <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
-                </a>
-                <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'>
-                    <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
                 </a>
             </div>
         </div>
