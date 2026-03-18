@@ -177,7 +177,8 @@ const NotificationBell = () => {
     useEffect(() => {
         if (!questions || isDemoMode) return;
 
-        const effectiveStart = storedLastSeen.current || new Date().toISOString();
+        const defaultStart = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const effectiveStart = storedLastSeen.current || defaultStart;
         let isFirstScans = true;
         let isFirstAnswers = true;
         let historicalScans = [];
