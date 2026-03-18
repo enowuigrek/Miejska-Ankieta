@@ -48,7 +48,7 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
         );
     }
 
-    const { totalScans, totalAnswers, conversion, activeLocations, weekTrend, hourlyActivity } = stats;
+    const { totalScans, totalAnswers, conversion, activeLocations, totalStickers, weekTrend, hourlyActivity } = stats;
     const activePeriod = PERIODS.find(p => p.id === period);
     const dailyActivity = stats[activePeriod.key] || [];
 
@@ -74,6 +74,16 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
                     <div className='kpi-number'>{activeLocations}</div>
                     <div className='kpi-label'>aktywnych lokalizacji</div>
                 </div>
+                <div className='kpi-card'>
+                    <div className='kpi-number'>{totalStickers || 0}</div>
+                    <div className='kpi-label'>naklejek rozklejonych</div>
+                </div>
+                {totalStickers > 0 && (
+                    <div className='kpi-card'>
+                        <div className='kpi-number'>{totalScans > 0 ? Math.round((totalScans / totalStickers) * 100) : 0}%</div>
+                        <div className='kpi-label'>naklejka→skan</div>
+                    </div>
+                )}
                 <button type='button' className='kpi-card kpi-card--link' onClick={onGoToPrinted}>
                     <div className='kpi-number'>{printedCount}</div>
                     <div className='kpi-label'>wydrukowanych pytań →</div>

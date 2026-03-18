@@ -284,14 +284,24 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
         await refresh();
     }, [questions, refresh, isDemoMode]);
 
+    const updateStickersCount = useCallback(async (id, count) => {
+        if (demoGuard()) return;
+        const num = Math.max(0, parseInt(count) || 0);
+        await updateDoc(doc(db, 'questions', id), { stickersCount: num });
+        await refresh();
+    }, [refresh, isDemoMode]);
+
     // ── Pytania — zapis ──────────────────────────────────────────────────────
     const saveQuestion = useCallback(async (data) => {
         if (demoGuard()) return;
+        const existing = questions[data.id];
         await setDoc(doc(db, 'questions', data.id), {
             questionText: data.questionText,
             options:      data.options,
             number:       data.number,
             ...(data.allowText && { allowText: true }),
+            ...(existing?.printed && { printed: true }),
+            ...(existing?.stickersCount && { stickersCount: existing.stickersCount }),
         });
         await refresh();
         setEditingId(null);
@@ -435,6 +445,14 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
                                         onClick={() => togglePrinted(q.id)}
                                         data-tooltip={q.printed ? 'Wydrukowane' : 'Oznacz jako wydrukowane'}
                                     ><FontAwesomeIcon icon={faPrint} /></button>
+                                    <input
+                                        type='number'
+                                        className='ct-stickers-input'
+                                        value={q.stickersCount || 0}
+                                        min={0}
+                                        onChange={e => updateStickersCount(q.id, e.target.value)}
+                                        title='Liczba rozklejonych naklejek'
+                                    />
                                     <button
                                         type='button'
                                         className='ct-sticker-btn ct-has-tooltip'

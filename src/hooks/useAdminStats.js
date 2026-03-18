@@ -71,7 +71,7 @@ const useAdminStats = (answers, scans, questions) => {
             })).sort((a, b) => (a.number || 0) - (b.number || 0));
             return {
                 overview: {
-                    totalScans: 0, totalAnswers: 0, conversion: 0, activeLocations: 0,
+                    totalScans: 0, totalAnswers: 0, conversion: 0, activeLocations: 0, totalStickers: 0,
                     weekTrend: {
                         scans:      { current: 0, previous: 0, change: 0 },
                         answers:    { current: 0, previous: 0, change: 0 },
@@ -159,11 +159,15 @@ const useAdminStats = (answers, scans, questions) => {
             isPeak: count === maxHourly && count > 0,
         })).filter(h => h.count > 0);
 
+        // Total stickers
+        const totalStickers = Object.values(questions).reduce((sum, q) => sum + (q.stickersCount || 0), 0);
+
         const overview = {
             totalScans,
             totalAnswers,
             conversion,
             activeLocations,
+            totalStickers,
             weekTrend,
             dailyActivity,
             dailyActivity1d,
@@ -221,6 +225,7 @@ const useAdminStats = (answers, scans, questions) => {
                 questionText: questions[qid].questionText,
                 options:      questions[qid].options,
                 number:       questions[qid].number,
+                stickersCount: questions[qid].stickersCount || 0,
                 scans: 0,
                 answers: 0,
                 responses: {},

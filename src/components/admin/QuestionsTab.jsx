@@ -56,6 +56,12 @@ const QuestionsTab = ({ stats }) => {
                             )}
                         </div>
                         <div className='question-row-meta'>
+                            {q.stickersCount > 0 && (
+                                <span className='meta-item'>
+                                    <span className='meta-val'>{q.stickersCount}</span>
+                                    <span className='meta-lbl'>nakl.</span>
+                                </span>
+                            )}
                             <span className='meta-item'>
                                 <span className='meta-val'>{q.answers}</span>
                                 <span className='meta-lbl'>odp.</span>
