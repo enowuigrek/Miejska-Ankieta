@@ -10,6 +10,7 @@ import OverviewTab from './admin/OverviewTab';
 import LocationsTab from './admin/LocationsTab';
 import QuestionsTab from './admin/QuestionsTab';
 import ContentTab from './admin/ContentTab';
+import NotificationBell from './admin/NotificationBell';
 import './AdminPanel.scss';
 
 const ADMIN_PIN = import.meta.env.VITE_ADMIN_PIN;
@@ -31,6 +32,59 @@ const AdminPanel = () => {
 
     const { questions } = useData();
     const stats = useAdminStats(answers, scans, questions);
+
+    // Dynamic admin favicon (dark bg + red ?) for iPhone home screen shortcut
+    useEffect(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 180;
+        canvas.height = 180;
+        const ctx = canvas.getContext('2d');
+        // Dark background
+        ctx.fillStyle = 'rgb(69, 69, 69)';
+        ctx.fillRect(0, 0, 180, 180);
+        // Red question mark
+        ctx.fillStyle = '#FF2323';
+        ctx.font = '900 140px "Arial Black", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', 90, 98);
+
+        const dataUrl = canvas.toDataURL('image/png');
+
+        const link = document.querySelector("link[rel~='icon']");
+        const apple = document.querySelector("link[rel='apple-touch-icon']");
+        const origFavicon = link?.href;
+        const origApple = apple?.href;
+
+        if (link) link.href = dataUrl;
+        if (apple) apple.href = dataUrl;
+
+        // Set title
+        const origTitle = document.title;
+        document.title = 'jakmyślisz — admin';
+
+        // PWA meta for iPhone
+        let metaCapable = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+        if (!metaCapable) {
+            metaCapable = document.createElement('meta');
+            metaCapable.name = 'apple-mobile-web-app-capable';
+            metaCapable.content = 'yes';
+            document.head.appendChild(metaCapable);
+        }
+        let metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+        if (!metaTitle) {
+            metaTitle = document.createElement('meta');
+            metaTitle.name = 'apple-mobile-web-app-title';
+            metaTitle.content = 'jakmyślisz admin';
+            document.head.appendChild(metaTitle);
+        }
+
+        return () => {
+            if (link && origFavicon) link.href = origFavicon;
+            if (apple && origApple) apple.href = origApple;
+            document.title = origTitle;
+        };
+    }, []);
 
     const fetchData = async () => {
         try {
@@ -135,6 +189,7 @@ const AdminPanel = () => {
                         </div>
                     </div>
                     <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
+                    <NotificationBell />
                     <button
                         onClick={fetchData}
                         className={`refresh-btn ${refreshing ? 'spinning' : ''}`}

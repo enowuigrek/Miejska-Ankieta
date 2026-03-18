@@ -1,0 +1,202 @@
+.notif-bell {
+    position: relative;
+    align-self: center;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.notif-bell-btn {
+    background: transparent;
+    border: 1.5px solid rgb(69, 69, 69);
+    color: rgb(69, 69, 69);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s;
+    width: auto;
+    margin: 0;
+
+    &:hover {
+        background: rgb(69, 69, 69);
+        color: rgb(243, 242, 242);
+    }
+}
+
+.notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #FF2323;
+    color: #fff;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+/* ── DROPDOWN ──────────────────────────────────────────────────────────── */
+.notif-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 340px;
+    max-height: 440px;
+    background: rgb(243, 242, 242);
+    border: 2px solid rgb(69, 69, 69);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1.5px solid rgba(69, 69, 69, 0.2);
+    flex-shrink: 0;
+}
+
+.notif-header-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: -0.5px;
+    color: rgb(69, 69, 69);
+}
+
+.notif-mark-read {
+    background: none;
+    border: none;
+    color: #FF2323;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 8px;
+    width: auto;
+    margin: 0;
+
+    &:hover {
+        text-decoration: underline;
+        background: transparent;
+    }
+}
+
+/* ── LIST ──────────────────────────────────────────────────────────────── */
+.notif-list {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.notif-empty {
+    padding: 32px 16px;
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.4;
+    color: rgb(69, 69, 69);
+}
+
+.notif-group {
+    &:not(:last-child) {
+        border-bottom: 1px solid rgba(69, 69, 69, 0.1);
+    }
+}
+
+.notif-date-label {
+    padding: 8px 14px 4px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.35;
+    color: rgb(69, 69, 69);
+}
+
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(69, 69, 69, 0.08);
+    transition: background 0.15s;
+
+    &.unread {
+        background: rgba(255, 35, 35, 0.04);
+        border-left: 3px solid #FF2323;
+        padding-left: 11px;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.notif-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notif-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-question {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgb(69, 69, 69);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-detail {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(69, 69, 69, 0.7);
+    margin-top: 1px;
+
+    strong {
+        color: rgb(69, 69, 69);
+        font-weight: 700;
+    }
+}
+
+.notif-location {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(69, 69, 69, 0.5);
+    margin-top: 2px;
+}
+
+.notif-time {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(69, 69, 69, 0.4);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .notif-dropdown {
+        width: calc(100vw - 40px);
+        right: -10px;
+    }
+}

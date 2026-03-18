@@ -35,6 +35,7 @@
 .admin-header {
     display: flex;
     align-items: stretch;
+    gap: 12px;
     padding: 0 40px;
     border-bottom: 2px solid rgb(69, 69, 69);
 }
@@ -432,7 +433,8 @@
     }
 
     .admin-brand { order: 1; }
-    .refresh-btn { order: 2; margin-left: auto; }
+    .notif-bell { order: 2; margin-left: auto; }
+    .refresh-btn { order: 3; }
 
     .admin-controls,
     .questions-list {
