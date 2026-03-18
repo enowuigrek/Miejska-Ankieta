@@ -31,9 +31,13 @@
 
         &:hover {
             border-color: #FF2323;
-
             .kpi-label { opacity: 0.8; }
         }
+    }
+
+    &--active {
+        border-color: #FF2323 !important;
+        background: rgba(255, 35, 35, 0.03);
     }
 }
 
@@ -133,6 +137,109 @@
     p {
         margin: 2px 0;
     }
+}
+
+// Scan detail panel
+.scan-detail {
+    border: 2px solid rgb(69, 69, 69);
+    padding: 20px 24px;
+
+    .section-title-row {
+        margin-bottom: 12px;
+    }
+}
+
+.scan-detail-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: rgb(69, 69, 69);
+    opacity: 0.4;
+    padding: 4px 8px;
+    margin: 0;
+    width: auto;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 1; background: transparent; }
+}
+
+.scan-filters {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.scan-filter-btn {
+    background: transparent;
+    border: 1.5px solid rgba(69, 69, 69, 0.25);
+    color: rgb(69, 69, 69);
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin: 0;
+    width: auto;
+    transition: border-color 0.15s;
+
+    &:hover { border-color: rgb(69, 69, 69); background: transparent; }
+    &.active { border-color: #FF2323; color: #FF2323; background: rgba(255,35,35,0.05); }
+}
+
+.scan-detail-empty {
+    padding: 24px;
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.4;
+}
+
+.scan-detail-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.scan-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(69, 69, 69, 0.1);
+
+    &:last-child { border-bottom: none; }
+}
+
+.scan-detail-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.scan-detail-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.scan-detail-question {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgb(69, 69, 69);
+}
+
+.scan-detail-meta {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(69, 69, 69, 0.5);
+    margin-top: 2px;
+}
+
+.scan-detail-answer {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #FF2323;
+    margin-top: 3px;
 }
 
 // Empty

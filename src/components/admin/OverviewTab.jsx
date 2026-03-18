@@ -33,9 +33,60 @@ const PERIODS = [
     { id: 'all', label: 'wszystko',  key: 'dailyActivityAll' },
 ];
 
-const OverviewTab = ({ stats, onGoToPrinted }) => {
+const PAIR_TIMEOUT = 60000; // 60s
+
+const pairScansWithAnswers = (scans, answers, questions) => {
+    const usedAnswerIds = new Set();
+    const sortedScans = [...scans].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    const sortedAnswers = [...answers].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+    return sortedScans.map(scan => {
+        const scanTime = new Date(scan.timestamp).getTime();
+        const match = sortedAnswers.find(a =>
+            !usedAnswerIds.has(a.id) &&
+            a.questionId === scan.questionId &&
+            Math.abs(new Date(a.timestamp).getTime() - scanTime) < PAIR_TIMEOUT
+        );
+
+        if (match) usedAnswerIds.add(match.id);
+
+        const q = questions?.[scan.questionId];
+        const answerLabel = match
+            ? (q?.options?.find(o => o.id === match.answer)?.label || match.answer)
+            : null;
+
+        return {
+            id: scan.id,
+            questionId: scan.questionId,
+            questionText: q?.questionText || scan.questionId,
+            timestamp: scan.timestamp,
+            location: scan.location || null,
+            answered: !!match,
+            answerLabel,
+            answerTimestamp: match?.timestamp || null,
+        };
+    });
+};
+
+const formatDateTime = (ts) => {
+    const d = new Date(ts);
+    const today = new Date();
+    const isToday = d.toDateString() === today.toDateString();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+
+    const time = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    if (isToday) return `dziś ${time}`;
+    if (isYesterday) return `wczoraj ${time}`;
+    return `${d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })} ${time}`;
+};
+
+const OverviewTab = ({ stats, scans = [], answers = [], onGoToPrinted }) => {
     const { questions } = useData();
     const [period, setPeriod] = useState('30d');
+    const [detailView, setDetailView] = useState(null); // null | 'scans' | 'answers'
+    const [scanFilter, setScanFilter] = useState('all'); // 'all' | 'answered' | 'unanswered'
     const printedCount = questions
         ? Object.values(questions).filter(q => q.printed).length
         : 0;
@@ -58,14 +109,16 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
         <div className='overview-tab'>
             {/* KPI Cards */}
             <div className='kpi-grid'>
-                <div className='kpi-card'>
+                <button type='button' className={`kpi-card kpi-card--link${detailView === 'scans' ? ' kpi-card--active' : ''}`}
+                    onClick={() => { setDetailView(detailView === 'scans' ? null : 'scans'); setScanFilter('all'); }}>
                     <div className='kpi-number'>{totalScans}</div>
                     <div className='kpi-label'>skanów łącznie</div>
-                </div>
-                <div className='kpi-card'>
+                </button>
+                <button type='button' className={`kpi-card kpi-card--link${detailView === 'answers' ? ' kpi-card--active' : ''}`}
+                    onClick={() => { setDetailView(detailView === 'answers' ? null : 'answers'); setScanFilter('answered'); }}>
                     <div className='kpi-number'>{totalAnswers}</div>
                     <div className='kpi-label'>odpowiedzi łącznie</div>
-                </div>
+                </button>
                 <div className='kpi-card accent'>
                     <div className='kpi-number'>{conversion}%</div>
                     <div className='kpi-label'>konwersja skan→głos</div>
@@ -98,6 +151,67 @@ const OverviewTab = ({ stats, onGoToPrinted }) => {
                     <div className='kpi-label'>wydrukowanych pytań →</div>
                 </button>
             </div>
+
+            {/* Scan detail list */}
+            {detailView && (() => {
+                const paired = pairScansWithAnswers(scans, answers, questions);
+                const effectiveFilter = detailView === 'answers' ? 'answered' : scanFilter;
+                const filtered = effectiveFilter === 'all'
+                    ? paired
+                    : effectiveFilter === 'answered'
+                        ? paired.filter(s => s.answered)
+                        : paired.filter(s => !s.answered);
+
+                return (
+                    <section className='overview-section scan-detail'>
+                        <div className='section-title-row'>
+                            <h3 className='section-title'>
+                                {detailView === 'answers' ? 'odpowiedzi' : 'skany'}
+                            </h3>
+                            <button type='button' className='scan-detail-close' onClick={() => setDetailView(null)}>✕</button>
+                        </div>
+
+                        {detailView === 'scans' && (
+                            <div className='scan-filters'>
+                                {[
+                                    { id: 'all', label: 'wszystkie' },
+                                    { id: 'answered', label: 'odpowiedziane' },
+                                    { id: 'unanswered', label: 'bez odpowiedzi' },
+                                ].map(f => (
+                                    <button
+                                        key={f.id}
+                                        type='button'
+                                        className={`scan-filter-btn${scanFilter === f.id ? ' active' : ''}`}
+                                        onClick={() => setScanFilter(f.id)}
+                                    >{f.label}</button>
+                                ))}
+                            </div>
+                        )}
+
+                        {filtered.length === 0 ? (
+                            <div className='scan-detail-empty'>Brak wyników</div>
+                        ) : (
+                            <div className='scan-detail-list'>
+                                {filtered.map(s => (
+                                    <div key={s.id} className={`scan-detail-item${s.answered ? ' answered' : ' unanswered'}`}>
+                                        <div className='scan-detail-icon'>{s.answered ? '✅' : '👀'}</div>
+                                        <div className='scan-detail-body'>
+                                            <div className='scan-detail-question'>{s.questionText}</div>
+                                            <div className='scan-detail-meta'>
+                                                {formatDateTime(s.timestamp)}
+                                                {s.location && <> · 📍 {s.location}</>}
+                                            </div>
+                                            {s.answered && (
+                                                <div className='scan-detail-answer'>→ {s.answerLabel}</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                );
+            })()}
 
             {/* Week trend */}
             <section className='overview-section'>
