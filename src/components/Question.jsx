@@ -370,7 +370,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                             {r.placeId && (
                                 <a
                                     className='result-maps-link'
-                                    href={`https://www.google.com/maps/place/?q=place_id:${r.placeId}`}
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.label)}&query_place_id=${r.placeId}`}
                                     target='_blank'
                                     rel='noopener noreferrer'
                                 >
