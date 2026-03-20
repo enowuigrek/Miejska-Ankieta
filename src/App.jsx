@@ -40,8 +40,7 @@ const AppContent = ({ isNight }) => {
                             {!hideBrandDemo && (
                                 <div className='brand-zone'>
                                     <div className='app-brand-header'>
-                                        <div className='app-brand-line1'>jak</div>
-                                        <div className='app-brand-line2'>myślisz<span className='app-brand-q'>?</span></div>
+                                        <span className='app-brand-q-solo'>?</span>
                                     </div>
                                 </div>
                             )}
