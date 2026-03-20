@@ -134,6 +134,22 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         };
     }, []);
 
+    // Dla allowText: stałe opcje + dynamiczne z bazy, losowa kolejność + "dodaj" na końcu
+    const allOptions = useMemo(() => {
+        if (!questionData?.allowText) return questionData?.options || [];
+        const nonText = [
+            ...questionData.options.filter(o => o.type !== 'text'),
+            ...dynamicOptions.filter(d => !questionData.options.some(o => o.id === d.id)),
+        ];
+        // Fisher-Yates shuffle
+        for (let i = nonText.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [nonText[i], nonText[j]] = [nonText[j], nonText[i]];
+        }
+        const textOpt = questionData.options.find(o => o.type === 'text');
+        return textOpt ? [...nonText, textOpt] : nonText;
+    }, [questionData, dynamicOptions]);
+
     // Ładowanie danych z Firestore
     if (questions === null) return null;
     if (!questionData)      return null;
@@ -441,22 +457,6 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             </div>
         );
     }
-
-    // Dla allowText: stałe opcje + dynamiczne z bazy, losowa kolejność + "dodaj" na końcu
-    const allOptions = useMemo(() => {
-        if (!questionData?.allowText) return questionData?.options || [];
-        const nonText = [
-            ...questionData.options.filter(o => o.type !== 'text'),
-            ...dynamicOptions.filter(d => !questionData.options.some(o => o.id === d.id)),
-        ];
-        // Fisher-Yates shuffle
-        for (let i = nonText.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [nonText[i], nonText[j]] = [nonText[j], nonText[i]];
-        }
-        const textOpt = questionData.options.find(o => o.type === 'text');
-        return textOpt ? [...nonText, textOpt] : nonText;
-    }, [questionData, dynamicOptions]);
 
     // Indeks ostatniej opcji bez type:text (dla separatora "czy"); brak dla allowText
     const lastNonTextIdx = questionData.allowText
