@@ -33,7 +33,7 @@ const PERIODS = [
     { id: 'all', label: 'wszystko',  key: 'dailyActivityAll' },
 ];
 
-const PAIR_TIMEOUT = 60000; // 60s
+const PAIR_TIMEOUT = 120000; // 2min
 
 const pairScansWithAnswers = (scans, answers, questions, socialClicks = []) => {
     const usedAnswerIds = new Set();

@@ -8,7 +8,7 @@ import { faBell } from '@fortawesome/free-solid-svg-icons';
 import './NotificationBell.scss';
 
 const STORAGE_KEY = 'jm_admin_notifications';
-const PENDING_TIMEOUT = 60000; // 60s
+const PENDING_TIMEOUT = 120000; // 2min
 const CLEANUP_DAYS = 7;
 const MAX_NOTIFICATIONS = 100;
 
