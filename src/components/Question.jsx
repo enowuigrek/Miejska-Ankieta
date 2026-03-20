@@ -424,16 +424,6 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
 
                 <p className='greeting'>{greeting}</p>
 
-                <button
-                    type='button'
-                    className='share-btn'
-                    onClick={handleShare}
-                    disabled={sharing}
-                >
-                    <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                    {sharing ? 'Generuję...' : 'Udostępnij'}
-                </button>
-
                 {/* Karta off-screen do html2canvas */}
                 <ShareCard
                     ref={shareRef}
@@ -443,16 +433,27 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
                     location={location}
                 />
 
-                {/* Social — fixed na dole */}
+                {/* Social + Udostępnij — fixed na dole */}
                 <div className={`social-fixed ${isNight ? 'night' : 'day'}`}>
-                    <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'
-                        onClick={() => trackSocialClick('instagram')}>
-                        <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
-                    </a>
-                    <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'
-                        onClick={() => trackSocialClick('facebook')}>
-                        <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
-                    </a>
+                    <div className='social-fixed-left'>
+                        <a href={SOCIAL_MEDIA_LINKS.instagram} target='_blank' rel='noopener noreferrer'
+                            onClick={() => trackSocialClick('instagram')}>
+                            <FontAwesomeIcon icon={faSquareInstagram} className='social-icon' />
+                        </a>
+                        <a href={SOCIAL_MEDIA_LINKS.facebook} target='_blank' rel='noopener noreferrer'
+                            onClick={() => trackSocialClick('facebook')}>
+                            <FontAwesomeIcon icon={faSquareFacebook} className='social-icon' />
+                        </a>
+                    </div>
+                    <button
+                        type='button'
+                        className='share-btn-footer'
+                        onClick={handleShare}
+                        disabled={sharing}
+                    >
+                        <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                        {sharing ? 'Generuję...' : 'Udostępnij'}
+                    </button>
                 </div>
             </div>
         );
