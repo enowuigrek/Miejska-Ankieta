@@ -139,12 +139,6 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                     <div className='kpi-number'>{totalStickers || 0}</div>
                     <div className='kpi-label'>naklejek rozklejonych</div>
                 </div>
-                {totalStickers > 0 && (
-                    <div className='kpi-card'>
-                        <div className='kpi-number'>{totalScans > 0 ? Math.round((totalScans / totalStickers) * 100) : 0}%</div>
-                        <div className='kpi-label'>naklejka→skan</div>
-                    </div>
-                )}
                 <button type='button' className={`kpi-card kpi-card--link${detailView === 'social' ? ' kpi-card--active' : ''}`}
                     onClick={() => setDetailView(detailView === 'social' ? null : 'social')}>
                     <div className='kpi-number'>{totalSocialClicks || 0}</div>

@@ -353,9 +353,10 @@ const NotificationBell = () => {
         }
     };
 
-    // ── Group by date ─────────────────────────────────────────────────────
+    // ── Group by date (newest first) ───────────────────────────────────────
+    const sorted = [...notifications].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const grouped = {};
-    notifications.forEach(n => {
+    sorted.forEach(n => {
         const label = formatDateLabel(n.timestamp);
         if (!grouped[label]) grouped[label] = [];
         grouped[label].push(n);

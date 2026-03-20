@@ -147,3 +147,19 @@ CONFIGS.forEach(({ id, dist, count }) => {
     DEMO_ANSWERS.push(...answers);
     DEMO_SCANS.push(...scans);
 });
+
+// ── Social clicks demo ──────────────────────────────────────────────────────
+export const DEMO_SOCIAL_CLICKS = [];
+const SOCIAL_TYPES = ['instagram', 'facebook'];
+
+DEMO_SCANS.slice(0, 18).forEach((scan, i) => {
+    const seed = (i * 2654435761 + 12345) >>> 0;
+    if (seed % 3 === 0) { // ~33% skanów ma klik social
+        DEMO_SOCIAL_CLICKS.push({
+            id: `demo_social_${i}`,
+            type: SOCIAL_TYPES[seed % 2],
+            questionId: scan.questionId,
+            timestamp: new Date(new Date(scan.timestamp).getTime() + 30000).toISOString(), // 30s po skanie
+        });
+    }
+});

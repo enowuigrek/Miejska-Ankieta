@@ -131,15 +131,18 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         };
 
         // Daily activity — różne okna czasu
-        const epoch = new Date(0);
+        const allTimestamps = [...scans, ...answers].map(x => x.timestamp).filter(Boolean);
+        const earliest = allTimestamps.length > 0
+            ? startOfDay(new Date(allTimestamps.sort()[0]))
+            : last30;
 
-        const scansByDayAll   = groupByDay(scans,   epoch);
-        const answersByDayAll = groupByDay(answers, epoch);
+        const scansByDayAll   = groupByDay(scans,   earliest);
+        const answersByDayAll = groupByDay(answers, earliest);
 
         const dailyActivity1d  = fillDays(scansByDayAll, answersByDayAll, last1,  today);
         const dailyActivity7d  = fillDays(scansByDayAll, answersByDayAll, last7,  today);
         const dailyActivity30d = fillDays(scansByDayAll, answersByDayAll, last30, today);
-        const dailyActivityAll = fillDays(scansByDayAll, answersByDayAll, epoch,  today);
+        const dailyActivityAll = fillDays(scansByDayAll, answersByDayAll, earliest, today);
 
         // Compat alias dla istniejących konsumentów
         const dailyActivity = dailyActivity30d;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 import './Question.scss';
@@ -63,6 +63,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     useEffect(() => {
         if (!questionData) return;
         if (demoMode) return;
+        if (localStorage.getItem(`voted_${questionId}`)) return; // już głosował — nie nabijaj skanu
         if (scanRecorded.current) return;
         const sessionKey = `scan_${questionId}`;
         if (sessionStorage.getItem(sessionKey)) return; // już zeskanowano w tej sesji
@@ -431,14 +432,21 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         );
     }
 
-    // Dla allowText: stałe opcje + dynamiczne z bazy + "dodaj" na końcu
-    const allOptions = questionData.allowText
-        ? [
+    // Dla allowText: stałe opcje + dynamiczne z bazy, losowa kolejność + "dodaj" na końcu
+    const allOptions = useMemo(() => {
+        if (!questionData?.allowText) return questionData?.options || [];
+        const nonText = [
             ...questionData.options.filter(o => o.type !== 'text'),
             ...dynamicOptions.filter(d => !questionData.options.some(o => o.id === d.id)),
-            questionData.options.find(o => o.type === 'text'),
-          ].filter(Boolean)
-        : questionData.options;
+        ];
+        // Fisher-Yates shuffle
+        for (let i = nonText.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [nonText[i], nonText[j]] = [nonText[j], nonText[i]];
+        }
+        const textOpt = questionData.options.find(o => o.type === 'text');
+        return textOpt ? [...nonText, textOpt] : nonText;
+    }, [questionData, dynamicOptions]);
 
     // Indeks ostatniej opcji bez type:text (dla separatora "czy"); brak dla allowText
     const lastNonTextIdx = questionData.allowText

@@ -9,7 +9,7 @@ import OverviewTab   from './admin/OverviewTab';
 import LocationsTab  from './admin/LocationsTab';
 import QuestionsTab  from './admin/QuestionsTab';
 import ContentTab    from './admin/ContentTab';
-import { DEMO_ANSWERS, DEMO_SCANS } from '../demo/mockData';
+import { DEMO_ANSWERS, DEMO_SCANS, DEMO_SOCIAL_CLICKS } from '../demo/mockData';
 import './AdminPanel.scss';
 
 const DemoAdminPanel = () => {
@@ -17,7 +17,7 @@ const DemoAdminPanel = () => {
     const [contentFilter, setContentFilter] = useState(null);
 
     const { questions } = useData();
-    const stats = useAdminStats(DEMO_ANSWERS, DEMO_SCANS, questions);
+    const stats = useAdminStats(DEMO_ANSWERS, DEMO_SCANS, questions, DEMO_SOCIAL_CLICKS);
 
     return (
         <div className='admin-dashboard'>
@@ -45,6 +45,9 @@ const DemoAdminPanel = () => {
                 {activeTab === 'overview'  && (
                     <OverviewTab
                         stats={stats?.overview}
+                        scans={DEMO_SCANS}
+                        answers={DEMO_ANSWERS}
+                        socialClicks={DEMO_SOCIAL_CLICKS}
                         onGoToPrinted={() => { setActiveTab('content'); setContentFilter('printed'); }}
                     />
                 )}
