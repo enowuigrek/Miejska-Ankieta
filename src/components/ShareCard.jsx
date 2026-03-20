@@ -3,14 +3,9 @@ import './ShareCard.scss';
 
 const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, location }, ref) => (
     <div className='share-card' ref={ref}>
-        <div className='sc-logo'>
-            <div className='sc-logo-jak'>jak</div>
-            <div className='sc-logo-myslisz'>myślisz<span className='sc-logo-q'>?</span></div>
-        </div>
+        <div className='sc-question'>{question}</div>
 
         <div className='sc-divider' />
-
-        <div className='sc-question'>{question}</div>
 
         <div className='sc-results'>
             {results.map((r, i) => (
@@ -35,7 +30,11 @@ const ShareCard = React.forwardRef(({ question, results, prevAnswerLabel, locati
             <div className='sc-location'>{location.replace(/_/g, ' ')}</div>
         )}
 
-        <div className='sc-spacer' />
+        <div className='sc-logo'>
+            <svg className='sc-logo-q-solo' viewBox='0 0 100 120' xmlns='http://www.w3.org/2000/svg'>
+                <text x='50' y='105' textAnchor='middle' fontFamily="'Archivo Black', sans-serif" fontSize='140' fill='#FF2323'>?</text>
+            </svg>
+        </div>
 
         <div className='sc-cta'>
             znajdź <span className='sc-cta-q'>?</span> na ulicy i odpowiedz
