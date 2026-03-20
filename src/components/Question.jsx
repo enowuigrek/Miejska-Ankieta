@@ -31,6 +31,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     const [fact, setFact] = useState('');
     const [loading, setLoading] = useState(false);
     const [prevAnswer, setPrevAnswer] = useState(null);
+    const [isReturning, setIsReturning] = useState(false);
     const [barsVisible, setBarsVisible] = useState(false);
     const [sharing, setSharing] = useState(false);
     const [textValue, setTextValue] = useState('');
@@ -85,6 +86,7 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
             : localStorage.getItem(`voted_${questionId}`);
         if (voted) {
             setPrevAnswer(voted);
+            setIsReturning(true);
             fetchResults();
         }
     }, [questionId, questionData]);
@@ -356,6 +358,13 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
 
         return (
             <div className='question-container view-results'>
+                {/* Info dla powracających */}
+                {isReturning && (
+                    <div className='returning-banner'>
+                        już odpowiadałeś/aś na to pytanie
+                    </div>
+                )}
+
                 {/* Poprzednia odpowiedź */}
                 {prevAnswerLabel && (
                     <div className='prev-answer-block'>

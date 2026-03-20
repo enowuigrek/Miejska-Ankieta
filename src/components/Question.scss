@@ -380,6 +380,18 @@ h1.night::after {
 }
 
 // Moja odpowiedź — nagłówek jak "jak myślą inni" + ramka jak opcja
+.returning-banner {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 14px;
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
 .prev-answer-block {
     margin: 0 0 28px;
 }
