@@ -132,13 +132,11 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                     <div className='kpi-number'>{conversion}%</div>
                     <div className='kpi-label'>konwersja skan→głos</div>
                 </div>
-                {(totalRevisits || 0) > 0 && (
-                    <button type='button' className={`kpi-card kpi-card--link${detailView === 'scans' && scanFilter === 'revisit' ? ' kpi-card--active' : ''}`}
-                        onClick={() => { setDetailView(detailView === 'scans' && scanFilter === 'revisit' ? null : 'scans'); setScanFilter('revisit'); }}>
-                        <div className='kpi-number'>{totalRevisits}</div>
-                        <div className='kpi-label'>ponownych skanów</div>
-                    </button>
-                )}
+                <button type='button' className={`kpi-card kpi-card--link${detailView === 'scans' && scanFilter === 'revisit' ? ' kpi-card--active' : ''}`}
+                    onClick={() => { setDetailView(detailView === 'scans' && scanFilter === 'revisit' ? null : 'scans'); setScanFilter('revisit'); }}>
+                    <div className='kpi-number'>{totalRevisits || 0}</div>
+                    <div className='kpi-label'>ponownych skanów</div>
+                </button>
                 <div className='kpi-card'>
                     <div className='kpi-number'>{activeLocations}</div>
                     <div className='kpi-label'>aktywnych lokalizacji</div>
