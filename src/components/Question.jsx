@@ -64,16 +64,17 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
     useEffect(() => {
         if (!questionData) return;
         if (demoMode) return;
-        if (localStorage.getItem(`voted_${questionId}`)) return; // już głosował — nie nabijaj skanu
         if (scanRecorded.current) return;
         const sessionKey = `scan_${questionId}`;
         if (sessionStorage.getItem(sessionKey)) return; // już zeskanowano w tej sesji
         scanRecorded.current = true;
         sessionStorage.setItem(sessionKey, '1');
+        const isRevisit = !!localStorage.getItem(`voted_${questionId}`);
         addDoc(collection(db, "scans"), {
             questionId,
             timestamp: new Date().toISOString(),
             ...(location && { location }),
+            ...(isRevisit && { revisit: true }),
         }).catch(err => console.error("Scan record error:", err));
     }, [questionId, questionData]);
 

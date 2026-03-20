@@ -94,19 +94,24 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
 
         // ============ OVERVIEW ============
 
-        const totalScans = scans.length;
+        // Oddziel ponowne skany od nowych
+        const freshScans = scans.filter(s => !s.revisit);
+        const revisitScans = scans.filter(s => s.revisit);
+        const totalRevisits = revisitScans.length;
+
+        const totalScans = freshScans.length;
         const totalAnswers = answers.length;
         const conversion = totalScans > 0 ? Math.round((totalAnswers / totalScans) * 100) : 0;
 
         // Unique locations
         const allLocations = new Set();
-        scans.forEach(s => { if (s.location) allLocations.add(s.location); });
+        freshScans.forEach(s => { if (s.location) allLocations.add(s.location); });
         answers.forEach(a => { if (a.location) allLocations.add(a.location); });
         const activeLocations = allLocations.size;
 
-        // Weekly comparison
-        const thisWeekScans = scans.filter(s => new Date(s.timestamp) >= last7).length;
-        const prevWeekScans = scans.filter(s => {
+        // Weekly comparison (only fresh scans)
+        const thisWeekScans = freshScans.filter(s => new Date(s.timestamp) >= last7).length;
+        const prevWeekScans = freshScans.filter(s => {
             const d = new Date(s.timestamp);
             return d >= prev7 && d < last7;
         }).length;
@@ -130,13 +135,13 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
             conversion: { current: thisWeekConversion, previous: prevWeekConversion, change: thisWeekConversion - prevWeekConversion },
         };
 
-        // Daily activity — różne okna czasu
-        const allTimestamps = [...scans, ...answers].map(x => x.timestamp).filter(Boolean);
+        // Daily activity — tylko fresh scans (bez revisit)
+        const allTimestamps = [...freshScans, ...answers].map(x => x.timestamp).filter(Boolean);
         const earliest = allTimestamps.length > 0
             ? startOfDay(new Date(allTimestamps.sort()[0]))
             : last30;
 
-        const scansByDayAll   = groupByDay(scans,   earliest);
+        const scansByDayAll   = groupByDay(freshScans, earliest);
         const answersByDayAll = groupByDay(answers, earliest);
 
         const dailyActivity1d  = fillDays(scansByDayAll, answersByDayAll, last1,  today);
@@ -149,9 +154,9 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         const scansByDay    = scansByDayAll;
         const answersByDay  = answersByDayAll;
 
-        // Hourly distribution
+        // Hourly distribution (only fresh scans)
         const hourlyScans = new Array(24).fill(0);
-        scans.forEach(s => {
+        freshScans.forEach(s => {
             const h = new Date(s.timestamp).getHours();
             hourlyScans[h]++;
         });
@@ -178,6 +183,7 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         const overview = {
             totalScans,
             totalAnswers,
+            totalRevisits,
             conversion,
             activeLocations,
             totalStickers,
@@ -199,7 +205,7 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         // ============ LOCATIONS ============
 
         const locationMap = {};
-        scans.forEach(s => {
+        freshScans.forEach(s => {
             if (!s.location) return;
             if (!locationMap[s.location]) locationMap[s.location] = { name: s.location, scans: 0, answers: 0, weekScans: 0, prevWeekScans: 0 };
             locationMap[s.location].scans++;
@@ -254,8 +260,8 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
             };
         });
 
-        // Count scans
-        scans.forEach(s => {
+        // Count scans (only fresh)
+        freshScans.forEach(s => {
             const qid = s.questionId;
             if (!questionMap[qid]) {
                 questionMap[qid] = {

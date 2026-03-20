@@ -72,6 +72,7 @@ const pairScansWithAnswers = (scans, answers, questions, socialClicks = []) => {
             answerLabel,
             answerTimestamp: match?.timestamp || null,
             socials: [...new Set(matchedSocials)],
+            revisit: !!scan.revisit,
         };
     });
 };
@@ -107,7 +108,7 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
         );
     }
 
-    const { totalScans, totalAnswers, conversion, activeLocations, totalStickers, totalSocialClicks, instagramClicks, facebookClicks, weekTrend, hourlyActivity } = stats;
+    const { totalScans, totalAnswers, totalRevisits, conversion, activeLocations, totalStickers, totalSocialClicks, instagramClicks, facebookClicks, weekTrend, hourlyActivity } = stats;
     const activePeriod = PERIODS.find(p => p.id === period);
     const dailyActivity = stats[activePeriod.key] || [];
 
@@ -131,6 +132,13 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                     <div className='kpi-number'>{conversion}%</div>
                     <div className='kpi-label'>konwersja skan→głos</div>
                 </div>
+                {(totalRevisits || 0) > 0 && (
+                    <button type='button' className={`kpi-card kpi-card--link${detailView === 'scans' && scanFilter === 'revisit' ? ' kpi-card--active' : ''}`}
+                        onClick={() => { setDetailView(detailView === 'scans' && scanFilter === 'revisit' ? null : 'scans'); setScanFilter('revisit'); }}>
+                        <div className='kpi-number'>{totalRevisits}</div>
+                        <div className='kpi-label'>ponownych skanów</div>
+                    </button>
+                )}
                 <div className='kpi-card'>
                     <div className='kpi-number'>{activeLocations}</div>
                     <div className='kpi-label'>aktywnych lokalizacji</div>
@@ -158,10 +166,14 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                 const paired = pairScansWithAnswers(scans, answers, questions, socialClicks);
                 const effectiveFilter = detailView === 'answers' ? 'answered' : scanFilter;
                 const filtered = effectiveFilter === 'all'
-                    ? paired
+                    ? paired.filter(s => !s.revisit)
                     : effectiveFilter === 'answered'
-                        ? paired.filter(s => s.answered)
-                        : paired.filter(s => !s.answered);
+                        ? paired.filter(s => s.answered && !s.revisit)
+                        : effectiveFilter === 'unanswered'
+                            ? paired.filter(s => !s.answered && !s.revisit)
+                            : effectiveFilter === 'revisit'
+                                ? paired.filter(s => s.revisit)
+                                : paired;
 
                 return (
                     <section className='overview-section scan-detail'>
@@ -178,6 +190,7 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                                     { id: 'all', label: 'wszystkie' },
                                     { id: 'answered', label: 'odpowiedziane' },
                                     { id: 'unanswered', label: 'bez odpowiedzi' },
+                                    { id: 'revisit', label: 'ponowne' },
                                 ].map(f => (
                                     <button
                                         key={f.id}
@@ -195,7 +208,7 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                             <div className='scan-detail-list'>
                                 {filtered.map(s => (
                                     <div key={s.id} className={`scan-detail-item${s.answered ? ' answered' : ' unanswered'}`}>
-                                        <div className='scan-detail-icon'>{s.answered ? '✅' : '👀'}</div>
+                                        <div className='scan-detail-icon'>{s.revisit ? '🔄' : s.answered ? '✅' : '👀'}</div>
                                         <div className='scan-detail-body'>
                                             <div className='scan-detail-question'>{s.questionText}</div>
                                             <div className='scan-detail-meta'>

@@ -157,12 +157,12 @@ const NotificationBell = () => {
             }
         }
 
-        // Unpaired scans = no answer
+        // Unpaired scans = no answer (or revisit)
         for (const scan of scans) {
             if (usedScanIds.has(scan.id)) continue;
             addNotification({
                 id: `scan_${scan.id}`,
-                type: 'scan_no_answer',
+                type: scan.revisit ? 'scan_revisit' : 'scan_no_answer',
                 questionId: scan.questionId,
                 questionText: getQuestionText(scan.questionId),
                 location: scan.location || null,
@@ -212,6 +212,21 @@ const NotificationBell = () => {
                 const data = change.doc.data();
                 if (!data.timestamp) return;
                 const scanId = change.doc.id;
+
+                // Ponowny skan — od razu powiadomienie, nie czekaj na odpowiedź
+                if (data.revisit) {
+                    addNotification({
+                        id: `scan_${scanId}`,
+                        type: 'scan_revisit',
+                        questionId: data.questionId,
+                        questionText: getQuestionText(data.questionId),
+                        location: data.location || null,
+                        timestamp: data.timestamp,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                    });
+                    return;
+                }
 
                 const timeout = setTimeout(() => {
                     pendingScans.current.delete(scanId);
@@ -332,6 +347,7 @@ const NotificationBell = () => {
         switch (type) {
             case 'scan_answered': return '✅';
             case 'scan_no_answer': return '👀';
+            case 'scan_revisit': return '🔄';
             case 'answer_only': return '✅';
             case 'social_click': return '📱';
             default: return '•';
@@ -344,6 +360,8 @@ const NotificationBell = () => {
                 return <>skan + odpowiedź → <strong>{n.answer}</strong></>;
             case 'scan_no_answer':
                 return <>skan bez odpowiedzi</>;
+            case 'scan_revisit':
+                return <>ponowny skan</>;
             case 'answer_only':
                 return <>odpowiedź → <strong>{n.answer}</strong></>;
             case 'social_click':
