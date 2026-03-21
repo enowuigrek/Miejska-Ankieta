@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    AreaChart, Area, BarChart, Bar,
+    BarChart, Bar,
     XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Legend,
 } from 'recharts';
@@ -334,41 +334,15 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                 </div>
                 <div className='chart-wrap'>
                     <ResponsiveContainer width='100%' height={220}>
-                        <AreaChart data={dailyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id='scanGrad' x1='0' y1='0' x2='0' y2='1'>
-                                    <stop offset='5%' stopColor={DARK} stopOpacity={0.15} />
-                                    <stop offset='95%' stopColor={DARK} stopOpacity={0} />
-                                </linearGradient>
-                                <linearGradient id='answerGrad' x1='0' y1='0' x2='0' y2='1'>
-                                    <stop offset='5%' stopColor={ACCENT} stopOpacity={0.25} />
-                                    <stop offset='95%' stopColor={ACCENT} stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
+                        <BarChart data={dailyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap='30%' barGap={2}>
                             <CartesianGrid strokeDasharray='3 3' stroke='rgba(69,69,69,0.1)' vertical={false} />
                             <XAxis dataKey='date' tick={axisStyle} tickLine={false} axisLine={false} interval='preserveStartEnd' />
                             <YAxis tick={axisStyle} tickLine={false} axisLine={false} allowDecimals={false} />
                             <Tooltip content={<CustomTooltip />} />
                             <Legend wrapperStyle={{ fontFamily: FONT, fontSize: 12 }} />
-                            <Area
-                                type='monotone'
-                                dataKey='scans'
-                                name='skany'
-                                stroke={DARK}
-                                strokeWidth={2}
-                                fill='url(#scanGrad)'
-                                isAnimationActive={false}
-                            />
-                            <Area
-                                type='monotone'
-                                dataKey='answers'
-                                name='odpowiedzi'
-                                stroke={ACCENT}
-                                strokeWidth={2}
-                                fill='url(#answerGrad)'
-                                isAnimationActive={false}
-                            />
-                        </AreaChart>
+                            <Bar dataKey='scans' name='skany' fill={DARK} fillOpacity={0.35} isAnimationActive={false} />
+                            <Bar dataKey='answers' name='odpowiedzi' fill={ACCENT} fillOpacity={0.8} isAnimationActive={false} />
+                        </BarChart>
                     </ResponsiveContainer>
                 </div>
             </section>
