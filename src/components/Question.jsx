@@ -213,13 +213,46 @@ const Question = ({ isNight, onResultsView, demoMode = false }) => {
         try {
             const q = query(collection(db, "answers"), where("questionId", "==", questionId));
             const snapshot = await getDocs(q);
-            const counts = {};
+            const rawCounts = {};
             const placeIds = {};
             snapshot.forEach(doc => {
                 const { answer: ans, placeId } = doc.data();
-                counts[ans] = (counts[ans] || 0) + 1;
+                rawCounts[ans] = (rawCounts[ans] || 0) + 1;
                 if (placeId && !placeIds[ans]) placeIds[ans] = placeId;
             });
+
+            // Dla allowText: merge case-insensitive duplikatów (np. "Strzykawka" + "strzykawka")
+            let counts = rawCounts;
+            if (questionData.allowText) {
+                const merged = {};
+                const bestLabel = {};
+                const mergedPlaces = {};
+                Object.entries(rawCounts).forEach(([key, count]) => {
+                    const norm = key.toLowerCase().trim();
+                    merged[norm] = (merged[norm] || 0) + count;
+                    // Preferuj label z opcji pytania, potem najczęstszy wariant
+                    if (!bestLabel[norm] || count > (rawCounts[bestLabel[norm]] || 0)) bestLabel[norm] = key;
+                    if (placeIds[key] && !mergedPlaces[norm]) mergedPlaces[norm] = placeIds[key];
+                });
+                // Preferuj label z definicji opcji
+                questionData.options.forEach(o => {
+                    if (o.type === 'text') return;
+                    const norm = o.id.toLowerCase().trim();
+                    if (merged[norm] !== undefined) {
+                        bestLabel[norm] = o.label;
+                        if (o.placeId) mergedPlaces[norm] = o.placeId;
+                    }
+                });
+                counts = {};
+                Object.entries(merged).forEach(([norm, count]) => {
+                    counts[bestLabel[norm]] = count;
+                });
+                // Zaktualizuj placeIds
+                Object.entries(mergedPlaces).forEach(([norm, pid]) => {
+                    placeIds[bestLabel[norm]] = pid;
+                });
+            }
+
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
             // Fallback placeId z definicji opcji (gdy opcja ma placeId ale stare answery go nie mają)

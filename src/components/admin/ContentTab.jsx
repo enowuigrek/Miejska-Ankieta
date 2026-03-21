@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
     doc, setDoc, deleteDoc, updateDoc,
+    collection, query, where, getDocs, writeBatch,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
@@ -95,7 +96,8 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
         setErr('');
         try {
             const fixedOptions = options.map(o => ({
-                id: o.id || optionSlug(o.label),
+                // allowText: nowe opcje używają labela jako ID (bo tak są zapisane odpowiedzi users)
+                id: o.id || (allowText ? o.label.trim() : optionSlug(o.label)),
                 label: o.label.trim(),
                 ...(o.placeId  && { placeId:  o.placeId }),
                 ...(o.address  && { address:  o.address }),
@@ -303,6 +305,39 @@ const ContentTab = ({ filterPrinted = false, onClearFilter }) => {
             ...(existing?.printed && { printed: true }),
             ...(existing?.stickersCount && { stickersCount: existing.stickersCount }),
         });
+
+        // Migracja odpowiedzi: scal duplikaty (case-insensitive) do canonical ID opcji
+        if (data.allowText) {
+            try {
+                const optionIds = data.options.filter(o => o.type !== 'text').map(o => o.id);
+                const optionMap = {}; // lowercase → canonical option ID
+                optionIds.forEach(id => { optionMap[id.toLowerCase().trim()] = id; });
+
+                const q = query(collection(db, 'answers'), where('questionId', '==', data.id));
+                const snap = await getDocs(q);
+                const batch = writeBatch(db);
+                let batchCount = 0;
+
+                snap.forEach(d => {
+                    const ans = d.data().answer;
+                    if (!ans) return;
+                    const norm = ans.toLowerCase().trim();
+                    const canonical = optionMap[norm];
+                    // Jeśli odpowiedź pasuje do opcji ale ma inny zapis → zaktualizuj
+                    if (canonical && ans !== canonical) {
+                        batch.update(d.ref, { answer: canonical });
+                        batchCount++;
+                    }
+                });
+                if (batchCount > 0) {
+                    await batch.commit();
+                    console.log(`Zmigrowano ${batchCount} odpowiedzi do canonical IDs`);
+                }
+            } catch (err) {
+                console.error('Błąd migracji odpowiedzi:', err);
+            }
+        }
+
         await refresh();
         setEditingId(null);
         setAddingNew(false);
