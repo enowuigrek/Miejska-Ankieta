@@ -34,6 +34,7 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
     const [allowText,     setAllowText]     = useState(initial?.allowText ?? false);
     const [suggestions,   setSuggestions]   = useState([]);
     const [suggestionsFor,setSuggestionsFor]= useState(null);
+    const [userAnswers,   setUserAnswers]   = useState([]); // odpowiedzi dodane przez users
     const placesDebounce = useRef(null);
     // Edytujemy tylko stałe opcje — opcja type:text jest auto-dodawana
     const [options, setOptions] = useState(
@@ -43,6 +44,31 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
     );
     const [saving, setSaving] = useState(false);
     const [err,    setErr]    = useState('');
+
+    // Pobierz odpowiedzi użytkowników dla allowText pytań
+    useEffect(() => {
+        if (!initial?.id || !initial?.allowText || isNew) return;
+        const fetchUserAnswers = async () => {
+            try {
+                const q = query(collection(db, 'answers'), where('questionId', '==', initial.id));
+                const snap = await getDocs(q);
+                const counts = {};
+                snap.forEach(d => {
+                    const ans = d.data().answer;
+                    if (ans && ans !== 'inne') counts[ans] = (counts[ans] || 0) + 1;
+                });
+                const knownIds = new Set(initial.options.map(o => o.id));
+                const extras = Object.entries(counts)
+                    .filter(([key]) => !knownIds.has(key))
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([key, count]) => ({ id: key, label: key, count }));
+                setUserAnswers(extras);
+            } catch (e) {
+                console.error('Błąd pobierania odpowiedzi users:', e);
+            }
+        };
+        fetchUserAnswers();
+    }, [initial, isNew]);
 
     const handleTextChange = (val) => {
         setText(val);
@@ -87,6 +113,12 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
 
     const addOption = () => setOptions(prev => [...prev, { id: '', label: '' }]);
     const removeOption = (idx) => setOptions(prev => prev.filter((_, i) => i !== idx));
+
+    // Adoptuj odpowiedź użytkownika jako oficjalną opcję
+    const adoptUserAnswer = (ua) => {
+        setOptions(prev => [...prev, { id: ua.id, label: ua.label }]);
+        setUserAnswers(prev => prev.filter(a => a.id !== ua.id));
+    };
 
     const handleSave = async () => {
         if (!text.trim()) { setErr('Wpisz treść pytania.'); return; }
@@ -179,6 +211,27 @@ const QuestionForm = ({ initial, isNew, onSave, onCancel, maxNumber }) => {
                     <button type='button' className='ct-add-btn' onClick={addOption}>+ dodaj odpowiedź</button>
                 </div>
             </div>
+            {/* Odpowiedzi dodane przez użytkowników */}
+            {allowText && userAnswers.length > 0 && (
+                <div className='ct-form-field'>
+                    <label className='ct-label ct-label--user'>Dodane przez użytkowników</label>
+                    <div className='ct-user-answers'>
+                        {userAnswers.map(ua => (
+                            <button
+                                key={ua.id}
+                                type='button'
+                                className='ct-user-answer'
+                                onClick={() => adoptUserAnswer(ua)}
+                                title='Kliknij żeby dodać jako oficjalną opcję'
+                            >
+                                <span className='ct-ua-label'>{ua.label}</span>
+                                <span className='ct-ua-count'>{ua.count}×</span>
+                                <span className='ct-ua-add'>+</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
             <label className='ct-allowtext-row'>
                 <input
                     type='checkbox'

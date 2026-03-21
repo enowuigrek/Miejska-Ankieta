@@ -514,6 +514,54 @@
     }
 }
 
+/* ── ODPOWIEDZI UŻYTKOWNIKÓW ───────────────────────────────────────────── */
+.ct-label--user {
+    color: rgba(69, 69, 69, 0.6) !important;
+    font-size: 0.8rem !important;
+}
+
+.ct-user-answers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ct-user-answer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: rgba(69, 69, 69, 0.06);
+    border: 1px dashed rgba(69, 69, 69, 0.2);
+    border-radius: 6px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    color: rgb(69, 69, 69);
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: #FF2323;
+        background: rgba(255, 35, 35, 0.05);
+    }
+}
+
+.ct-ua-label {
+    font-weight: 600;
+}
+
+.ct-ua-count {
+    opacity: 0.4;
+    font-size: 0.75rem;
+}
+
+.ct-ua-add {
+    color: #FF2323;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+}
+
 /* ── ALLOWTEXT CHECKBOX ─────────────────────────────────────────────────── */
 .ct-allowtext-row {
     display: flex;
