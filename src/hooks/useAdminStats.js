@@ -283,22 +283,10 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
             };
         });
 
-        // Count scans (only fresh)
+        // Count scans (only fresh, skip deleted questions)
         freshScans.forEach(s => {
             const qid = s.questionId;
-            if (!questionMap[qid]) {
-                questionMap[qid] = {
-                    id: qid,
-                    questionText: qid,
-                    options: [],
-                    scans: 0,
-                    answers: 0,
-                    responses: {},
-                    locations: {},
-                    dailyActivity: {},
-                    latestActivity: null,
-                };
-            }
+            if (!questionMap[qid]) return; // pytanie usunięte → ignoruj
             questionMap[qid].scans++;
             if (s.location) {
                 questionMap[qid].locations[s.location] = (questionMap[qid].locations[s.location] || 0) + 1;
