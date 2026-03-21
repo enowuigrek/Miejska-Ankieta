@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     BarChart, Bar,
     XAxis, YAxis, CartesianGrid, Tooltip,
@@ -27,11 +27,38 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const PERIODS = [
-    { id: '1d',  label: '1 dzień',   key: 'dailyActivity1d'  },
-    { id: '7d',  label: '7 dni',     key: 'dailyActivity7d'  },
-    { id: '30d', label: '30 dni',    key: 'dailyActivity30d' },
-    { id: 'all', label: 'wszystko',  key: 'dailyActivityAll' },
+    { id: '1d',  label: '1 dzień'  },
+    { id: '7d',  label: '7 dni'    },
+    { id: '30d', label: '30 dni'   },
+    { id: 'all', label: 'wszystko' },
 ];
+
+const groupByWeek = (days) => {
+    const map = {};
+    days.forEach(d => {
+        const date = new Date(d.fullDate + 'T12:00:00');
+        const dow = (date.getDay() + 6) % 7; // Mon=0
+        const mon = new Date(date);
+        mon.setDate(date.getDate() - dow);
+        const key = `${String(mon.getDate()).padStart(2,'0')}.${String(mon.getMonth()+1).padStart(2,'0')}`;
+        if (!map[key]) map[key] = { date: key, scans: 0, answers: 0 };
+        map[key].scans += d.scans;
+        map[key].answers += d.answers;
+    });
+    return Object.values(map);
+};
+
+const groupByMonth = (days) => {
+    const map = {};
+    days.forEach(d => {
+        const date = new Date(d.fullDate + 'T12:00:00');
+        const key = date.toLocaleDateString('pl-PL', { month: 'short', year: '2-digit' });
+        if (!map[key]) map[key] = { date: key, scans: 0, answers: 0 };
+        map[key].scans += d.scans;
+        map[key].answers += d.answers;
+    });
+    return Object.values(map);
+};
 
 const PAIR_TIMEOUT = 120000; // 2min
 
@@ -93,12 +120,20 @@ const formatDateTime = (ts) => {
 
 const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoToPrinted }) => {
     const { questions } = useData();
-    const [period, setPeriod] = useState('30d');
+    const [period, setPeriod] = useState('7d');
     const [detailView, setDetailView] = useState(null); // null | 'scans' | 'answers' | 'social'
     const [scanFilter, setScanFilter] = useState('all'); // 'all' | 'answered' | 'unanswered'
     const printedCount = questions
         ? Object.values(questions).filter(q => q.printed).length
         : 0;
+
+    const chartData = useMemo(() => {
+        if (!stats) return [];
+        if (period === '1d') return stats.hourlyActivity1d || [];
+        if (period === '7d') return stats.dailyActivity7d || [];
+        if (period === '30d') return groupByWeek(stats.dailyActivity30d || []);
+        return groupByMonth(stats.dailyActivityAll || []);
+    }, [period, stats]);
 
     if (!stats) {
         return (
@@ -109,8 +144,6 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
     }
 
     const { totalScans, totalAnswers, totalRevisits, conversion, activeLocations, totalStickers, totalSocialClicks, instagramClicks, facebookClicks, weekTrend, hourlyActivity } = stats;
-    const activePeriod = PERIODS.find(p => p.id === period);
-    const dailyActivity = stats[activePeriod.key] || [];
 
     const axisStyle = { fontFamily: FONT, fontSize: 11, fill: DARK, opacity: 0.6 };
 
@@ -334,7 +367,7 @@ const OverviewTab = ({ stats, scans = [], answers = [], socialClicks = [], onGoT
                 </div>
                 <div className='chart-wrap'>
                     <ResponsiveContainer width='100%' height={220}>
-                        <BarChart data={dailyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap='30%' barGap={2}>
+                        <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap='30%' barGap={2}>
                             <CartesianGrid strokeDasharray='3 3' stroke='rgba(69,69,69,0.1)' vertical={false} />
                             <XAxis dataKey='date' tick={axisStyle} tickLine={false} axisLine={false} interval='preserveStartEnd' />
                             <YAxis tick={axisStyle} tickLine={false} axisLine={false} allowDecimals={false} />

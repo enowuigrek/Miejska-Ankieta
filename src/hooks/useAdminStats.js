@@ -19,12 +19,18 @@ const formatDate = (date) => {
     return `${day}.${month}`;
 };
 
+// Lokalna data jako YYYY-MM-DD (bez konwersji do UTC)
+const localDateKey = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 const groupByDay = (items, since) => {
     const map = {};
     items.forEach(item => {
         const d = new Date(item.timestamp);
         if (d >= since) {
-            const key = item.timestamp.slice(0, 10); // YYYY-MM-DD
+            const key = localDateKey(d);
             map[key] = (map[key] || 0) + 1;
         }
     });
@@ -35,7 +41,7 @@ const fillDays = (scansByDay, answersByDay, since, until) => {
     const result = [];
     const current = new Date(since);
     while (current <= until) {
-        const key = current.toISOString().slice(0, 10);
+        const key = localDateKey(current);
         result.push({
             date: formatDate(current),
             fullDate: key,
@@ -154,7 +160,7 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         const scansByDay    = scansByDayAll;
         const answersByDay  = answersByDayAll;
 
-        // Hourly distribution (only fresh scans)
+        // Hourly distribution all-time (only fresh scans)
         const hourlyScans = new Array(24).fill(0);
         freshScans.forEach(s => {
             const h = new Date(s.timestamp).getHours();
@@ -166,6 +172,22 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
             count,
             isPeak: count === maxHourly && count > 0,
         })).filter(h => h.count > 0);
+
+        // Hourly distribution for last 24h (scans + answers)
+        const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const hourlyScans1d = new Array(24).fill(0);
+        const hourlyAnswers1d = new Array(24).fill(0);
+        freshScans.filter(s => new Date(s.timestamp) >= last24h).forEach(s => {
+            hourlyScans1d[new Date(s.timestamp).getHours()]++;
+        });
+        answers.filter(a => new Date(a.timestamp) >= last24h).forEach(a => {
+            hourlyAnswers1d[new Date(a.timestamp).getHours()]++;
+        });
+        const hourlyActivity1d = Array.from({ length: 24 }, (_, h) => ({
+            date: `${String(h).padStart(2, '0')}:00`,
+            scans: hourlyScans1d[h],
+            answers: hourlyAnswers1d[h],
+        }));
 
         // Total stickers
         const totalStickers = Object.values(questions).reduce((sum, q) => sum + (q.stickersCount || 0), 0);
@@ -200,6 +222,7 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
             dailyActivity30d,
             dailyActivityAll,
             hourlyActivity,
+            hourlyActivity1d,
         };
 
         // ============ LOCATIONS ============
