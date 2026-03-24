@@ -98,11 +98,6 @@
     width: auto;
     margin-top: 0;
 
-    &:hover:not(:disabled) {
-        background: rgb(69, 69, 69);
-        color: rgb(243, 242, 242);
-    }
-
     &:disabled {
         opacity: 0.4;
         cursor: not-allowed;
