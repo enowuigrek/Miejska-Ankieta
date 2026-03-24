@@ -146,9 +146,14 @@
 .scan-detail {
     border: 2px solid rgb(69, 69, 69);
     padding: 20px 24px;
+    overflow: hidden;
 
     .section-title-row {
         margin-bottom: 12px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 16px 12px;
     }
 }
 

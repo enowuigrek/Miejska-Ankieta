@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from "firebase/firestore";
+import React, { useState, useEffect, useRef } from 'react';
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +31,7 @@ const AdminPanel = () => {
     const [activeTab,     setActiveTab]     = useState('overview');
     const [contentFilter, setContentFilter] = useState(null);
 
+    const unsubscribers = useRef([]);
     const { questions } = useData();
     const stats = useAdminStats(answers, scans, questions, socialClicks);
 
@@ -87,36 +88,37 @@ const AdminPanel = () => {
         };
     }, []);
 
-    const fetchData = async () => {
-        try {
-            setRefreshing(true);
-            setLoading(answers.length === 0 && scans.length === 0);
-
-            const [answersSnap, scansSnap, socialSnap] = await Promise.all([
-                getDocs(collection(db, "answers")),
-                getDocs(collection(db, "scans")).catch(() => null),
-                getDocs(collection(db, "socialClicks")).catch(() => null),
-            ]);
-
-            const answersData = answersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            const scansData = scansSnap ? scansSnap.docs.map(d => ({ id: d.id, ...d.data() })) : [];
-            const socialData = socialSnap ? socialSnap.docs.map(d => ({ id: d.id, ...d.data() })) : [];
-
-            setAnswers(answersData);
-            setScans(scansData);
-            setSocialClicks(socialData);
-            setError(null);
-        } catch (err) {
-            setError('Błąd połączenia: ' + err.message);
-            console.error('Firebase error:', err);
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    };
-
+    // Real-time listeners for answers, scans, socialClicks
     useEffect(() => {
-        if (isAuthenticated) fetchData();
+        if (!isAuthenticated) return;
+
+        setLoading(true);
+        let loaded = { answers: false, scans: false, social: false };
+        const checkLoaded = () => {
+            if (loaded.answers && loaded.scans && loaded.social) setLoading(false);
+        };
+
+        const unsub1 = onSnapshot(collection(db, "answers"), snap => {
+            setAnswers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            loaded.answers = true;
+            checkLoaded();
+            setError(null);
+        }, err => { console.error('answers listener:', err); setError('Błąd połączenia'); loaded.answers = true; checkLoaded(); });
+
+        const unsub2 = onSnapshot(collection(db, "scans"), snap => {
+            setScans(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            loaded.scans = true;
+            checkLoaded();
+        }, err => { console.error('scans listener:', err); loaded.scans = true; checkLoaded(); });
+
+        const unsub3 = onSnapshot(collection(db, "socialClicks"), snap => {
+            setSocialClicks(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            loaded.social = true;
+            checkLoaded();
+        }, err => { console.error('socialClicks listener:', err); loaded.social = true; checkLoaded(); });
+
+        unsubscribers.current = [unsub1, unsub2, unsub3];
+        return () => unsubscribers.current.forEach(u => u());
     }, [isAuthenticated]);
 
     const handlePinSubmit = (e) => {
@@ -197,12 +199,12 @@ const AdminPanel = () => {
                     <AdminTabs activeTab={activeTab} onTabChange={setActiveTab} />
                     <NotificationBell />
                     <button
-                        onClick={fetchData}
+                        onClick={() => { setRefreshing(true); setTimeout(() => setRefreshing(false), 500); }}
                         className={`refresh-btn ${refreshing ? 'spinning' : ''}`}
                         disabled={refreshing}
                     >
                         <FontAwesomeIcon icon={faRefresh} />
-                        Odśwież
+                        Na żywo
                     </button>
                 </header>
             </div>

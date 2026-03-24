@@ -115,16 +115,20 @@ const useAdminStats = (answers, scans, questions, socialClicks = []) => {
         answers.forEach(a => { if (a.location) allLocations.add(a.location); });
         const activeLocations = allLocations.size;
 
-        // Weekly comparison (only fresh scans)
-        const thisWeekScans = freshScans.filter(s => new Date(s.timestamp) >= last7).length;
+        // Weekly comparison — tygodnie kalendarzowe (pon-niedz)
+        const dayOfWeek = (today.getDay() + 6) % 7; // Mon=0
+        const thisWeekStart = subDays(today, dayOfWeek); // poniedziałek tego tygodnia
+        const prevWeekStart = subDays(thisWeekStart, 7);
+
+        const thisWeekScans = freshScans.filter(s => new Date(s.timestamp) >= thisWeekStart).length;
         const prevWeekScans = freshScans.filter(s => {
             const d = new Date(s.timestamp);
-            return d >= prev7 && d < last7;
+            return d >= prevWeekStart && d < thisWeekStart;
         }).length;
-        const thisWeekAnswers = answers.filter(a => new Date(a.timestamp) >= last7).length;
+        const thisWeekAnswers = answers.filter(a => new Date(a.timestamp) >= thisWeekStart).length;
         const prevWeekAnswers = answers.filter(a => {
             const d = new Date(a.timestamp);
-            return d >= prev7 && d < last7;
+            return d >= prevWeekStart && d < thisWeekStart;
         }).length;
         const thisWeekConversion = thisWeekScans > 0 ? Math.round((thisWeekAnswers / thisWeekScans) * 100) : 0;
         const prevWeekConversion = prevWeekScans > 0 ? Math.round((prevWeekAnswers / prevWeekScans) * 100) : 0;

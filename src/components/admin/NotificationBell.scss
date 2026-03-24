@@ -132,6 +132,7 @@
     padding: 10px 14px;
     border-bottom: 1px solid rgba(69, 69, 69, 0.08);
     transition: background 0.15s;
+    cursor: pointer;
 
     &.unread {
         background: rgba(255, 35, 35, 0.04);

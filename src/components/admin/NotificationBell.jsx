@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useData } from '../../contexts/DataContext';
 import { useDemoMode } from '../../contexts/DemoContext';
@@ -12,7 +12,7 @@ const PENDING_TIMEOUT = 120000; // 2min
 const CLEANUP_DAYS = 7;
 const MAX_NOTIFICATIONS = 100;
 
-// ── localStorage helpers ──────────────────────────────────────────────────────
+// ── localStorage helpers (cache only, lastSeen syncs to Firebase) ─────────────
 const loadStored = () => {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -21,7 +21,7 @@ const loadStored = () => {
         const cutoff = new Date();
         cutoff.setDate(cutoff.getDate() - CLEANUP_DAYS);
         const items = (data.items || []).filter(n =>
-            !n.read || new Date(n.createdAt) > cutoff
+            new Date(n.createdAt) > cutoff
         );
         return { items, lastSeen: data.lastSeen || null };
     } catch {
@@ -32,6 +32,8 @@ const loadStored = () => {
 const saveStored = (items, lastSeen) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, lastSeen }));
 };
+
+const LAST_SEEN_DOC = 'admin/notificationState';
 
 // ── Time formatting ───────────────────────────────────────────────────────────
 const formatTime = (ts) => new Date(ts).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
@@ -51,21 +53,36 @@ const NotificationBell = () => {
     const { questions } = useData();
     const isDemoMode = useDemoMode();
     const [notifications, setNotifications] = useState(() => loadStored().items);
+    const [lastSeen, setLastSeen] = useState(() => loadStored().lastSeen);
     const [isOpen, setIsOpen] = useState(false);
     const bellRef = useRef(null);
     const pendingScans = useRef(new Map());
     const questionsRef = useRef(questions);
-    const storedLastSeen = useRef(loadStored().lastSeen);
+    const lastSeenRef = useRef(lastSeen);
     const listenersReady = useRef(false);
 
     useEffect(() => { questionsRef.current = questions; }, [questions]);
+    useEffect(() => { lastSeenRef.current = lastSeen; }, [lastSeen]);
 
-    // Persist to localStorage
+    // Sync lastSeen FROM Firebase (real-time)
+    useEffect(() => {
+        if (isDemoMode) return;
+        const unsub = onSnapshot(doc(db, LAST_SEEN_DOC), (snap) => {
+            const data = snap.data();
+            if (data?.lastSeen) {
+                setLastSeen(data.lastSeen);
+                lastSeenRef.current = data.lastSeen;
+            }
+        }, () => {});
+        return unsub;
+    }, [isDemoMode]);
+
+    // Persist to localStorage (cache)
     useEffect(() => {
         if (listenersReady.current) {
-            saveStored(notifications, storedLastSeen.current);
+            saveStored(notifications, lastSeen);
         }
-    }, [notifications]);
+    }, [notifications, lastSeen]);
 
     const getQuestionText = useCallback((qid) =>
         questionsRef.current?.[qid]?.questionText || qid
@@ -178,7 +195,7 @@ const NotificationBell = () => {
         if (!questions || isDemoMode) return;
 
         const defaultStart = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const effectiveStart = storedLastSeen.current || defaultStart;
+        const effectiveStart = lastSeenRef.current || defaultStart;
         let isFirstScans = true;
         let isFirstAnswers = true;
         let historicalScans = [];
@@ -326,16 +343,22 @@ const NotificationBell = () => {
     }, []);
 
     // ── Actions ───────────────────────────────────────────────────────────
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const unreadCount = notifications.filter(n => !lastSeen || n.timestamp > lastSeen).length;
 
-    const markAllRead = () => {
-        const now = new Date().toISOString();
-        storedLastSeen.current = now;
-        setNotifications(prev => {
-            const updated = prev.map(n => ({ ...n, read: true }));
-            saveStored(updated, now);
-            return updated;
-        });
+    const updateLastSeen = (ts) => {
+        setLastSeen(ts);
+        lastSeenRef.current = ts;
+        if (!isDemoMode) {
+            setDoc(doc(db, LAST_SEEN_DOC), { lastSeen: ts }).catch(() => {});
+        }
+    };
+
+    const markAllRead = () => updateLastSeen(new Date().toISOString());
+
+    const markRead = (notif) => {
+        if (!lastSeen || notif.timestamp > lastSeen) {
+            updateLastSeen(notif.timestamp);
+        }
     };
 
     const toggleOpen = () => {
@@ -407,19 +430,22 @@ const NotificationBell = () => {
                             Object.entries(grouped).map(([dateLabel, items]) => (
                                 <div key={dateLabel} className='notif-group'>
                                     <div className='notif-date-label'>{dateLabel}</div>
-                                    {items.map(n => (
-                                        <div key={n.id} className={`notif-item${n.read ? '' : ' unread'}`}>
-                                            <span className='notif-icon'>{typeIcon(n.type)}</span>
-                                            <div className='notif-body'>
-                                                <div className='notif-question'>{n.questionText}</div>
-                                                <div className='notif-detail'>{typeText(n)}</div>
-                                                {n.location && (
-                                                    <div className='notif-location'>📍 {n.location}</div>
-                                                )}
+                                    {items.map(n => {
+                                        const isRead = lastSeen && n.timestamp <= lastSeen;
+                                        return (
+                                            <div key={n.id} className={`notif-item${isRead ? '' : ' unread'}`} onClick={() => markRead(n)}>
+                                                <span className='notif-icon'>{typeIcon(n.type)}</span>
+                                                <div className='notif-body'>
+                                                    <div className='notif-question'>{n.questionText}</div>
+                                                    <div className='notif-detail'>{typeText(n)}</div>
+                                                    {n.location && (
+                                                        <div className='notif-location'>📍 {n.location}</div>
+                                                    )}
+                                                </div>
+                                                <span className='notif-time'>{formatTime(n.timestamp)}</span>
                                             </div>
-                                            <span className='notif-time'>{formatTime(n.timestamp)}</span>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             ))
                         )}
