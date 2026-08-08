@@ -13,6 +13,13 @@ const A3_TOTAL    = 24;
 const A3_COLS     = 4;
 const A3_ROWS     = 6;
 
+// Arkusz "paski" — komplety (? / pytanie / QR) w jednym kawałku.
+// Wartości bazowe dla pasków pionowych (4 kolumny × 2 rzędy); poziome to ta sama
+// siatka obrócona o 90° — patrz renderA3SheetCombined.
+const A3_COMB_COLS = 4;
+const A3_COMB_ROWS = 2;
+const A3_COMB_TOTAL = A3_COMB_COLS * A3_COMB_ROWS;
+
 async function waitForFonts() {
     if (document.fonts) {
         await Promise.all([
@@ -36,37 +43,31 @@ function wrapText(ctx, text, maxWidth) {
     return lines;
 }
 
-function drawNum(ctx, num, sizePx) {
+function drawNum(ctx, num, w, h, ox = 0, oy = 0) {
     if (!num) return;
-    const pad = Math.round(sizePx * 0.03);
-    const fs  = Math.round(sizePx * 0.038);
+    const pad = Math.round(w * 0.03);
+    const fs  = Math.round(w * 0.038);
     ctx.save();
     ctx.font         = `700 ${fs}px ${F_SEMI}`;
     ctx.fillStyle    = DARK;
     ctx.globalAlpha  = 0.6;
     ctx.textAlign    = 'right';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`#${String(num).padStart(3, '0')}`, sizePx - pad, sizePx - pad);
+    ctx.fillText(`#${String(num).padStart(3, '0')}`, ox + w - pad, oy + h - pad);
     ctx.restore();
 }
 
-function drawBorder(ctx, sizePx) {
+function drawBorder(ctx, w, h, ox = 0, oy = 0) {
     ctx.save();
     ctx.strokeStyle = 'rgba(50, 50, 50, 0.9)';
-    ctx.lineWidth   = Math.max(1, Math.round(sizePx * 0.004));
-    ctx.strokeRect(1, 1, sizePx - 2, sizePx - 2);
+    ctx.lineWidth   = Math.max(1, Math.round(Math.min(w, h) * 0.004));
+    ctx.strokeRect(ox + 1, oy + 1, w - 2, h - 2);
     ctx.restore();
 }
 
-// ── Naklejka z pytaniem ───────────────────────────────────────────────────────
-async function renderQuestionSticker(canvas, { questionText, options, questionNum, sizePx }) {
-    await waitForFonts();
-    canvas.width = canvas.height = sizePx;
-    const ctx  = canvas.getContext('2d');
+// ── Treść: pytanie (bez tła/obramowania — używana samodzielnie i w pasku) ─────
+function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0, offsetY = 0) {
     const pad  = Math.round(sizePx * 0.08);
-
-    ctx.fillStyle = BG;
-    ctx.fillRect(0, 0, sizePx, sizePx);
     ctx.textBaseline = 'top';
 
     // Pytania allowText (z opcją type:text) — samo pytanie, bez opcji
@@ -95,13 +96,14 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
     const gapQ   = visibleOptions.length > 0 ? Math.round(sizePx * 0.06) : 0;
     const totalH = textH + gapQ + optsH;
     const nudge  = Math.round(sizePx * 0.03);
-    let y = Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
+    const x      = offsetX + pad;
+    let y = offsetY + Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
 
     // Pytanie — Archivo Black
     ctx.font      = `${fsQ}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
     ctx.textAlign = 'left';
-    lines.forEach(line => { ctx.fillText(line, pad, y); y += Math.round(fsQ * 1.15); });
+    lines.forEach(line => { ctx.fillText(line, x, y); y += Math.round(fsQ * 1.15); });
 
     if (visibleOptions.length > 0) {
         y += gapQ;
@@ -111,37 +113,71 @@ async function renderQuestionSticker(canvas, { questionText, options, questionNu
         ctx.globalAlpha = 0.82;
         ctx.textAlign   = 'left';
         optLines.forEach((wrappedLines, optIdx) => {
-            wrappedLines.forEach(line => { ctx.fillText(line, pad, y); y += lineH_cont; });
+            wrappedLines.forEach(line => { ctx.fillText(line, x, y); y += lineH_cont; });
             if (optIdx < optLines.length - 1) y += lineH_opt - lineH_cont;
         });
         ctx.globalAlpha = 1;
     }
-
-    drawNum(ctx, questionNum, sizePx);
-    drawBorder(ctx, sizePx);
 }
 
-// ── Naklejka QR ───────────────────────────────────────────────────────────────
-async function renderBareQRSticker(canvas, { questionId, questionNum, sizePx }) {
-    canvas.width = canvas.height = sizePx;
-    const ctx = canvas.getContext('2d');
+// ── Treść: kod QR (bez tła/obramowania) ────────────────────────────────────────
+async function drawQRContent(ctx, { questionId }, sizePx, offsetX = 0, offsetY = 0) {
     const pad = Math.round(sizePx * 0.05);
+    const qrSz = sizePx - pad * 2;
 
-    ctx.fillStyle = BG;
-    ctx.fillRect(0, 0, sizePx, sizePx);
-
-    const qrSz     = sizePx - pad * 2;
     const qrCanvas = document.createElement('canvas');
     await QRCode.toCanvas(qrCanvas, `https://jakmyslisz.com/${questionId}`, {
         width: qrSz, margin: 1,
         color: { dark: DARK, light: BG },
         errorCorrectionLevel: 'M',
     });
-    canvas.getContext('2d').imageSmoothingEnabled = false;
-    canvas.getContext('2d').drawImage(qrCanvas, pad, pad, qrSz, qrSz);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(qrCanvas, offsetX + pad, offsetY + pad, qrSz, qrSz);
+}
 
-    drawNum(ctx, questionNum, sizePx);
-    drawBorder(ctx, sizePx);
+// ── Treść: znak zapytania (bez tła/obramowania) ────────────────────────────────
+function drawQMarkContent(ctx, sizePx, offsetX = 0, offsetY = 0) {
+    const fs = Math.round(sizePx * 0.92);
+    ctx.save();
+    ctx.font         = `${fs}px ${F_HEAVY}`;
+    ctx.fillStyle    = '#FF2323';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    const m  = ctx.measureText('?');
+    const tH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    const y  = offsetY + (sizePx + tH) / 2 - m.actualBoundingBoxDescent;
+
+    ctx.fillText('?', offsetX + sizePx / 2, y);
+    ctx.restore();
+}
+
+// ── Naklejka z pytaniem ───────────────────────────────────────────────────────
+async function renderQuestionSticker(canvas, { questionText, options, questionNum, sizePx }) {
+    await waitForFonts();
+    canvas.width = canvas.height = sizePx;
+    const ctx  = canvas.getContext('2d');
+
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, sizePx, sizePx);
+
+    drawQuestionContent(ctx, { questionText, options }, sizePx, 0, 0);
+    drawNum(ctx, questionNum, sizePx, sizePx);
+    drawBorder(ctx, sizePx, sizePx);
+}
+
+// ── Naklejka QR ───────────────────────────────────────────────────────────────
+async function renderBareQRSticker(canvas, { questionId, questionNum, sizePx }) {
+    canvas.width = canvas.height = sizePx;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, sizePx, sizePx);
+
+    await drawQRContent(ctx, { questionId }, sizePx, 0, 0);
+
+    drawNum(ctx, questionNum, sizePx, sizePx);
+    drawBorder(ctx, sizePx, sizePx);
 }
 
 // ── Naklejka ze znakiem zapytania ─────────────────────────────────────────────
@@ -153,18 +189,38 @@ async function renderQMarkSticker(canvas, { sizePx }) {
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, sizePx, sizePx);
 
-    const fs = Math.round(sizePx * 0.92);
-    ctx.font         = `${fs}px ${F_HEAVY}`;
-    ctx.fillStyle    = '#FF2323';
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'alphabetic';
+    drawQMarkContent(ctx, sizePx, 0, 0);
+    drawBorder(ctx, sizePx, sizePx);
+}
 
-    const m  = ctx.measureText('?');
-    const tH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
-    const y  = (sizePx + tH) / 2 - m.actualBoundingBoxDescent;
+// ── Pasek: znak ? / pytanie / QR w jednym kawałku, bez linii wewnętrznych ─────
+// orientation: 'pionowy' (od góry do dołu) | 'poziomy' (od lewej do prawej)
+async function renderCombinedSticker(canvas, { questionText, questionId, options, questionNum, sizePx, orientation = 'pionowy' }) {
+    await waitForFonts();
+    const horizontal = orientation === 'poziomy';
 
-    ctx.fillText('?', sizePx / 2, y);
-    drawBorder(ctx, sizePx);
+    const w = horizontal ? sizePx * 3 : sizePx;
+    const h = horizontal ? sizePx : sizePx * 3;
+    canvas.width  = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, w, h);
+
+    if (horizontal) {
+        drawQMarkContent(ctx, sizePx, 0, 0);
+        drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0);
+        await drawQRContent(ctx, { questionId }, sizePx, sizePx * 2, 0);
+        drawNum(ctx, questionNum, sizePx, sizePx, sizePx * 2, 0);
+    } else {
+        drawQMarkContent(ctx, sizePx, 0, 0);
+        drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx);
+        await drawQRContent(ctx, { questionId }, sizePx, 0, sizePx * 2);
+        drawNum(ctx, questionNum, sizePx, sizePx, 0, sizePx * 2);
+    }
+
+    drawBorder(ctx, w, h); // tylko obramowanie całości — bez linii wewnętrznych
 }
 
 // ── Arkusz A3 — 16 naklejek ───────────────────────────────────────────────────
@@ -216,6 +272,58 @@ async function renderA3Sheet(canvas, { questionText, questionId, options, questi
 
 }
 
+// ── Arkusz A3 "paski" — 8 kompletnych pasków (? / pytanie / QR) ───────────────
+// pionowo: arkusz portret 297×420, siatka 4×2, paski 1×3 sekcji (z góry na dół)
+// poziomo: arkusz obrócony o 90° — 420×297, siatka 2×4, paski 3×1 sekcji (z lewa na prawo)
+async function renderA3SheetCombined(canvas, { questionText, questionId, options, questionNum, orientation = 'pionowy' }) {
+    await waitForFonts();
+    const horizontal = orientation === 'poziomy';
+
+    const mm     = (v) => Math.round(v * DPI / 25.4);
+    const W      = horizontal ? mm(420) : mm(297);
+    const H      = horizontal ? mm(297) : mm(420);
+    const MARGIN = mm(10);
+
+    const availW = W - 2 * MARGIN;
+    const availH = H - 2 * MARGIN;
+
+    // przy poziomym pasku kolumny/wiersze się zamieniają miejscami (siatka obrócona razem z paskiem)
+    const gridCols = horizontal ? A3_COMB_ROWS : A3_COMB_COLS;
+    const gridRows = horizontal ? A3_COMB_COLS : A3_COMB_ROWS;
+
+    const sectionSize = horizontal
+        ? Math.floor(Math.min(availW / (gridCols * 3), availH / gridRows))
+        : Math.floor(Math.min(availW / gridCols, availH / (gridRows * 3)));
+
+    const cardW = horizontal ? sectionSize * 3 : sectionSize;
+    const cardH = horizontal ? sectionSize : sectionSize * 3;
+
+    const gridW  = gridCols * cardW;
+    const gridH  = gridRows * cardH;
+    const startX = Math.round((W - gridW) / 2);
+    const startY = Math.round((H - gridH) / 2);
+
+    canvas.width  = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, W, H);
+
+    const args = { questionText, questionId, options, questionNum, sizePx: sectionSize, orientation };
+
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < gridCols; col++) {
+            const x = startX + col * cardW;
+            const y = startY + row * cardH;
+
+            const sc = document.createElement('canvas');
+            await renderCombinedSticker(sc, args);
+            ctx.drawImage(sc, x, y);
+        }
+    }
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function downloadCanvas(canvas, filename) {
     const a = document.createElement('a');
@@ -228,16 +336,19 @@ function downloadCanvas(canvas, filename) {
 
 // ── Taby pojedynczych naklejek ────────────────────────────────────────────────
 const TABS = [
+    { id: 'qmark',   label: '?'       },
     { id: 'pytanie', label: 'pytanie' },
     { id: 'goly',    label: 'QR'      },
-    { id: 'qmark',   label: '?'       },
+    { id: 'pasek',   label: 'pasek'   },
 ];
 
 const QRStickerModal = ({ questionId, questionText, options = [], questionNum, onClose }) => {
-    const [tab,         setTab]         = useState('pytanie');
-    const [sizeMM,      setSizeMM]      = useState(80);
-    const [rendering,   setRendering]   = useState(false);
-    const [sheetCounts, setSheetCounts] = useState({ pytanie: 8, qr: 8, qmark: 8 });
+    const [tab,              setTab]              = useState('pytanie');
+    const [sizeMM,           setSizeMM]           = useState(80);
+    const [rendering,        setRendering]        = useState(false);
+    const [sheetMode,        setSheetMode]        = useState('rozdzielone'); // 'rozdzielone' | 'pasek'
+    const [pasekOrientation, setPasekOrientation] = useState('pionowy');     // 'pionowy' | 'poziomy'
+    const [sheetCounts,      setSheetCounts]      = useState({ pytanie: 8, qr: 8, qmark: 8 });
     const previewRef = useRef(null);
 
     const sheetTotal = sheetCounts.pytanie + sheetCounts.qr + sheetCounts.qmark;
@@ -250,10 +361,11 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
             const args = { questionText, questionId, options, questionNum, sizePx: PREVIEW_PX };
             if      (tab === 'pytanie') await renderQuestionSticker(previewRef.current, args);
             else if (tab === 'qmark')   await renderQMarkSticker(previewRef.current, args);
+            else if (tab === 'pasek')   await renderCombinedSticker(previewRef.current, { ...args, orientation: pasekOrientation });
             else                        await renderBareQRSticker(previewRef.current, args);
         } catch (e) { console.error('Sticker render error:', e); }
         finally     { setRendering(false); }
-    }, [tab, questionText, questionId, options, questionNum]);
+    }, [tab, questionText, questionId, options, questionNum, pasekOrientation]);
 
     useEffect(() => { renderPreview(); }, [renderPreview]);
 
@@ -268,13 +380,15 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
         const exp    = document.createElement('canvas');
         const args   = { questionText, questionId, options, questionNum, sizePx };
         try {
-            if      (tab === 'pytanie') await renderQuestionSticker(exp, args);
-            else if (tab === 'qmark')   await renderQMarkSticker(exp, args);
-            else                        await renderBareQRSticker(exp, args);
-            const suffix = tab === 'qmark' ? 'znak-zapytania' : `${String(questionNum).padStart(3,'0')}-${tab}`;
+            const num = String(questionNum).padStart(3, '0');
+            let suffix;
+            if      (tab === 'pytanie') { await renderQuestionSticker(exp, args); suffix = `${num}-pytanie`; }
+            else if (tab === 'qmark')   { await renderQMarkSticker(exp, args); suffix = 'znak-zapytania'; }
+            else if (tab === 'pasek')   { await renderCombinedSticker(exp, { ...args, orientation: pasekOrientation }); suffix = `${num}-pasek-${pasekOrientation}`; }
+            else                        { await renderBareQRSticker(exp, args); suffix = `${num}-${tab}`; }
             downloadCanvas(exp, `jakmyslisz-${suffix}-${sizeMM}mm-300dpi.png`);
         } catch (e) { console.error('Download error:', e); }
-    }, [tab, questionText, questionId, options, questionNum, sizeMM]);
+    }, [tab, questionText, questionId, options, questionNum, sizeMM, pasekOrientation]);
 
     const handleDownloadAll = useCallback(async () => {
         setRendering(true);
@@ -298,16 +412,21 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
     }, [questionText, questionId, options, questionNum, sizeMM]);
 
     const handleDownloadSheet = useCallback(async () => {
-        if (!sheetOk) return;
+        if (sheetMode === 'rozdzielone' && !sheetOk) return;
         setRendering(true);
         try {
-            const exp  = document.createElement('canvas');
-            await renderA3Sheet(exp, { questionText, questionId, options, questionNum, counts: sheetCounts });
-            const num  = String(questionNum).padStart(3, '0');
-            downloadCanvas(exp, `jakmyslisz-${num}-arkusz-a3-300dpi.png`);
+            const exp = document.createElement('canvas');
+            const num = String(questionNum).padStart(3, '0');
+            if (sheetMode === 'pasek') {
+                await renderA3SheetCombined(exp, { questionText, questionId, options, questionNum, orientation: pasekOrientation });
+                downloadCanvas(exp, `jakmyslisz-${num}-arkusz-a3-paski-${pasekOrientation}-300dpi.png`);
+            } else {
+                await renderA3Sheet(exp, { questionText, questionId, options, questionNum, counts: sheetCounts });
+                downloadCanvas(exp, `jakmyslisz-${num}-arkusz-a3-300dpi.png`);
+            }
         } catch (e) { console.error('Sheet render error:', e); }
         finally     { setRendering(false); }
-    }, [questionText, questionId, options, questionNum, sheetCounts, sheetOk]);
+    }, [questionText, questionId, options, questionNum, sheetCounts, sheetOk, sheetMode, pasekOrientation]);
 
     const setCount = (key, val) => {
         const v = Math.max(0, Math.min(A3_TOTAL, parseInt(val) || 0));
@@ -337,11 +456,24 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
                     ))}
                 </div>
 
+                {tab === 'pasek' && (
+                    <div className='qr-tabs qr-orientation-tabs'>
+                        <button type='button'
+                            className={`qr-tab${pasekOrientation === 'pionowy' ? ' active' : ''}`}
+                            onClick={() => setPasekOrientation('pionowy')}
+                        >pionowy</button>
+                        <button type='button'
+                            className={`qr-tab${pasekOrientation === 'poziomy' ? ' active' : ''}`}
+                            onClick={() => setPasekOrientation('poziomy')}
+                        >poziomy</button>
+                    </div>
+                )}
+
                 <div className='qr-preview-wrap'>
                     <canvas
                         ref={previewRef}
                         width={PREVIEW_PX} height={PREVIEW_PX}
-                        className='qr-preview-canvas'
+                        className={`qr-preview-canvas${tab === 'pasek' ? ` qr-preview-canvas--pasek-${pasekOrientation}` : ''}`}
                         style={{ opacity: rendering ? 0.3 : 1 }}
                     />
                 </div>
@@ -367,44 +499,82 @@ const QRStickerModal = ({ questionId, questionText, options = [], questionNum, o
                 <div className='qr-sheet-divider' />
 
                 <div className='qr-sheet-section'>
-                    <div className='qr-sheet-title'>arkusz A3 — {A3_TOTAL} naklejek (4×6)</div>
-                    <div className='qr-sheet-row'>
-                        <div className='qr-sheet-field'>
-                            <label className='qr-sheet-label'>pytania</label>
-                            <input
-                                type='number' min={0} max={A3_TOTAL}
-                                className='qr-sheet-input'
-                                value={sheetCounts.pytanie}
-                                onChange={e => setCount('pytanie', e.target.value)}
-                            />
-                        </div>
-                        <div className='qr-sheet-field'>
-                            <label className='qr-sheet-label'>kody QR</label>
-                            <input
-                                type='number' min={0} max={A3_TOTAL}
-                                className='qr-sheet-input'
-                                value={sheetCounts.qr}
-                                onChange={e => setCount('qr', e.target.value)}
-                            />
-                        </div>
-                        <div className='qr-sheet-field'>
-                            <label className='qr-sheet-label'>znaki ?</label>
-                            <input
-                                type='number' min={0} max={A3_TOTAL}
-                                className='qr-sheet-input'
-                                value={sheetCounts.qmark}
-                                onChange={e => setCount('qmark', e.target.value)}
-                            />
-                        </div>
-                        <div className={`qr-sheet-total${sheetOk ? ' ok' : ' err'}`}>
-                            = {sheetTotal}
-                        </div>
+                    <div className='qr-sheet-title'>arkusz A3</div>
+
+                    <div className='qr-tabs qr-sheet-mode-tabs'>
+                        <button type='button'
+                            className={`qr-tab${sheetMode === 'rozdzielone' ? ' active' : ''}`}
+                            onClick={() => setSheetMode('rozdzielone')}
+                        >rozdzielone</button>
+                        <button type='button'
+                            className={`qr-tab${sheetMode === 'pasek' ? ' active' : ''}`}
+                            onClick={() => setSheetMode('pasek')}
+                        >paski</button>
                     </div>
+
+                    {sheetMode === 'rozdzielone' ? (
+                        <>
+                            <div className='qr-sheet-row'>
+                                <div className='qr-sheet-field'>
+                                    <label className='qr-sheet-label'>pytania</label>
+                                    <input
+                                        type='number' min={0} max={A3_TOTAL}
+                                        className='qr-sheet-input'
+                                        value={sheetCounts.pytanie}
+                                        onChange={e => setCount('pytanie', e.target.value)}
+                                    />
+                                </div>
+                                <div className='qr-sheet-field'>
+                                    <label className='qr-sheet-label'>kody QR</label>
+                                    <input
+                                        type='number' min={0} max={A3_TOTAL}
+                                        className='qr-sheet-input'
+                                        value={sheetCounts.qr}
+                                        onChange={e => setCount('qr', e.target.value)}
+                                    />
+                                </div>
+                                <div className='qr-sheet-field'>
+                                    <label className='qr-sheet-label'>znaki ?</label>
+                                    <input
+                                        type='number' min={0} max={A3_TOTAL}
+                                        className='qr-sheet-input'
+                                        value={sheetCounts.qmark}
+                                        onChange={e => setCount('qmark', e.target.value)}
+                                    />
+                                </div>
+                                <div className={`qr-sheet-total${sheetOk ? ' ok' : ' err'}`}>
+                                    = {sheetTotal}
+                                </div>
+                            </div>
+                            <div className='qr-sheet-hint'>{A3_TOTAL} osobnych naklejek (4×6) — każda z czarną ramką, do wycięcia pojedynczo.</div>
+                        </>
+                    ) : (
+                        <>
+                            <div className='qr-tabs qr-orientation-tabs'>
+                                <button type='button'
+                                    className={`qr-tab${pasekOrientation === 'pionowy' ? ' active' : ''}`}
+                                    onClick={() => setPasekOrientation('pionowy')}
+                                >pionowy</button>
+                                <button type='button'
+                                    className={`qr-tab${pasekOrientation === 'poziomy' ? ' active' : ''}`}
+                                    onClick={() => setPasekOrientation('poziomy')}
+                                >poziomy</button>
+                            </div>
+                            <div className='qr-sheet-hint'>
+                                {pasekOrientation === 'pionowy' ? (
+                                    <>{A3_COMB_TOTAL} kompletnych pasków (4×{A3_COMB_ROWS}) — znak ? na górze, pytanie w środku, QR na dole, bez linii wewnątrz. Wystarczy wyciąć w pionowe paski, a potem przeciąć poziomo.</>
+                                ) : (
+                                    <>{A3_COMB_TOTAL} kompletnych pasków ({A3_COMB_ROWS}×{A3_COMB_COLS}, arkusz poziomy) — znak ? z lewej, pytanie w środku, QR z prawej, bez linii wewnątrz. Wystarczy wyciąć w poziome paski, a potem przeciąć pionowo.</>
+                                )}
+                            </div>
+                        </>
+                    )}
+
                     <button
                         type='button'
                         className='qr-download-btn qr-sheet-btn'
                         onClick={handleDownloadSheet}
-                        disabled={rendering || !sheetOk}
+                        disabled={rendering || (sheetMode === 'rozdzielone' && !sheetOk)}
                     >
                         ↓ pobierz arkusz A3 — 300 dpi
                     </button>

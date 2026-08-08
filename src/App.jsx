@@ -13,14 +13,20 @@ import PageNotFound from './components/PageNotFound';
 import SocialMediaPage from './components/SocialMediaPage';
 import AdminPanel from './components/AdminPanel';
 import DemoAdminPanel from './components/DemoAdminPanel';
+import QuestionMarkLogo from './components/QuestionMarkLogo';
 import { DemoProvider } from './contexts/DemoContext';
 import './App.scss';
+
+// Ścieżki, które NIE są ekranem pytania (dostają pełne logo "jak myślisz?").
+// Wszystko inne (poza /admin i /demo) to /:questionId — ekran po zeskanowaniu kodu.
+const STATIC_PATHS = ['/', '/fact', '/social', '/404'];
 
 const AppContent = ({ isNight }) => {
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
     const isDemoAdmin  = location.pathname === '/demo';
     const isDemoRoute  = location.pathname.startsWith('/demo');
+    const isQuestionRoute = !isAdminRoute && !isDemoRoute && !STATIC_PATHS.includes(location.pathname);
     const [hideBrand,     setHideBrand]     = React.useState(false);
     const [hideBrandDemo, setHideBrandDemo] = React.useState(false);
 
@@ -40,7 +46,7 @@ const AppContent = ({ isNight }) => {
                             {!hideBrandDemo && (
                                 <div className='brand-zone'>
                                     <div className='app-brand-header'>
-                                        <span className='app-brand-q-solo'>?</span>
+                                        <QuestionMarkLogo />
                                     </div>
                                 </div>
                             )}
@@ -78,8 +84,14 @@ const AppContent = ({ isNight }) => {
                     {!hideBrand && (
                         <div className='brand-zone'>
                             <div className='app-brand-header'>
-                                <div className='app-brand-line1'>jak</div>
-                                <div className='app-brand-line2'>myślisz<span className='app-brand-q'>?</span></div>
+                                {isQuestionRoute ? (
+                                    <QuestionMarkLogo />
+                                ) : (
+                                    <>
+                                        <div className='app-brand-line1'>jak</div>
+                                        <div className='app-brand-line2'>myślisz<span className='app-brand-q'>?</span></div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}
