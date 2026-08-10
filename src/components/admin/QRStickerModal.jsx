@@ -98,7 +98,7 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
 
     const x = offsetX + pad;
 
-    // ── Tryb 'fill': tytuł + linia dekoracyjna przy górze, opcje przypięte do dołu ──
+    // ── Tryb 'fill': tytuł przy górze, opcje wyśrodkowane w pozostałej przestrzeni ──
     if (valign === 'fill') {
         // Tytuł na górze
         let y = offsetY + pad;
@@ -107,18 +107,12 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
         ctx.textAlign = 'left';
         lines.forEach(line => { ctx.fillText(line, x, y); y += Math.round(fsQ * 1.15); });
 
-        // Linia dekoracyjna pod tytułem (motyw podkreślenia nagłówków z apki)
-        const ulW = Math.round(sizePx * 0.38);
-        const ulH = Math.max(2, Math.round(sizePx * 0.006));
-        ctx.save();
-        ctx.fillStyle   = DARK;
-        ctx.globalAlpha = 0.28;
-        ctx.fillRect(x, y + Math.round(fsQ * 0.2), ulW, ulH);
-        ctx.restore();
-
-        // Opcje przypięte do dołu sekcji
+        // Opcje wyśrodkowane w przestrzeni między końcem tytułu a dołem sekcji
         if (visibleOptions.length > 0) {
-            let oy = offsetY + sizePx - pad - optsH;
+            const remainTop = y + pad;
+            const remainBot = offsetY + sizePx - pad;
+            const remain    = remainBot - remainTop;
+            let oy = remainTop + Math.max(0, Math.round((remain - optsH) / 2));
             ctx.font        = `600 ${fsOpt}px ${F_SEMI}`;
             ctx.fillStyle   = DARK;
             ctx.globalAlpha = 0.82;
