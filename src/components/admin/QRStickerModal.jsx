@@ -66,14 +66,14 @@ function drawBorder(ctx, w, h, ox = 0, oy = 0) {
 }
 
 // ── Treść: pytanie (bez tła/obramowania — używana samodzielnie i w pasku) ─────
-// padRatio:  margines wewnętrzny (0.08 standalone, 0.045 w pasku)
+// padRatio:  margines wewnętrzny (0.08 standalone, 0.05 w pasku)
 // fontScale: mnożnik fontu (1.0 standalone, 1.2 w pasku)
-// valign:    'center' standalone | 'top' w pasku (tekst kotwi się przy górnej granicy)
+// valign:    'center' — wyśrodkowany pionowo (samodzielna naklejka)
+//            'fill'   — tytuł górą, opcje dołem, przestrzeń między (pasek)
 function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0, offsetY = 0, padRatio = 0.08, fontScale = 1.0, valign = 'center') {
     const pad  = Math.round(sizePx * padRatio);
     ctx.textBaseline = 'top';
 
-    // Pytania allowText (z opcją type:text) — samo pytanie, bez opcji
     const isOpenQuestion = options.some(o => o.type === 'text');
     const visibleOptions = isOpenQuestion ? [] : options;
 
@@ -96,40 +96,55 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
     optLines.forEach(wrappedLines => { optsH += wrappedLines.length * lineH_cont; });
     if (optLines.length > 1) optsH += (optLines.length - 1) * (lineH_opt - lineH_cont);
 
+    const x = offsetX + pad;
+
+    // ── Tryb 'fill': tytuł + linia dekoracyjna przy górze, opcje przypięte do dołu ──
+    if (valign === 'fill') {
+        // Tytuł na górze
+        let y = offsetY + pad;
+        ctx.font      = `${fsQ}px ${F_HEAVY}`;
+        ctx.fillStyle = DARK;
+        ctx.textAlign = 'left';
+        lines.forEach(line => { ctx.fillText(line, x, y); y += Math.round(fsQ * 1.15); });
+
+        // Linia dekoracyjna pod tytułem (motyw podkreślenia nagłówków z apki)
+        const ulW = Math.round(sizePx * 0.38);
+        const ulH = Math.max(2, Math.round(sizePx * 0.006));
+        ctx.save();
+        ctx.fillStyle   = DARK;
+        ctx.globalAlpha = 0.28;
+        ctx.fillRect(x, y + Math.round(fsQ * 0.2), ulW, ulH);
+        ctx.restore();
+
+        // Opcje przypięte do dołu sekcji
+        if (visibleOptions.length > 0) {
+            let oy = offsetY + sizePx - pad - optsH;
+            ctx.font        = `600 ${fsOpt}px ${F_SEMI}`;
+            ctx.fillStyle   = DARK;
+            ctx.globalAlpha = 0.82;
+            ctx.textAlign   = 'left';
+            optLines.forEach((wrappedLines, optIdx) => {
+                wrappedLines.forEach(line => { ctx.fillText(line, x, oy); oy += lineH_cont; });
+                if (optIdx < optLines.length - 1) oy += lineH_opt - lineH_cont;
+            });
+            ctx.globalAlpha = 1;
+        }
+        return;
+    }
+
+    // ── Tryb 'center': wyśrodkowany pionowo (samodzielna naklejka) ──
     const gapQ   = visibleOptions.length > 0 ? Math.round(sizePx * 0.06) : 0;
     const totalH = textH + gapQ + optsH;
     const nudge  = Math.round(sizePx * 0.03);
-    const x      = offsetX + pad;
+    let y = offsetY + Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
 
-    // valign 'top': kotwica przy górnej granicy (pas pasek — tuż po ? modułu powyżej)
-    // valign 'center': wycentrowany pionowo (samodzielna naklejka)
-    let y = valign === 'top'
-        ? offsetY + pad
-        : offsetY + Math.max(pad, Math.round((sizePx - totalH) / 2) + nudge);
-
-    // Pytanie — Archivo Black
     ctx.font      = `${fsQ}px ${F_HEAVY}`;
     ctx.fillStyle = DARK;
     ctx.textAlign = 'left';
     lines.forEach(line => { ctx.fillText(line, x, y); y += Math.round(fsQ * 1.15); });
 
-    // Ozdobnik: krótka linia pod tytułem pytania (motyw podkreślenia z nagłówków apki)
-    // Tylko w trybie 'top' (pasek) — na samodzielnej naklejce jest za ciasno
-    if (valign === 'top') {
-        const ulW = Math.round(sizePx * 0.38);
-        const ulH = Math.max(2, Math.round(sizePx * 0.006));
-        const ulY = y + Math.round(fsQ * 0.18);
-        ctx.save();
-        ctx.fillStyle   = DARK;
-        ctx.globalAlpha = 0.28;
-        ctx.fillRect(x, ulY, ulW, ulH);
-        ctx.restore();
-        y += Math.round(fsQ * 0.55); // gap po linii dekoracyjnej
-    }
-
     if (visibleOptions.length > 0) {
         y += gapQ;
-        // Opcje — Urbanist 600, ciemne ale nie bold
         ctx.font        = `600 ${fsOpt}px ${F_SEMI}`;
         ctx.fillStyle   = DARK;
         ctx.globalAlpha = 0.82;
@@ -239,41 +254,22 @@ async function renderCombinedSticker(canvas, { questionText, questionId, options
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, w, h);
 
-    // Pasek: każdy moduł używa ciasnych marginesów i zakotwiczenia przy granicy.
-    // ? valign='bottom' → kropka przy dolnej krawędzi modułu
-    // pytanie valign='top' → tekst przy górnej krawędzi modułu (tuż po ?)
+    // Pasek: ? wyśrodkowany w swoim module, pytanie wypełnia swoją sekcję (tytuł góra, opcje dół)
     // fontScale 1.2 → tekst ~20% większy niż na samodzielnej naklejce
     // QR pad 2% → kod wypełnia 96% modułu
     if (horizontal) {
-        // Poziomy: ? wycentrowany pionowo (sąsiad jest z PRAWEJ, nie z dołu)
-        // Tekst pytania: zakotwiczony na górze swojego modułu
         drawQMarkContent(ctx, sizePx, 0, 0, 0.96, 'center');
-        drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0, 0.045, 1.2, 'top');
+        drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0, 0.05, 1.2, 'fill');
         await drawQRContent(ctx, { questionId }, sizePx, sizePx * 2, 0, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, sizePx * 2, 0);
     } else {
-        // Pionowy: ? schodzi na dół (sąsiad jest PONIŻEJ — minimalna luka)
-        drawQMarkContent(ctx, sizePx, 0, 0, 0.96, 'bottom');
-        drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx, 0.045, 1.2, 'top');
+        drawQMarkContent(ctx, sizePx, 0, 0, 0.96, 'center');
+        drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx, 0.05, 1.2, 'fill');
         await drawQRContent(ctx, { questionId }, sizePx, 0, sizePx * 2, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, 0, sizePx * 2);
     }
 
-    // Ozdobnik: cienkie separatory między modułami (echo borderu z apki, ~12% opacity)
-    const sepThick = Math.max(1, Math.round(sizePx * 0.004));
-    ctx.save();
-    ctx.fillStyle   = DARK;
-    ctx.globalAlpha = 0.12;
-    if (horizontal) {
-        ctx.fillRect(sizePx - Math.ceil(sepThick / 2), 0, sepThick, sizePx);
-        ctx.fillRect(sizePx * 2 - Math.ceil(sepThick / 2), 0, sepThick, sizePx);
-    } else {
-        ctx.fillRect(0, sizePx - Math.ceil(sepThick / 2), sizePx, sepThick);
-        ctx.fillRect(0, sizePx * 2 - Math.ceil(sepThick / 2), sizePx, sepThick);
-    }
-    ctx.restore();
-
-    drawBorder(ctx, w, h); // obramowanie całości — separatory wewnątrz
+    drawBorder(ctx, w, h);
 }
 
 // ── Arkusz A3 — 16 naklejek ───────────────────────────────────────────────────
