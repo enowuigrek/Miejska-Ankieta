@@ -78,14 +78,23 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
     const visibleOptions = isOpenQuestion ? [] : options;
 
     const qLen  = questionText.length;
-    const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.076 : qLen > 20 ? 0.096 : 0.115) * fontScale);
+    let   fsQ   = Math.round(sizePx * (qLen > 40 ? 0.076 : qLen > 20 ? 0.096 : 0.115) * fontScale);
     const scale      = visibleOptions.length >= 5 ? 0.78 : visibleOptions.length >= 4 ? 0.88 : 1;
     const fsOpt      = Math.round(sizePx * 0.072 * scale * fontScale);
     const lineH_cont = Math.round(fsOpt * 1.1);
     const lineH_opt  = Math.round(fsOpt * 1.85);
 
     const maxW = sizePx - pad * 2;
-    ctx.font    = `${fsQ}px ${F_HEAVY}`;
+
+    // Shrink font jeśli jakiekolwiek słowo (np. "Częstochowie?") jest szersze niż maxW
+    const qWords = questionText.split(' ');
+    ctx.font = `${fsQ}px ${F_HEAVY}`;
+    while (fsQ > 8) {
+        ctx.font = `${fsQ}px ${F_HEAVY}`;
+        if (Math.max(...qWords.map(w => ctx.measureText(w).width)) <= maxW) break;
+        fsQ = Math.round(fsQ * 0.92);
+    }
+
     const lines = wrapText(ctx, questionText, maxW);
     const textH = lines.length * Math.round(fsQ * 1.15);
 
