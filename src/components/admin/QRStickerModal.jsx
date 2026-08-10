@@ -252,12 +252,12 @@ async function renderCombinedSticker(canvas, { questionText, questionId, options
     // fontScale 1.2 → tekst ~20% większy niż na samodzielnej naklejce
     // QR pad 2% → kod wypełnia 96% modułu
     if (horizontal) {
-        drawQMarkContent(ctx, sizePx, 0, 0, 0.96, 'center');
+        drawQMarkContent(ctx, sizePx, 0, 0, 0.72, 'center');
         drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0, 0.05, 1.2, 'fill');
         await drawQRContent(ctx, { questionId }, sizePx, sizePx * 2, 0, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, sizePx * 2, 0);
     } else {
-        drawQMarkContent(ctx, sizePx, 0, 0, 0.96, 'center');
+        drawQMarkContent(ctx, sizePx, 0, 0, 0.72, 'center');
         drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx, 0.05, 1.2, 'fill');
         await drawQRContent(ctx, { questionId }, sizePx, 0, sizePx * 2, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, 0, sizePx * 2);
