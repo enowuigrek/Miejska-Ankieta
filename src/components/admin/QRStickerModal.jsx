@@ -66,8 +66,11 @@ function drawBorder(ctx, w, h, ox = 0, oy = 0) {
 }
 
 // ── Treść: pytanie (bez tła/obramowania — używana samodzielnie i w pasku) ─────
-function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0, offsetY = 0) {
-    const pad  = Math.round(sizePx * 0.08);
+// padRatio: względny margines wewnętrzny (default 0.08 dla samodzielnej naklejki,
+//           mniejszy dla pasków gdzie moduły się wspierają wizualnie)
+// fontScale: mnożnik rozmiarów fontu (default 1.0, >1 dla pasków = więcej przestrzeni do zagospodarowania)
+function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0, offsetY = 0, padRatio = 0.08, fontScale = 1.0) {
+    const pad  = Math.round(sizePx * padRatio);
     ctx.textBaseline = 'top';
 
     // Pytania allowText (z opcją type:text) — samo pytanie, bez opcji
@@ -75,9 +78,9 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
     const visibleOptions = isOpenQuestion ? [] : options;
 
     const qLen  = questionText.length;
-    const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.076 : qLen > 20 ? 0.096 : 0.115));
+    const fsQ   = Math.round(sizePx * (qLen > 40 ? 0.076 : qLen > 20 ? 0.096 : 0.115) * fontScale);
     const scale      = visibleOptions.length >= 5 ? 0.78 : visibleOptions.length >= 4 ? 0.88 : 1;
-    const fsOpt      = Math.round(sizePx * 0.072 * scale);
+    const fsOpt      = Math.round(sizePx * 0.072 * scale * fontScale);
     const lineH_cont = Math.round(fsOpt * 1.1);
     const lineH_opt  = Math.round(fsOpt * 1.85);
 
@@ -121,8 +124,9 @@ function drawQuestionContent(ctx, { questionText, options }, sizePx, offsetX = 0
 }
 
 // ── Treść: kod QR (bez tła/obramowania) ────────────────────────────────────────
-async function drawQRContent(ctx, { questionId }, sizePx, offsetX = 0, offsetY = 0) {
-    const pad = Math.round(sizePx * 0.05);
+// padRatio: 0.05 dla samodzielnej naklejki, mniejszy w pasku (0.02)
+async function drawQRContent(ctx, { questionId }, sizePx, offsetX = 0, offsetY = 0, padRatio = 0.05) {
+    const pad = Math.round(sizePx * padRatio);
     const qrSz = sizePx - pad * 2;
 
     const qrCanvas = document.createElement('canvas');
@@ -136,8 +140,9 @@ async function drawQRContent(ctx, { questionId }, sizePx, offsetX = 0, offsetY =
 }
 
 // ── Treść: znak zapytania (bez tła/obramowania) ────────────────────────────────
-function drawQMarkContent(ctx, sizePx, offsetX = 0, offsetY = 0) {
-    const fs = Math.round(sizePx * 0.92);
+// fsScale: 0.92 dla samodzielnej naklejki, większy w pasku (0.96)
+function drawQMarkContent(ctx, sizePx, offsetX = 0, offsetY = 0, fsScale = 0.92) {
+    const fs = Math.round(sizePx * fsScale);
     ctx.save();
     ctx.font         = `${fs}px ${F_HEAVY}`;
     ctx.fillStyle    = '#FF2323';
@@ -208,15 +213,18 @@ async function renderCombinedSticker(canvas, { questionText, questionId, options
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, w, h);
 
+    // W pasku moduły sąsiadują bez wewnętrznych linii — elementy mogą wypełniać
+    // znacznie więcej przestrzeni niż w samodzielnych naklejkach.
+    // ? : fsScale 0.92→0.96 | pytanie: pad 8%→4.5%, font +12% | QR: pad 5%→2%
     if (horizontal) {
-        drawQMarkContent(ctx, sizePx, 0, 0);
-        drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0);
-        await drawQRContent(ctx, { questionId }, sizePx, sizePx * 2, 0);
+        drawQMarkContent(ctx, sizePx, 0, 0, 0.96);
+        drawQuestionContent(ctx, { questionText, options }, sizePx, sizePx, 0, 0.045, 1.12);
+        await drawQRContent(ctx, { questionId }, sizePx, sizePx * 2, 0, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, sizePx * 2, 0);
     } else {
-        drawQMarkContent(ctx, sizePx, 0, 0);
-        drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx);
-        await drawQRContent(ctx, { questionId }, sizePx, 0, sizePx * 2);
+        drawQMarkContent(ctx, sizePx, 0, 0, 0.96);
+        drawQuestionContent(ctx, { questionText, options }, sizePx, 0, sizePx, 0.045, 1.12);
+        await drawQRContent(ctx, { questionId }, sizePx, 0, sizePx * 2, 0.02);
         drawNum(ctx, questionNum, sizePx, sizePx, 0, sizePx * 2);
     }
 

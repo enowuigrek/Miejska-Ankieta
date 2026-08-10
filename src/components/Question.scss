@@ -283,14 +283,14 @@ h1.night::after {
 .result-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 10px;
 }
 
 .result-bar-box {
     flex: 1;
     position: relative;
-    padding: 14px 16px;
+    padding: 18px 18px;
     overflow: hidden;
     background-color: rgba(69, 69, 69, 0.08);
 
@@ -311,14 +311,16 @@ h1.night::after {
 .result-label {
     position: relative;
     z-index: 1;
-    font-size: 1em;
+    font-size: 1.05em;
     font-weight: 700;
 }
 
+// Procent to główna dana — Archivo Black jak nagłówki, żeby wyróżnić odczyt
 .result-percent {
-    font-weight: bold;
-    font-size: 1em;
-    min-width: 52px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.15em;
+    letter-spacing: -1px;
+    min-width: 46px;
     text-align: right;
     flex-shrink: 0;
 }
@@ -329,11 +331,11 @@ h1.night::after {
     align-items: center;
     gap: 5px;
     flex-shrink: 0;
-    padding: 6px 10px;
+    padding: 8px 12px;
     background-color: #FF2323;
     color: rgb(243, 242, 242);
     font-family: 'Urbanist', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
